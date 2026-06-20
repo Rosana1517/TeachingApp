@@ -64,7 +64,7 @@ struct CourseWebView: View {
     }
 }
 
-struct LessonView: View {
+fileprivate struct LessonView: View {
     let lesson: LessonContent
 
     var body: some View {
