@@ -27,7 +27,7 @@ final class HTMLScannerService: ObservableObject {
         }
     }
 
-    func scanForNewLessons() async -> [RemoteCourse] {
+    func scanForNewLessons() async throws -> [RemoteCourse] {
         await MainActor.run {
             isScanning = true
             errorMessage = nil
@@ -50,7 +50,7 @@ final class HTMLScannerService: ObservableObject {
                 errorMessage = "Scan failed: \(error.localizedDescription)"
                 isScanning = false
             }
-            return []
+            throw error
         }
     }
 
@@ -72,8 +72,12 @@ final class HTMLScannerService: ObservableObject {
             throw ScannerError.networkError
         }
 
+        // Release/Asset already declare explicit snake_case CodingKeys, so
+        // .convertFromSnakeCase must NOT be set here — combining both makes
+        // JSONDecoder look for the already-camelCased key name and silently
+        // throw keyNotFound for every required field, which the catch below
+        // swallowed into an empty result instead of surfacing a real error.
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy = .iso8601
 
         let releases = try decoder.decode([Release].self, from: data)
