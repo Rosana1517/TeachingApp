@@ -209,8 +209,10 @@ struct SettingsView: View {
             isRefreshing = false
             if let error = courseViewModel.errorMessage {
                 alertMessage = error
+            } else if courseViewModel.hasNewCourses {
+                alertMessage = "已找到新課程！"
             } else {
-                alertMessage = courseViewModel.hasNewCourses ? "已找到新課程！" : "目前沒有新課程。"
+                alertMessage = "目前沒有新課程。\n（目前共有 \(courseViewModel.courses.count) 筆課程，\(Categories.all.count) 個分類）"
             }
             showAlert = true
         }
