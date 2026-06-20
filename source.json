@@ -12,6 +12,7 @@
       "versionDescription": "Build #1.0.17",
       "size": 175691,
       "localizedDescription": "私人法語學習教學 App，每日自動更新課程內容。",
+      "iconURL": "https://raw.githubusercontent.com/Rosana1517/TeachingApp/main/source_icon.png",
       "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v17/TeachingApp.ipa",
       "versions": [
         {
