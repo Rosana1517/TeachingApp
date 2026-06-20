@@ -65,13 +65,14 @@ jobs:
         if: success()
         run: |
           TOKEN="$(printf '%s' "$TOKEN" | tr -d '[:space:]')"
+          echo "sanitized token length: ${#TOKEN}"
 
-          curl -sf -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}" \
+          curl -s -w "\nHTTP_STATUS=%{http_code}\n" -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}" \
             -H "Authorization: Bearer $TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"allowCreateNewVersion": true, "publish": true}'
 
-          curl -sf -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}/upload_build" \
+          curl -s -w "\nHTTP_STATUS=%{http_code}\n" -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}/upload_build" \
             -H "Authorization: Bearer $TOKEN" \
             -F "files.build=@./build/output/TeachingApp.ipa"
         env:
