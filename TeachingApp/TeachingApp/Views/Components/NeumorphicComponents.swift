@@ -507,6 +507,7 @@ struct NeumorphicTabBar: View {
 struct NeumorphicCourseCard: View {
     let course: Course
     let onTap: () -> Void
+    var onDelete: (() -> Void)? = nil
 
     var body: some View {
         Button(action: onTap) {
@@ -555,12 +556,20 @@ struct NeumorphicCourseCard: View {
             .modifier(NeumorphicShadow(size: 15))
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            if let onDelete {
+                Button(role: .destructive, action: onDelete) {
+                    Label("刪除課程", systemImage: "trash")
+                }
+            }
+        }
     }
 
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "zh_Hant_TW")
         return formatter.string(from: date)
     }
 }

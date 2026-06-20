@@ -46,6 +46,14 @@ final class ProgressService {
         UserDefaults.standard.removeObject(forKey: unreadKey)
     }
 
+    func removeProgress(courseId: String) {
+        var unreadCourses = unreadCourseIDs()
+        unreadCourses.removeAll { $0 == courseId }
+        saveUnreadCourseIDs(unreadCourses)
+        UserDefaults.standard.removeObject(forKey: progressKey(for: courseId))
+        UserDefaults.standard.removeObject(forKey: readKey(for: courseId))
+    }
+
     private func unreadCourseIDs() -> [String] {
         UserDefaults.standard.array(forKey: unreadKey) as? [String] ?? []
     }

@@ -12,7 +12,7 @@ struct HomeView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         if viewModel.isLoading {
-                            ProgressView("Loading...")
+                            ProgressView("載入中...")
                                 .frame(maxWidth: .infinity, minHeight: 240)
                         } else if let course = viewModel.courses.first {
                             todaySection(course: course)
@@ -27,7 +27,7 @@ struct HomeView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Home")
+            .navigationTitle("首頁")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView(courseViewModel: viewModel)) {
@@ -46,7 +46,7 @@ struct HomeView: View {
     private func todaySection(course: Course) -> some View {
         NeumorphicCard {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Today")
+                Text("今日課程")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(NeumorphicColors.primary)
@@ -106,12 +106,12 @@ struct HomeView: View {
                 .clipShape(Circle())
                 .modifier(NeumorphicShadow(size: 20))
 
-            Text("No lessons found")
+            Text("尚無課程")
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(NeumorphicColors.primary)
 
-            Text("Select a folder in Settings and add HTML lesson files.")
+            Text("到「設定」頁面點選重新整理，即可同步最新課程。")
                 .font(.body)
                 .foregroundColor(NeumorphicColors.secondary)
                 .multilineTextAlignment(.center)
@@ -124,7 +124,7 @@ struct HomeView: View {
         let unreadCount = viewModel.courses.filter { !$0.isRead }.count
 
         return HStack {
-            Text("Unread")
+            Text("未讀課程")
                 .font(.title3)
                 .fontWeight(.bold)
                 .foregroundColor(NeumorphicColors.primary)
@@ -146,7 +146,7 @@ struct HomeView: View {
                     let category = viewModel.allCategories[index]
                     CategoryBadge(
                         name: category,
-                        count: category == "All" ? viewModel.courses.count : viewModel.courses.filter { $0.category == category }.count,
+                        count: category == "全部" ? viewModel.courses.count : viewModel.courses.filter { $0.category == category }.count,
                         isSelected: viewModel.selectedCategory == category
                     ) {
                         viewModel.selectedCategory = category
@@ -160,9 +160,11 @@ struct HomeView: View {
     private var courseList: some View {
         LazyVStack(spacing: 16) {
             ForEach(viewModel.filteredCourses) { course in
-                NeumorphicCourseCard(course: course) {
-                    navigateToCourse = course
-                }
+                NeumorphicCourseCard(
+                    course: course,
+                    onTap: { navigateToCourse = course },
+                    onDelete: { viewModel.deleteCourse(course) }
+                )
             }
         }
     }

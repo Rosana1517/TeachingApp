@@ -41,7 +41,7 @@ struct CourseDetailView: View {
                     Button {
                         showingShareSheet = true
                     } label: {
-                        Label("Share", systemImage: "square.and.arrow.up")
+                        Label("分享", systemImage: "square.and.arrow.up")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -107,7 +107,7 @@ struct CourseDetailView: View {
                         .foregroundColor(NeumorphicColors.success)
                         .font(.caption)
 
-                    Text("Read on \(formatDate(readDate))")
+                    Text("已於 \(formatDate(readDate)) 讀過")
                         .font(.caption)
                         .foregroundColor(NeumorphicColors.secondary)
                 }
@@ -123,6 +123,7 @@ struct CourseDetailView: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "zh_Hant_TW")
         return formatter.string(from: date)
     }
 }

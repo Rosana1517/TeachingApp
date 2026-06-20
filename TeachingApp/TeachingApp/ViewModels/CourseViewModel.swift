@@ -5,7 +5,7 @@ import Combine
 final class CourseViewModel: ObservableObject {
     @Published var courses: [Course] = []
     @Published var filteredCourses: [Course] = []
-    @Published var selectedCategory: String = "All"
+    @Published var selectedCategory: String = "全部"
     @Published var searchText: String = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -13,6 +13,12 @@ final class CourseViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     private let htmlScanner = HTMLScannerService()
+    private let hiddenCoursesKey = "hidden_course_ids"
+
+    private var hiddenCourseIDs: Set<String> {
+        get { Set(UserDefaults.standard.stringArray(forKey: hiddenCoursesKey) ?? []) }
+        set { UserDefaults.standard.set(Array(newValue), forKey: hiddenCoursesKey) }
+    }
 
     init() {
         fetchCourses()
@@ -45,19 +51,41 @@ final class CourseViewModel: ObservableObject {
     }
 
     func fetchCourses() {
-        courses = Categories.all.flatMap { $0.courses }
+        let hidden = hiddenCourseIDs
+        courses = Categories.all.flatMap { $0.courses }.filter { !hidden.contains($0.id) }
+        filterCourses()
+    }
+
+    func deleteCourse(_ course: Course) {
+        var hidden = hiddenCourseIDs
+        hidden.insert(course.id)
+        hiddenCourseIDs = hidden
+
+        courses.removeAll { $0.id == course.id }
+
+        if let categoryIndex = Categories.all.firstIndex(where: { $0.title == course.category }) {
+            Categories.all[categoryIndex].courses.removeAll { $0.id == course.id }
+            if Categories.all[categoryIndex].courses.isEmpty {
+                Categories.all.remove(at: categoryIndex)
+            }
+        }
+
+        ProgressService.shared.removeProgress(courseId: course.id)
         filterCourses()
     }
 
     private func checkForNewCourses() async {
         isLoading = true
+        errorMessage = nil
+        hasNewCourses = false
 
         defer {
             isLoading = false
         }
 
         do {
-            let newCourses = try await htmlScanner.scanForNewLessons()
+            let hidden = hiddenCourseIDs
+            let newCourses = try await htmlScanner.scanForNewLessons().filter { !hidden.contains($0.id) }
             guard !newCourses.isEmpty else { return }
 
             hasNewCourses = true
@@ -97,7 +125,7 @@ final class CourseViewModel: ObservableObject {
 
             filterCourses()
         } catch {
-            errorMessage = "Failed to scan lessons: \(error.localizedDescription)"
+            errorMessage = "課程同步失敗：\(error.localizedDescription)"
         }
     }
 
@@ -121,7 +149,7 @@ final class CourseViewModel: ObservableObject {
 
     func filterCourses() {
         filteredCourses = courses.filter { course in
-            let matchesCategory = selectedCategory == "All" || course.category == selectedCategory
+            let matchesCategory = selectedCategory == "全部" || course.category == selectedCategory
             let matchesSearch = searchText.isEmpty
                 || course.title.localizedCaseInsensitiveContains(searchText)
                 || course.category.localizedCaseInsensitiveContains(searchText)
@@ -130,7 +158,7 @@ final class CourseViewModel: ObservableObject {
     }
 
     var allCategories: [String] {
-        ["All"] + Categories.all.map { $0.title }
+        ["全部"] + Categories.all.map { $0.title }
     }
 
     func getCategoryStats() -> [(name: String, count: Int)] {

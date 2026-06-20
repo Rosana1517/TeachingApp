@@ -12,7 +12,7 @@ struct CourseWebView: View {
     var body: some View {
         ZStack {
             if isLoading {
-                ProgressView("Loading...")
+                ProgressView("載入中...")
                     .padding()
             } else if let errorMessage {
                 VStack(spacing: 16) {
@@ -20,7 +20,7 @@ struct CourseWebView: View {
                         .font(.system(size: 40))
                         .foregroundColor(NeumorphicColors.warning)
 
-                    Text("Unable to load content")
+                    Text("無法載入課程內容")
                         .font(.headline)
 
                     Text(errorMessage)
@@ -28,7 +28,7 @@ struct CourseWebView: View {
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
 
-                    Button("Retry") {
+                    Button("重試") {
                         Task { await loadContent() }
                     }
                     .buttonStyle(.borderedProminent)
@@ -51,12 +51,12 @@ struct CourseWebView: View {
             do {
                 htmlContent = try await scanner.downloadHTML(from: course.filePath)
             } catch {
-                errorMessage = "Failed to download lesson: \(error.localizedDescription)"
+                errorMessage = "下載課程失敗：\(error.localizedDescription)"
             }
         } else if !course.content.isEmpty {
             htmlContent = Self.wrapPlainText(course.content)
         } else {
-            htmlContent = Self.wrapPlainText("No lesson content available.")
+            htmlContent = Self.wrapPlainText("目前沒有可顯示的課程內容。")
         }
 
         isLoading = false

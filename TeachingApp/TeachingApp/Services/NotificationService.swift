@@ -37,8 +37,8 @@ final class NotificationService {
         guard settings.isEnabled else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "TeachingApp reminder"
-        content.body = "Time to review: \(courseTitle)"
+        content.title = "TeachingApp 學習提醒"
+        content.body = "該複習了：\(courseTitle)"
         content.sound = .default
 
         var components = DateComponents()
