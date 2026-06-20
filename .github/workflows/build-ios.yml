@@ -27,6 +27,8 @@ jobs:
 
       - name: Generate Xcode project
         run: xcodegen generate
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
 
       - name: Build Archive (unsigned)
         run: |
@@ -61,19 +63,45 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish build to SideStore Connect
+      - name: Update self-hosted source.json
         if: success()
         run: |
-          TOKEN="$(printf '%s' "$TOKEN" | tr -d '[:space:]')"
-          echo "sanitized token length: ${#TOKEN}"
+          VERSION="1.0.${{ github.run_number }}"
+          DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/TeachingApp.ipa"
+          DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          IPA_SIZE=$(stat -f%z ./build/output/TeachingApp.ipa)
 
-          curl -s -w "\nHTTP_STATUS=%{http_code}\n" -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}" \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"allowCreateNewVersion": true, "publish": true}'
+          python3 - "../source.json" "$VERSION" "$DOWNLOAD_URL" "$IPA_SIZE" "$DATE" <<'PYEOF'
+          import json, sys
 
-          curl -s -w "\nHTTP_STATUS=%{http_code}\n" -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}/upload_build" \
-            -H "Authorization: Bearer $TOKEN" \
-            -F "files.build=@./build/output/TeachingApp.ipa"
-        env:
-          TOKEN: ${{ secrets.SIDESTORE_CONNECT_TOKEN }}
+          path, version, url, size, date = sys.argv[1:6]
+          size = int(size)
+
+          with open(path) as f:
+              data = json.load(f)
+
+          app = data["apps"][0]
+          app["version"] = version
+          app["versionDate"] = date
+          app["versionDescription"] = f"Build #{version}"
+          app["downloadURL"] = url
+          app["size"] = size
+          app.setdefault("versions", [])
+          app["versions"].insert(0, {
+              "version": version,
+              "date": date,
+              "localizedDescription": f"Build #{version}",
+              "downloadURL": url,
+              "size": size,
+          })
+
+          with open(path, "w") as f:
+              json.dump(data, f, indent=2, ensure_ascii=False)
+              f.write("\n")
+          PYEOF
+
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ../source.json
+          git diff --cached --quiet || git commit -m "Update source.json for build #${{ github.run_number }}"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
