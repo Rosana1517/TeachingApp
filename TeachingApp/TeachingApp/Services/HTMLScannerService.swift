@@ -60,7 +60,7 @@ final class HTMLScannerService: ObservableObject {
             throw ScannerError.invalidURL
         }
 
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
         request.httpMethod = "GET"
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         if !accessToken.isEmpty {
@@ -123,7 +123,8 @@ final class HTMLScannerService: ObservableObject {
             throw ScannerError.invalidURL
         }
 
-        let (downloadData, downloadResponse) = try await URLSession.shared.data(from: downloadURL)
+        let downloadRequest = URLRequest(url: downloadURL, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        let (downloadData, downloadResponse) = try await URLSession.shared.data(for: downloadRequest)
         guard let downloadHttpResponse = downloadResponse as? HTTPURLResponse, downloadHttpResponse.statusCode == 200 else {
             throw ScannerError.fileDownloadFailed
         }
