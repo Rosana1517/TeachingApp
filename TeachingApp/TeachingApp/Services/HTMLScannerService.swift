@@ -80,11 +80,11 @@ final class HTMLScannerService: ObservableObject {
 
         return releases.flatMap { release in
             release.assets.filter { $0.name.hasSuffix(".html") }.map { asset in
-                let baseName = asset.name.replacingOccurrences(of: ".html", with: "")
+                let metadata = Self.parseCourseMetadata(fileName: asset.name)
                 return RemoteCourse(
                     id: "\(release.id)-\(asset.name)",
-                    title: baseName.replacingOccurrences(of: "lesson-", with: "").capitalized,
-                    category: "General",
+                    title: metadata.title,
+                    category: metadata.category,
                     fileName: asset.name,
                     downloadUrl: asset.downloadUrl,
                     generatedDate: release.publishedAt ?? Date(),
@@ -92,6 +92,25 @@ final class HTMLScannerService: ObservableObject {
                 )
             }
         }
+    }
+
+    /// Lesson HTML assets follow the naming convention `{category}-lesson-{number}.html`
+    /// (e.g. `french-lesson-01.html`) so new subjects can be introduced just by choosing
+    /// a filename when publishing a release — no app code changes needed. Files without
+    /// the `-lesson-` marker (legacy naming) fall back to a single "General" category.
+    static func parseCourseMetadata(fileName: String) -> (category: String, title: String) {
+        let baseName = fileName.replacingOccurrences(of: ".html", with: "")
+
+        guard let range = baseName.range(of: "-lesson-") else {
+            let title = baseName.replacingOccurrences(of: "lesson-", with: "").capitalized
+            return (category: "General", title: title)
+        }
+
+        let categoryRaw = String(baseName[..<range.lowerBound])
+        let numberPart = String(baseName[range.upperBound...])
+        let category = categoryRaw.replacingOccurrences(of: "-", with: " ").capitalized
+        let title = "\(category) Lesson \(numberPart)"
+        return (category: category, title: title)
     }
 
     private func filterNewCourses(_ allCourses: [RemoteCourse]) -> [RemoteCourse] {
