@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:  # 允許手動觸發
 
+permissions:
+  contents: write  # 允許建立 Release
+
 jobs:
   build:
     runs-on: macos-latest
@@ -47,7 +50,7 @@ jobs:
       - name: Upload IPA to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
-          files: ./build/output/TeachingApp.ipa
+          files: TeachingApp/build/output/TeachingApp.ipa
           tag_name: v${{ github.run_number }}
           name: Build #${{ github.run_number }}
           body: |
