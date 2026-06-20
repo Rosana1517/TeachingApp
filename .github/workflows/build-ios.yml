@@ -60,3 +60,15 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish build to SideStore Connect
+        if: success()
+        run: |
+          curl -sf -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}" \
+            -H "Authorization: Bearer ${{ secrets.SIDESTORE_CONNECT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"allowCreateNewVersion": true, "publish": true}'
+
+          curl -sf -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}/upload_build" \
+            -H "Authorization: Bearer ${{ secrets.SIDESTORE_CONNECT_TOKEN }}" \
+            -F "files.build=@./build/output/TeachingApp.ipa"
