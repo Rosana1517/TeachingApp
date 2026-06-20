@@ -18,6 +18,8 @@ targets:
       properties:
         UILaunchScreen: {}
         CFBundleDisplayName: TeachingApp
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
