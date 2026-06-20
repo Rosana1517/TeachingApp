@@ -12,7 +12,10 @@ permissions:
 jobs:
   generate-lessons:
     runs-on: ubuntu-latest
-    
+    defaults:
+      run:
+        working-directory: TeachingApp
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,7 +39,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: lesson-*.html
+          files: TeachingApp/lesson-*.html
           tag_name: lesson-${{ github.run_number }}
           name: Lesson ${{ github.run_number }}
           body: |

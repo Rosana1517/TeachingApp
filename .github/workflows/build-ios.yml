@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: TeachingApp
 
     steps:
       - name: Checkout
