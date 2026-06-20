@@ -37,11 +37,11 @@ struct NeumorphicColors {
         }
     })
     
-    static let accent = Color(red: 0.40, green: 0.49, blue: 0.95, alpha: 1.0)
-    static let accentLight = Color(red: 0.55, green: 0.63, blue: 0.97, alpha: 1.0)
-    static let success = Color(red: 0.22, green: 0.71, blue: 0.44, alpha: 1.0)
-    static let warning = Color(red: 0.95, green: 0.66, blue: 0.13, alpha: 1.0)
-    static let error = Color(red: 0.85, green: 0.20, blue: 0.25, alpha: 1.0)
+    static let accent = Color(red: 0.40, green: 0.49, blue: 0.95)
+    static let accentLight = Color(red: 0.55, green: 0.63, blue: 0.97)
+    static let success = Color(red: 0.22, green: 0.71, blue: 0.44)
+    static let warning = Color(red: 0.95, green: 0.66, blue: 0.13)
+    static let error = Color(red: 0.85, green: 0.20, blue: 0.25)
 }
 
 // MARK: - Neumorphic Shadow

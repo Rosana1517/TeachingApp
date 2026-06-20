@@ -183,7 +183,7 @@ struct QuizView: View {
     }
 }
 
-private struct HTMLParserService {
+fileprivate struct HTMLParserService {
     static func parseHTMLContent(htmlString: String) -> [LessonContent] {
         var lessons: [LessonContent] = []
         var currentText = ""
@@ -266,13 +266,13 @@ private struct HTMLParserService {
     }
 }
 
-private struct LessonContent: Identifiable {
+fileprivate struct LessonContent: Identifiable {
     let id = UUID()
     let type: LessonType
     let value: String
 }
 
-private enum LessonType {
+fileprivate enum LessonType {
     case title
     case heading
     case text

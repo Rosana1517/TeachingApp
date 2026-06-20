@@ -123,7 +123,7 @@ struct HomeView: View {
     private var unreadSection: some View {
         let unreadCount = viewModel.courses.filter { !$0.isRead }.count
 
-        HStack {
+        return HStack {
             Text("Unread")
                 .font(.title3)
                 .fontWeight(.bold)
