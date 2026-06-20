@@ -64,11 +64,14 @@ jobs:
       - name: Publish build to SideStore Connect
         if: success()
         run: |
-          curl -sf -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}" \
-            -H "Authorization: Bearer ${{ secrets.SIDESTORE_CONNECT_TOKEN }}" \
+          echo "token length: ${#TOKEN}"
+          curl -v -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}" \
+            -H "Authorization: Bearer $TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"allowCreateNewVersion": true, "publish": true}'
 
-          curl -sf -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}/upload_build" \
-            -H "Authorization: Bearer ${{ secrets.SIDESTORE_CONNECT_TOKEN }}" \
+          curl -v -X POST "https://connect.sidestore.io/api/webhook/apps/com.rosana.teachingapp/version/${{ github.run_number }}/upload_build" \
+            -H "Authorization: Bearer $TOKEN" \
             -F "files.build=@./build/output/TeachingApp.ipa"
+        env:
+          TOKEN: ${{ secrets.SIDESTORE_CONNECT_TOKEN }}
