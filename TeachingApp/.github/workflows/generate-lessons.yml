@@ -1,0 +1,49 @@
+name: Generate Daily HTML Lessons
+
+on:
+  schedule:
+    # 每天 UTC 時間 00:00 執行（台北時間 08:00）
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write  # 允許寫入 Releases
+
+jobs:
+  generate-lessons:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # 避免使用 persist-credentials
+
+      - name: Generate today's lesson
+        run: |
+          python generate_lesson.py
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add lesson-*.html
+          git diff --cached --quiet || git commit -m "Add daily lesson: $(date +%Y-%m-%d)"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: lesson-*.html
+          tag_name: lesson-${{ github.run_number }}
+          name: Lesson ${{ github.run_number }}
+          body: |
+            Auto-generated lesson for ${{ github.event.schedule }}
+            
+            Generated at: ${{ github.event.head_commit.timestamp }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

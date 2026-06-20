@@ -1,0 +1,41 @@
+name: TeachingApp
+options:
+  bundleIdPrefix: com.rosana.teachingapp
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  TeachingApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: TeachingApp
+        excludes:
+          - "**/*.md"
+    info:
+      path: TeachingApp/Info.plist
+      properties:
+        UILaunchScreen: {}
+        CFBundleDisplayName: TeachingApp
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rosana.teachingapp
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.0"
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGNING_ALLOWED: NO
+        DEVELOPMENT_TEAM: ""
+schemes:
+  TeachingApp:
+    build:
+      targets:
+        TeachingApp: all
+    archive:
+      config: Release
