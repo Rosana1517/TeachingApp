@@ -28,13 +28,6 @@
           "localizedDescription": "Build #1.0.17",
           "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v17/TeachingApp.ipa",
           "size": 175691
-        },
-        {
-          "version": "1.0.0",
-          "date": "2026-06-20T00:00:00Z",
-          "localizedDescription": "Initial build",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/latest/download/TeachingApp.ipa",
-          "size": 0
         }
       ]
     }
