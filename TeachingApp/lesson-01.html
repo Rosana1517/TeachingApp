@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift 基礎語法</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #007AFF;
+            border-bottom: 2px solid #007AFF;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #5856D6;
+            margin-top: 30px;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Menlo", monospace;
+            color: #FF3B30;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        pre code {
+            background-color: transparent;
+            color: #1C1C1E;
+        }
+        .note {
+            background-color: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .quiz {
+            background-color: #E7F5FF;
+            border-left: 4px solid #007AFF;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Swift 基礎語法</h1>
+        
+        <div class="meta">
+            <span>分類：程式設計</span> | 
+            <span>生成日期：2026-06-20 05:54:07</span>
+        </div>
+        
+        
+# Swift 基礎語法
+
+Swift 是蘋果公司開發的現代化程式語言，用於開發 iOS、macOS、watchOS 和 tvOS 應用程式。
+
+## 變數與常數
+
+在 Swift 中，我們使用 `var` 聲明變數，使用 `let` 聲明常數。
+
+[code]
+// 聲明變數
+var userName = "小明"
+var age = 25
+
+// 聲明常數
+let appName = "學習 App"
+let version = "1.0.0"
+[/code]
+
+[note]提示：建議優先使用 const 而不是 var，除非你真的需要改變它的值。[/note]
+
+## 資料類型
+
+Swift 是類型安全的語言，它會在編譯時檢查類型。
+
+[code]
+// 整數
+let integerNumber: Int = 42
+
+// 浮點數
+let floatingPointNumber: Double = 3.14
+
+// 布林值
+let isLearning: Bool = true
+
+// 字串
+let greeting: String = "你好世界"
+[/code]
+
+## 字串插值
+
+你可以使用字串插值來在字串中嵌入變數和常數。
+
+[code]
+let name = "小明"
+let age = 25
+let message = "我叫\(name)，今年\(age)歲"
+print(message)
+[/code]
+
+[note]字串插值讓你可以輕鬆地將變數值嵌入字串中。[/note]
+
+## 小測驗
+
+[quiz]Swift 中使用哪個關鍵字聲明常數？|var|let|const|fixed|B|常數使用 let 聲明，變數使用 var 聲明。|B[/quiz]
+
+        
+        <hr style="margin: 30px 0;">
+        
+        <p style="color: #999; font-size: 12px;">
+            此課程由 TeachingApp 自動生成，生成時間：2026-06-20 05:54:07
+        </p>
+    </div>
+</body>
+</html>
