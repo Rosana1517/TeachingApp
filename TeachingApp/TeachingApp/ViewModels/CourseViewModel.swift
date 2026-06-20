@@ -69,7 +69,7 @@ final class CourseViewModel: ObservableObject {
                     category: remoteCourse.category,
                     content: remoteCourse.description,
                     fileName: remoteCourse.fileName,
-                    filePath: "",
+                    filePath: remoteCourse.downloadUrl,
                     isRead: false,
                     readDate: nil,
                     progress: 0.0,

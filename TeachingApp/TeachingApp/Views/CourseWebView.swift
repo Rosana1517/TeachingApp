@@ -47,9 +47,9 @@ struct CourseWebView: View {
         isLoading = true
         errorMessage = nil
 
-        if !course.fileName.isEmpty {
+        if !course.filePath.isEmpty {
             do {
-                htmlContent = try await scanner.downloadHTML(fileName: course.fileName)
+                htmlContent = try await scanner.downloadHTML(from: course.filePath)
             } catch {
                 errorMessage = "Failed to download lesson: \(error.localizedDescription)"
             }

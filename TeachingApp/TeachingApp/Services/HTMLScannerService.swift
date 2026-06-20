@@ -16,6 +16,7 @@ final class HTMLScannerService: ObservableObject {
         let title: String
         let category: String
         let fileName: String
+        let downloadUrl: String
         let generatedDate: Date
         let description: String
     }
@@ -85,6 +86,7 @@ final class HTMLScannerService: ObservableObject {
                     title: baseName.replacingOccurrences(of: "lesson-", with: "").capitalized,
                     category: "General",
                     fileName: asset.name,
+                    downloadUrl: asset.downloadUrl,
                     generatedDate: release.publishedAt ?? Date(),
                     description: release.body ?? ""
                 )
@@ -97,33 +99,8 @@ final class HTMLScannerService: ObservableObject {
         return allCourses.filter { !existingIDs.contains($0.id) }
     }
 
-    func downloadHTML(fileName: String) async throws -> String {
-        let urlString = "https://api.github.com/repos/\(owner)/\(repo)/releases/latest"
-        guard let url = URL(string: urlString) else {
-            throw ScannerError.invalidURL
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        if !accessToken.isEmpty {
-            request.setValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
-        }
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw ScannerError.networkError
-        }
-
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let release = try decoder.decode(Release.self, from: data)
-
-        guard let asset = release.assets.first(where: { $0.name == fileName }) else {
-            throw ScannerError.fileNotFound
-        }
-
-        guard let downloadURL = URL(string: asset.downloadUrl) else {
+    func downloadHTML(from downloadUrl: String) async throws -> String {
+        guard let downloadURL = URL(string: downloadUrl) else {
             throw ScannerError.invalidURL
         }
 
@@ -187,7 +164,6 @@ enum ScannerError: Error, LocalizedError {
     case invalidURL
     case networkError
     case fileDownloadFailed
-    case fileNotFound
 
     var errorDescription: String? {
         switch self {
@@ -197,8 +173,6 @@ enum ScannerError: Error, LocalizedError {
             return "Network error"
         case .fileDownloadFailed:
             return "File download failed"
-        case .fileNotFound:
-            return "File not found"
         }
     }
 }
