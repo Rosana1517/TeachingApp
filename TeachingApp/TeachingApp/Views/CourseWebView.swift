@@ -1,12 +1,13 @@
 import SwiftUI
-import UIKit
+import WebKit
 
 struct CourseWebView: View {
     let course: Course
 
+    @State private var htmlContent: String?
     @State private var isLoading = true
     @State private var errorMessage: String?
-    @State private var lessons: [LessonContent] = []
+    private let scanner = HTMLScannerService()
 
     var body: some View {
         ZStack {
@@ -17,7 +18,7 @@ struct CourseWebView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.system(size: 40))
-                        .foregroundColor(.orange)
+                        .foregroundColor(NeumorphicColors.warning)
 
                     Text("Unable to load content")
                         .font(.headline)
@@ -28,255 +29,62 @@ struct CourseWebView: View {
                         .multilineTextAlignment(.center)
 
                     Button("Retry") {
-                        loadCourseContent()
+                        Task { await loadContent() }
                     }
                     .buttonStyle(.borderedProminent)
                 }
                 .padding()
-            } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        ForEach(lessons) { lesson in
-                            LessonView(lesson: lesson)
-                        }
-                    }
-                    .padding()
-                }
+            } else if let htmlContent {
+                WebView(htmlString: htmlContent)
             }
         }
         .task {
-            loadCourseContent()
+            await loadContent()
         }
     }
 
-    private func loadCourseContent() {
+    private func loadContent() async {
         isLoading = true
         errorMessage = nil
-        lessons = []
 
-        if !course.content.isEmpty {
-            lessons = HTMLParserService.parseHTMLContent(htmlString: course.content)
+        if !course.fileName.isEmpty {
+            do {
+                htmlContent = try await scanner.downloadHTML(fileName: course.fileName)
+            } catch {
+                errorMessage = "Failed to download lesson: \(error.localizedDescription)"
+            }
+        } else if !course.content.isEmpty {
+            htmlContent = Self.wrapPlainText(course.content)
         } else {
-            lessons = [LessonContent(type: .text, value: "No lesson content available.")]
+            htmlContent = Self.wrapPlainText("No lesson content available.")
         }
 
         isLoading = false
     }
-}
 
-fileprivate struct LessonView: View {
-    let lesson: LessonContent
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            switch lesson.type {
-            case .title:
-                Text(lesson.value)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-            case .heading:
-                Text(lesson.value)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-            case .text:
-                Text(lesson.value)
-                    .font(.body)
-                    .lineSpacing(4)
-            case .code:
-                CodeBlockView(code: lesson.value)
-            case .note:
-                NoteView(text: lesson.value)
-            case .quiz:
-                QuizView(quizData: lesson.value)
-            }
-        }
-        .padding(.vertical, 4)
+    private static func wrapPlainText(_ text: String) -> String {
+        """
+        <html>
+        <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body { font-family: -apple-system, sans-serif; padding: 24px; line-height: 1.7; color: #1a1a2e; }
+        </style>
+        </head>
+        <body><p>\(text)</p></body>
+        </html>
+        """
     }
 }
 
-struct CodeBlockView: View {
-    let code: String
+private struct WebView: UIViewRepresentable {
+    let htmlString: String
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Code")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-
-            Text(code)
-                .font(.system(.body, design: .monospaced))
-                .lineSpacing(2)
-                .textSelection(.enabled)
-        }
-        .padding()
-        .background(Color(.systemGray5))
-        .cornerRadius(8)
-    }
-}
-
-struct NoteView: View {
-    let text: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "info.circle.fill")
-                .foregroundColor(.blue)
-                .font(.title2)
-
-            Text(text)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineSpacing(2)
-        }
-        .padding()
-        .background(Color.blue.opacity(0.1))
-        .cornerRadius(8)
-    }
-}
-
-struct QuizView: View {
-    let quizData: String
-
-    private var components: [String] {
-        quizData.components(separatedBy: "|")
+    func makeUIView(context: Context) -> WKWebView {
+        WKWebView()
     }
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "questionmark.circle.fill")
-                    .foregroundColor(.purple)
-                Text("Quiz")
-                    .font(.headline)
-            }
-
-            if components.count >= 7 {
-                Text(components[0])
-                    .font(.body)
-
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(1..<5, id: \.self) { index in
-                        Button(action: {}) {
-                            HStack {
-                                Text("\(index).")
-                                    .fontWeight(.semibold)
-                                Text(components[index])
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
-                    }
-                }
-
-                Text(components[6])
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding()
-        .background(Color.purple.opacity(0.1))
-        .cornerRadius(8)
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        webView.loadHTMLString(htmlString, baseURL: nil)
     }
-}
-
-fileprivate struct HTMLParserService {
-    static func parseHTMLContent(htmlString: String) -> [LessonContent] {
-        var lessons: [LessonContent] = []
-        var currentText = ""
-        var inCodeBlock = false
-        var codeContent = ""
-
-        for rawLine in htmlString.components(separatedBy: .newlines) {
-            let line = rawLine.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !line.isEmpty else { continue }
-
-            if line.hasPrefix("[code]") || line.hasPrefix("<pre>") || line.hasPrefix("<code>") {
-                if !currentText.isEmpty {
-                    lessons.append(LessonContent(type: .text, value: currentText))
-                    currentText = ""
-                }
-                inCodeBlock = true
-                codeContent = line
-                    .replacingOccurrences(of: "[code]", with: "")
-                    .replacingOccurrences(of: "<pre>", with: "")
-                    .replacingOccurrences(of: "<code>", with: "")
-                continue
-            }
-
-            if line.hasPrefix("[/code]") || line.hasPrefix("</pre>") || line.hasPrefix("</code>") {
-                inCodeBlock = false
-                if !codeContent.isEmpty {
-                    lessons.append(LessonContent(type: .code, value: codeContent))
-                    codeContent = ""
-                }
-                continue
-            }
-
-            if inCodeBlock {
-                codeContent += (codeContent.isEmpty ? "" : "\n") + line
-                continue
-            }
-
-            if line.hasPrefix("# ") {
-                if !currentText.isEmpty {
-                    lessons.append(LessonContent(type: .text, value: currentText))
-                    currentText = ""
-                }
-                lessons.append(LessonContent(type: .heading, value: String(line.dropFirst(2))))
-                continue
-            }
-
-            if line.hasPrefix("[note]") {
-                if !currentText.isEmpty {
-                    lessons.append(LessonContent(type: .text, value: currentText))
-                    currentText = ""
-                }
-                let noteContent = line
-                    .replacingOccurrences(of: "[note]", with: "")
-                    .replacingOccurrences(of: "[/note]", with: "")
-                    .trimmingCharacters(in: .whitespaces)
-                lessons.append(LessonContent(type: .note, value: noteContent))
-                continue
-            }
-
-            if line.hasPrefix("[quiz]") {
-                if !currentText.isEmpty {
-                    lessons.append(LessonContent(type: .text, value: currentText))
-                    currentText = ""
-                }
-                let quizContent = line
-                    .replacingOccurrences(of: "[quiz]", with: "")
-                    .trimmingCharacters(in: .whitespaces)
-                lessons.append(LessonContent(type: .quiz, value: quizContent))
-                continue
-            }
-
-            currentText += (currentText.isEmpty ? "" : " ") + line
-        }
-
-        if !currentText.isEmpty {
-            lessons.append(LessonContent(type: .text, value: currentText))
-        }
-
-        return lessons.isEmpty ? [LessonContent(type: .text, value: htmlString)] : lessons
-    }
-}
-
-fileprivate struct LessonContent: Identifiable {
-    let id = UUID()
-    let type: LessonType
-    let value: String
-}
-
-fileprivate enum LessonType {
-    case title
-    case heading
-    case text
-    case code
-    case note
-    case quiz
 }

@@ -30,7 +30,7 @@ struct HomeView: View {
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
+                    NavigationLink(destination: SettingsView(courseViewModel: viewModel)) {
                         Image(systemName: "gearshape")
                             .font(.title3)
                             .foregroundColor(NeumorphicColors.primary)

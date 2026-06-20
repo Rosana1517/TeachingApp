@@ -18,7 +18,7 @@ struct MainTabView: View {
                 }
                 .tag(1)
             
-            SettingsView()
+            SettingsView(courseViewModel: courseViewModel)
                 .tabItem {
                     Label("設定", systemImage: "gearshape")
                 }

@@ -40,6 +40,10 @@ final class CourseViewModel: ObservableObject {
         fetchCourses()
     }
 
+    func refresh() async {
+        await checkForNewCourses()
+    }
+
     func fetchCourses() {
         courses = Categories.all.flatMap { $0.courses }
         filterCourses()

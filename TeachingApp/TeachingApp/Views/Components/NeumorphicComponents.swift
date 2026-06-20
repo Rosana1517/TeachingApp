@@ -37,11 +37,53 @@ struct NeumorphicColors {
         }
     })
     
-    static let accent = Color(red: 0.40, green: 0.49, blue: 0.95)
-    static let accentLight = Color(red: 0.55, green: 0.63, blue: 0.97)
-    static let success = Color(red: 0.22, green: 0.71, blue: 0.44)
-    static let warning = Color(red: 0.95, green: 0.66, blue: 0.13)
-    static let error = Color(red: 0.85, green: 0.20, blue: 0.25)
+    static let accent = Color(UIColor { traitCollection in
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            return UIColor(red: 0.55, green: 0.63, blue: 0.98, alpha: 1.0)
+        default:
+            return UIColor(red: 0.40, green: 0.49, blue: 0.95, alpha: 1.0)
+        }
+    })
+    static let accentLight = Color(UIColor { traitCollection in
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            return UIColor(red: 0.68, green: 0.74, blue: 0.99, alpha: 1.0)
+        default:
+            return UIColor(red: 0.55, green: 0.63, blue: 0.97, alpha: 1.0)
+        }
+    })
+    static let success = Color(UIColor { traitCollection in
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            return UIColor(red: 0.36, green: 0.82, blue: 0.56, alpha: 1.0)
+        default:
+            return UIColor(red: 0.22, green: 0.71, blue: 0.44, alpha: 1.0)
+        }
+    })
+    static let warning = Color(UIColor { traitCollection in
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            return UIColor(red: 0.98, green: 0.75, blue: 0.30, alpha: 1.0)
+        default:
+            return UIColor(red: 0.95, green: 0.66, blue: 0.13, alpha: 1.0)
+        }
+    })
+    static let error = Color(UIColor { traitCollection in
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            return UIColor(red: 0.95, green: 0.40, blue: 0.42, alpha: 1.0)
+        default:
+            return UIColor(red: 0.85, green: 0.20, blue: 0.25, alpha: 1.0)
+        }
+    })
+}
+
+// MARK: - Neumorphic Radius Tokens
+struct NeumorphicRadius {
+    static let small: CGFloat = 10
+    static let medium: CGFloat = 12
+    static let large: CGFloat = 20
 }
 
 // MARK: - Neumorphic Shadow

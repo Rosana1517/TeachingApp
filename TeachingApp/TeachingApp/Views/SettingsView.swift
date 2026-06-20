@@ -3,6 +3,7 @@ import UIKit
 import UniformTypeIdentifiers
 
 struct SettingsView: View {
+    @ObservedObject var courseViewModel: CourseViewModel
     @StateObject private var viewModel = NotificationViewModel()
     @State private var htmlFolderPath: String = ""
     @State private var showFolderPicker = false
@@ -10,6 +11,7 @@ struct SettingsView: View {
     @State private var alertMessage = ""
     @State private var reminderHour = 9
     @State private var reminderMinute = 0
+    @State private var isRefreshing = false
 
     var body: some View {
         ZStack {
@@ -212,13 +214,15 @@ struct SettingsView: View {
                     .fontWeight(.bold)
                     .foregroundColor(NeumorphicColors.primary)
 
-                Button(action: {
-                    alertMessage = "Refresh lesson list"
-                    showAlert = true
-                }) {
+                Button(action: { refreshLessons() }) {
                     HStack {
-                        Image(systemName: "arrow.clockwise")
-                        Text("Refresh")
+                        if isRefreshing {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        Text(isRefreshing ? "Refreshing..." : "Refresh")
                             .fontWeight(.medium)
                         Spacer()
                         Image(systemName: "chevron.right")
@@ -232,6 +236,7 @@ struct SettingsView: View {
                     .modifier(NeumorphicShadow(size: 8, isPressed: true))
                 }
                 .buttonStyle(.plain)
+                .disabled(isRefreshing)
 
                 Divider()
                     .background(NeumorphicColors.secondary.opacity(0.3))
@@ -258,6 +263,16 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
+        }
+    }
+
+    private func refreshLessons() {
+        isRefreshing = true
+        Task {
+            await courseViewModel.refresh()
+            isRefreshing = false
+            alertMessage = courseViewModel.hasNewCourses ? "Found new lessons!" : "No new lessons found."
+            showAlert = true
         }
     }
 
