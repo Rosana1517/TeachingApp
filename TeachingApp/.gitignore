@@ -1,0 +1,31 @@
+# Xcode
+*.pbxuser
+!*!
+*.mode1v3
+!*!
+*.mode2v3
+!*!
+*.perspectivev3
+!*!
+xcuserdata
+*.xccheckout
+*.xcscmblueprint
+*.xcworkspace
+!.xcodescheme
+
+# CocoaPods
+Pods/
+
+# Swift Package Manager
+.build/
+Packages/
+package-lock.json
+
+# Others
+*.ipa
+*.xcarchive
+*.dSYM.zip
+*.dSYM
+
+# GitHub Actions
+.github/actions/

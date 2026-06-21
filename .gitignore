@@ -1,0 +1,17 @@
+# Secrets
+github token.txt
+*.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Xcode
+build/
+DerivedData/
+*.xcuserdata
+
+# Python
+__pycache__/
+*.pyc

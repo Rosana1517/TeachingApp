@@ -1,0 +1,107 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write  # 允許建立 Release
+
+jobs:
+  build:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: TeachingApp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: /usr/bin/xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+
+      - name: Build Archive (unsigned)
+        run: |
+          xcodebuild archive \
+            -project TeachingApp.xcodeproj \
+            -scheme TeachingApp \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath ./build/TeachingApp.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p ./build/output/Payload
+          cp -R "./build/TeachingApp.xcarchive/Products/Applications/TeachingApp.app" ./build/output/Payload/
+          cd ./build/output
+          zip -r -y TeachingApp.ipa Payload
+
+      - name: Upload IPA to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: TeachingApp/build/output/TeachingApp.ipa
+          tag_name: v${{ github.run_number }}
+          name: Build #${{ github.run_number }}
+          body: |
+            Auto-built from commit ${{ github.sha }}
+            Build time: ${{ github.event.head_commit.timestamp }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update self-hosted source.json
+        if: success()
+        run: |
+          VERSION="1.0.${{ github.run_number }}"
+          DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/TeachingApp.ipa"
+          DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          IPA_SIZE=$(stat -f%z ./build/output/TeachingApp.ipa)
+
+          python3 - "../source.json" "$VERSION" "$DOWNLOAD_URL" "$IPA_SIZE" "$DATE" <<'PYEOF'
+          import json, sys
+
+          path, version, url, size, date = sys.argv[1:6]
+          size = int(size)
+
+          with open(path) as f:
+              data = json.load(f)
+
+          app = data["apps"][0]
+          app["version"] = version
+          app["versionDate"] = date
+          app["versionDescription"] = f"Build #{version}"
+          app["downloadURL"] = url
+          app["size"] = size
+          app.setdefault("versions", [])
+          app["versions"].insert(0, {
+              "version": version,
+              "date": date,
+              "localizedDescription": f"Build #{version}",
+              "downloadURL": url,
+              "size": size,
+          })
+
+          with open(path, "w") as f:
+              json.dump(data, f, indent=2, ensure_ascii=False)
+              f.write("\n")
+          PYEOF
+
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ../source.json
+          git diff --cached --quiet || git commit -m "Update source.json for build #${{ github.run_number }}"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}

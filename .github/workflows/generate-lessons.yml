@@ -1,0 +1,90 @@
+name: Generate Daily French Lessons
+
+on:
+  schedule:
+    # 每天 UTC 時間 01:00 執行（台北時間 09:00）
+    - cron: '0 1 * * *'
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write  # 允許寫入 Releases
+
+jobs:
+  generate-french-lesson:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TeachingApp
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Generate French lesson
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in directory:"
+          ls -la
+          echo "Running Python script..."
+          python generate_french_lesson.py
+          echo "Python script completed successfully"
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add french-lesson-*.html
+          git diff --cached --quiet || git commit -m "Add French lesson: $(date +%Y-%m-%d)"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to GitHub Release
+        id: upload_release
+        run: |
+          # Get the latest french-lesson file
+          LESSON_FILE=$(ls -t french-lesson-*.html | head -1)
+          TAG_NAME=$(echo $LESSON_FILE | sed 's/french-lesson-\([0-9]*\)\.html/lesson-\1/')
+          
+          echo "Generating lesson file: $LESSON_FILE"
+          echo "Tag name: $TAG_NAME"
+          
+          # Create release body JSON
+          cat > release-body.json <<EOF
+          {"tag_name":"$TAG_NAME","name":"Lesson $TAG_NAME","body":"Auto-generated French lesson"}
+          EOF
+          
+          # Create release
+          UPLOAD_URL=$(curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/${{ github.repository }}/releases \
+            --data-binary @release-body.json | \
+            jq -r '.upload_url | gsub("\\{.*$";"")}')
+          
+          echo "upload_url=$UPLOAD_URL" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          
+          # Upload HTML file as asset
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: text/html" \
+            --data-binary @"$LESSON_FILE" \
+            "${UPLOAD_URL}?name=$LESSON_FILE"
+          
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
