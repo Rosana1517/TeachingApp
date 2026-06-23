@@ -1,10 +1,9 @@
 name: Generate Daily French Lessons
 
 on:
-  schedule:
-    # 每天 UTC 時間 01:00 執行（台北時間 09:00）
-    - cron: '0 1 * * *'
-  workflow_dispatch:  # 允許手動觸發
+  # 改由 cron-job.org 透過 API 呼叫 workflow_dispatch 觸發，
+  # 不再依賴 GitHub 自己的 schedule（時間不準、可能被跳過）。
+  workflow_dispatch:
 
 permissions:
   contents: write  # 允許寫入 Releases
