@@ -5,7 +5,10 @@
 """
 
 import os
+import re
 import json
+import urllib.request
+import urllib.error
 from datetime import datetime
 
 # 課程資料庫 - 法文教學內容
@@ -601,21 +604,175 @@ def get_css():
   }
 """
 
+LESSON_SCHEMA_INSTRUCTIONS = """\
+請只回傳一個合法的 JSON 物件（不要加任何說明文字、不要用 markdown code block），結構必須完全符合：
+
+{
+  "title": "課程主標題（繁體中文，可包含法語術語）",
+  "subtitle": "一句話副標題",
+  "next_topic": "下一課預告的主題名稱",
+  "sections": [
+    {
+      "title": "小節標題",
+      "icon": "1",
+      "content": "說明文字，可用 <strong> 標籤強調重點"
+    },
+    {
+      "title": "發音對照表",
+      "icon": "2",
+      "content": "說明文字",
+      "pronunciation_grid": [
+        {"letter": "音標或拼法", "desc": "怎麼發這個音", "example": "法語單字", "meaning": "中文意思"}
+      ]
+    },
+    {
+      "title": "跟練時間",
+      "icon": "🎙",
+      "content": "說明文字（會當作跟練清單的標題）",
+      "tip": "一句發音小技巧",
+      "follow_list": [
+        {"word": "法語單字", "ipa": "/IPA/", "meaning": "中文意思"}
+      ]
+    },
+    {
+      "title": "重點對照",
+      "icon": "⚡",
+      "content": "說明文字",
+      "comparison": [
+        {"letter": "音標", "desc": "說明", "example": "範例單字", "note": "提示"}
+      ]
+    },
+    {
+      "title": "小測驗",
+      "icon": "✏️",
+      "quiz": [
+        {
+          "question": "題目",
+          "options": [
+            {"text": "A. 選項", "correct": false},
+            {"text": "B. 選項", "correct": true},
+            {"text": "C. 選項", "correct": false}
+          ],
+          "answer": "正確答案說明"
+        }
+      ]
+    },
+    {
+      "title": "今日任務",
+      "icon": "📝",
+      "tasks": ["練習任務一", "練習任務二"]
+    }
+  ]
+}
+
+每個 section 只需要包含它需要的欄位（例如純說明的 section 只要 title/icon/content，不用加 pronunciation_grid）。
+"sections" 至少要有 4 個小節，建議包含「跟練時間」與「小測驗」兩種。
+"""
+
+
+def generate_lesson_via_llm(next_id, previous_topics):
+    """呼叫 Anthropic Claude API 生成下一堂法文課的內容（JSON），失敗時回傳 None。"""
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("沒有設定 ANTHROPIC_API_KEY，無法呼叫 LLM 生成課程")
+        return None
+
+    topics_list = "、".join(previous_topics) if previous_topics else "（尚無）"
+    prompt = (
+        f"你是一位法語教師，正在為一套給繁體中文使用者的自學法語課程撰寫第 {next_id} 課的教材。\n"
+        f"已經教過的主題依序是：{topics_list}。\n"
+        "請挑選一個循序漸進、難度適中地往下延伸的新主題（例如：先學過母音、鼻化音之後，"
+        "可以接輔音發音、聯誦規則、基本問候語、數字、現在時動詞變化等），"
+        "絕對不要跟已經教過的主題重複或高度相似。\n\n"
+        + LESSON_SCHEMA_INSTRUCTIONS
+    )
+
+    body = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 4096,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode("utf-8")
+
+    request = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": api_key,
+            "anthropic-version": "2023-06-01",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            result = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        print(f"呼叫 Claude API 失敗：HTTP {error.code} {error.read().decode('utf-8', 'ignore')}")
+        return None
+    except Exception as error:
+        print(f"呼叫 Claude API 失敗：{error}")
+        return None
+
+    text = result["content"][0]["text"].strip()
+    # 防止模型還是包了 ```json ... ``` 之類的 code block
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if not match:
+        print("Claude 回應裡找不到 JSON 物件")
+        return None
+
+    try:
+        lesson = json.loads(match.group(0))
+    except json.JSONDecodeError as error:
+        print(f"無法解析 Claude 回應的 JSON：{error}")
+        return None
+
+    lesson["id"] = next_id
+    return lesson
+
+
+def get_previous_topics():
+    """掃描已經存在的課程 HTML，抓出每堂課的標題，避免新課程主題重複。"""
+    topics = [lesson["title"] for lesson in LESSONS]
+    existing_files = sorted(f for f in os.listdir(".") if f.startswith("french-lesson-") and f.endswith(".html"))
+    for filename in existing_files:
+        try:
+            with open(filename, encoding="utf-8") as f:
+                html = f.read()
+        except OSError:
+            continue
+        match = re.search(r'<h1 class="lesson-title">([^<]+)</h1>', html)
+        if match:
+            topics.append(match.group(1).strip())
+    # 去重但保留順序
+    seen = set()
+    deduped = []
+    for topic in topics:
+        if topic not in seen:
+            seen.add(topic)
+            deduped.append(topic)
+    return deduped
+
+
 def main():
     """主函式"""
     print("開始生成法文教學課程...")
-    
+
     # 獲取下一個課程 ID
     next_id = get_next_lesson_id()
     print(f"將生成第 {next_id:02d} 課")
-    
+
     # 選擇對應的課程
     if next_id <= len(LESSONS):
         lesson = LESSONS[next_id - 1]
     else:
-        print("沒有更多預設課程，使用最後一個課程")
-        lesson = LESSONS[-1]
-        lesson['id'] = next_id
+        lesson = generate_lesson_via_llm(next_id, get_previous_topics())
+        if lesson is None:
+            print("LLM 生成失敗，改用最後一個預設課程內容")
+            lesson = dict(LESSONS[-1])
+            lesson["id"] = next_id
+        else:
+            print(f"已透過 Claude API 生成第 {next_id:02d} 課內容")
     
     # 生成 HTML
     html_content = generate_html(lesson)

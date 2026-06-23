@@ -39,6 +39,8 @@ jobs:
           echo "Running Python script..."
           python generate_french_lesson.py
           echo "Python script completed successfully"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
       - name: Commit and push if changed
         run: |
