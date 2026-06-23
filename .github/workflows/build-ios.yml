@@ -94,6 +94,9 @@ jobs:
               "downloadURL": url,
               "size": size,
           })
+          # Keep this in sync with the releases the cleanup step below
+          # retains, otherwise old entries point at deleted IPA assets.
+          app["versions"] = app["versions"][:5]
 
           with open(path, "w") as f:
               json.dump(data, f, indent=2, ensure_ascii=False)
@@ -105,3 +108,22 @@ jobs:
           git add ../source.json
           git diff --cached --quiet || git commit -m "Update source.json for build #${{ github.run_number }}"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+
+      - name: Clean up old IPA build releases
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          KEEP=5
+
+          # Only ever touch tags that look like "v123" (IPA build releases
+          # from this workflow). French lesson releases use the "lesson-*"
+          # tag pattern and are never matched, so they're never deleted.
+          gh release list --repo "${{ github.repository }}" --limit 200 --json tagName \
+            --jq '.[] | select(.tagName | test("^v[0-9]+$")) | .tagName' \
+            | sort -t v -k2 -n -r \
+            | tail -n +$((KEEP + 1)) \
+            | while read -r tag; do
+                echo "Deleting old build release: $tag"
+                gh release delete "$tag" --repo "${{ github.repository }}" --yes --cleanup-tag
+              done
