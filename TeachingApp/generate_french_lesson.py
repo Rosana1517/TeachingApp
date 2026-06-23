@@ -671,10 +671,20 @@ LESSON_SCHEMA_INSTRUCTIONS = """\
 
 
 def generate_lesson_via_llm(next_id, previous_topics):
-    """呼叫 Anthropic Claude API 生成下一堂法文課的內容（JSON），失敗時回傳 None。"""
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("沒有設定 ANTHROPIC_API_KEY，無法呼叫 LLM 生成課程")
+    """呼叫第三方 OpenAI 相容 API 生成下一堂法文課的內容（JSON），失敗時回傳 None。
+
+    透過環境變數設定第三方服務（例如 agnes）：
+      LLM_API_URL   — 完整的 chat completions 端點，例如
+                       https://your-agnes-endpoint.example.com/v1/chat/completions
+      LLM_API_KEY   — 該服務的 API key（會帶在 Authorization: Bearer 裡）
+      LLM_MODEL     — 要使用的 model 名稱
+    """
+    api_url = os.environ.get("LLM_API_URL")
+    api_key = os.environ.get("LLM_API_KEY")
+    model = os.environ.get("LLM_MODEL")
+
+    if not api_url or not api_key or not model:
+        print("缺少 LLM_API_URL / LLM_API_KEY / LLM_MODEL，無法呼叫 LLM 生成課程")
         return None
 
     topics_list = "、".join(previous_topics) if previous_topics else "（尚無）"
@@ -688,18 +698,16 @@ def generate_lesson_via_llm(next_id, previous_topics):
     )
 
     body = json.dumps({
-        "model": "claude-sonnet-4-6",
-        "max_tokens": 4096,
+        "model": model,
         "messages": [{"role": "user", "content": prompt}],
     }).encode("utf-8")
 
     request = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
+        api_url,
         data=body,
         headers={
             "Content-Type": "application/json",
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
+            "Authorization": f"Bearer {api_key}",
         },
         method="POST",
     )
@@ -708,17 +716,22 @@ def generate_lesson_via_llm(next_id, previous_topics):
         with urllib.request.urlopen(request, timeout=60) as response:
             result = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
-        print(f"呼叫 Claude API 失敗：HTTP {error.code} {error.read().decode('utf-8', 'ignore')}")
+        print(f"呼叫 LLM API 失敗：HTTP {error.code} {error.read().decode('utf-8', 'ignore')}")
         return None
     except Exception as error:
-        print(f"呼叫 Claude API 失敗：{error}")
+        print(f"呼叫 LLM API 失敗：{error}")
         return None
 
-    text = result["content"][0]["text"].strip()
+    try:
+        text = result["choices"][0]["message"]["content"].strip()
+    except (KeyError, IndexError, TypeError) as error:
+        print(f"無法從回應中取出內容：{error}；原始回應：{result}")
+        return None
+
     # 防止模型還是包了 ```json ... ``` 之類的 code block
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if not match:
-        print("Claude 回應裡找不到 JSON 物件")
+        print("LLM 回應裡找不到 JSON 物件")
         return None
 
     try:
@@ -772,7 +785,7 @@ def main():
             lesson = dict(LESSONS[-1])
             lesson["id"] = next_id
         else:
-            print(f"已透過 Claude API 生成第 {next_id:02d} 課內容")
+            print(f"已透過 LLM API 生成第 {next_id:02d} 課內容")
     
     # 生成 HTML
     html_content = generate_html(lesson)
