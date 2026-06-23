@@ -7,14 +7,21 @@
       "name": "TeachingApp",
       "bundleIdentifier": "com.rosana.teachingapp",
       "developerName": "Rosana1517",
-      "version": "1.0.34",
-      "versionDate": "2026-06-23T05:16:16Z",
-      "versionDescription": "Build #1.0.34",
-      "size": 176515,
+      "version": "1.0.35",
+      "versionDate": "2026-06-23T05:31:39Z",
+      "versionDescription": "Build #1.0.35",
+      "size": 175960,
       "localizedDescription": "私人法語學習教學 App，每日自動更新課程內容。",
       "iconURL": "https://raw.githubusercontent.com/Rosana1517/TeachingApp/main/source_icon.png",
-      "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v34/TeachingApp.ipa",
+      "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v35/TeachingApp.ipa",
       "versions": [
+        {
+          "version": "1.0.35",
+          "date": "2026-06-23T05:31:39Z",
+          "localizedDescription": "Build #1.0.35",
+          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v35/TeachingApp.ipa",
+          "size": 175960
+        },
         {
           "version": "1.0.34",
           "date": "2026-06-23T05:16:16Z",
@@ -42,76 +49,6 @@
           "localizedDescription": "Build #1.0.30",
           "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v30/TeachingApp.ipa",
           "size": 175887
-        },
-        {
-          "version": "1.0.29",
-          "date": "2026-06-23T03:51:17Z",
-          "localizedDescription": "Build #1.0.29",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v29/TeachingApp.ipa",
-          "size": 175888
-        },
-        {
-          "version": "1.0.28",
-          "date": "2026-06-22T03:35:48Z",
-          "localizedDescription": "Build #1.0.28",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v28/TeachingApp.ipa",
-          "size": 175164
-        },
-        {
-          "version": "1.0.27",
-          "date": "2026-06-21T15:21:18Z",
-          "localizedDescription": "Build #1.0.27",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v27/TeachingApp.ipa",
-          "size": 175164
-        },
-        {
-          "version": "1.0.23",
-          "date": "2026-06-20T16:45:36Z",
-          "localizedDescription": "Build #1.0.23",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v23/TeachingApp.ipa",
-          "size": 175021
-        },
-        {
-          "version": "1.0.22",
-          "date": "2026-06-20T16:32:21Z",
-          "localizedDescription": "Build #1.0.22",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v22/TeachingApp.ipa",
-          "size": 174861
-        },
-        {
-          "version": "1.0.21",
-          "date": "2026-06-20T16:18:59Z",
-          "localizedDescription": "Build #1.0.21",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v21/TeachingApp.ipa",
-          "size": 174569
-        },
-        {
-          "version": "1.0.20",
-          "date": "2026-06-20T16:04:22Z",
-          "localizedDescription": "Build #1.0.20",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v20/TeachingApp.ipa",
-          "size": 175699
-        },
-        {
-          "version": "1.0.19",
-          "date": "2026-06-20T15:58:21Z",
-          "localizedDescription": "Build #1.0.19",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v19/TeachingApp.ipa",
-          "size": 175691
-        },
-        {
-          "version": "1.0.18",
-          "date": "2026-06-20T15:51:16Z",
-          "localizedDescription": "Build #1.0.18",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v18/TeachingApp.ipa",
-          "size": 175691
-        },
-        {
-          "version": "1.0.17",
-          "date": "2026-06-20T14:32:10Z",
-          "localizedDescription": "Build #1.0.17",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v17/TeachingApp.ipa",
-          "size": 175691
         }
       ]
     }
