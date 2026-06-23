@@ -54,24 +54,7 @@ final class HTMLScannerService: ObservableObject {
         }
     }
 
-    private func fetchRemoteCourses() async throws -> [RemoteCourse] {
-        let urlString = "https://api.github.com/repos/\(owner)/\(repo)/releases"
-        guard let url = URL(string: urlString) else {
-            throw ScannerError.invalidURL
-        }
-
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
-        request.httpMethod = "GET"
-        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        if !accessToken.isEmpty {
-            request.setValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
-        }
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw ScannerError.networkError
-        }
-
+    private func fetchAllReleases() async throws -> [Release] {
         // Release/Asset already declare explicit snake_case CodingKeys, so
         // .convertFromSnakeCase must NOT be set here — combining both makes
         // JSONDecoder look for the already-camelCased key name and silently
@@ -80,7 +63,45 @@ final class HTMLScannerService: ObservableObject {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
 
-        let releases = try decoder.decode([Release].self, from: data)
+        var allReleases: [Release] = []
+        var page = 1
+
+        // Without explicit pagination, the API defaults to the 30 most recent
+        // releases — as IPA builds pile up, that silently pushes the oldest
+        // lesson releases out of view. Page through everything instead, up to
+        // a generous cap so this can never loop forever.
+        while page <= 20 {
+            let urlString = "https://api.github.com/repos/\(owner)/\(repo)/releases?per_page=100&page=\(page)"
+            guard let url = URL(string: urlString) else {
+                throw ScannerError.invalidURL
+            }
+
+            var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+            request.httpMethod = "GET"
+            request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+            if !accessToken.isEmpty {
+                request.setValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
+            }
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                throw ScannerError.networkError
+            }
+
+            let pageReleases = try decoder.decode([Release].self, from: data)
+            allReleases.append(contentsOf: pageReleases)
+
+            if pageReleases.count < 100 {
+                break
+            }
+            page += 1
+        }
+
+        return allReleases
+    }
+
+    private func fetchRemoteCourses() async throws -> [RemoteCourse] {
+        let releases = try await fetchAllReleases()
 
         return releases.flatMap { release in
             release.assets.filter { $0.name.hasSuffix(".html") }.map { asset in
