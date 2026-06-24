@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 04 — 第 4 課：法語聯誦與連音基礎</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 04</span>
+    <h1 class="lesson-title">第 4 課：法語聯誦與連音基礎</h1>
+    <p class="lesson-subtitle">讓你的法語聽起來更流暢自然的關鍵技巧</p>
+  </div>
+
+  <!-- Section 1: 什麼是聯誦？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是聯誦？</div>
+    <p>聯誦（Liaison）是指在前一個詞以不發音的靜音字母結尾，後一個詞以母音或哑音 h 開頭時，將前一個詞末尾的輔音發出來，並與後一個詞的首母音連在一起讀的現象。這是法語流暢度的靈魂。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>最常見的三種聯誦類型，注意連結時的輔音發音變化。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">-s / -z</div>
+        <div class="pron-ipa">詞尾靜音 s 在聯誦時發 /z/ 音</div>
+        <div class="pron-example"><em>des amis</em>（朋友們）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-x / -z</div>
+        <div class="pron-ipa">詞尾靜音 x 在聯誦時發 /z/ 音</div>
+        <div class="pron-example"><em>deux amis</em>（兩個朋友）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-t / -d</div>
+        <div class="pron-ipa">詞尾靜音 t 在聯誦時發 /t/ 音</div>
+        <div class="pron-example"><em>petit ami</em>（小男朋友）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下短語，注意連結處的音變，保持語速平穩。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下短語，注意連結處的音變，保持語速平穩。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">les_amis</span>
+          <span class="ipa">/le.za.mi/</span>
+          <span class="meaning">—— 朋友們</span>
+        </li>
+        <li>
+          <span class="word">un_amour</span>
+          <span class="ipa">/y.na.muʁ/</span>
+          <span class="meaning">—— 一份愛</span>
+        </li>
+        <li>
+          <span class="word">votre_enfant</span>
+          <span class="ipa">/vɔ.tʁə.zɑ̃.fɑ̃/</span>
+          <span class="meaning">—— 你的孩子</span>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：聯誦時不要停頓，把兩個詞當成一個長詞來讀。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>區分「必須聯誦」、「禁止聯誦」與「可聯誦可不聯誦」的情況。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">必須聯誦</div>
+        <div class="pron-ipa">冠詞+名詞、代詞+動詞、介詞+名詞</div>
+        <div class="pron-example">le_amour<br>不可省略，否則聽起來不自然</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">禁止聯誦</div>
+        <div class="pron-ipa">以呼音 h 開頭的詞、重讀代詞前</div>
+        <div class="pron-example">il_habite<br>中間需有微小停頓或氣口</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">可選聯誦</div>
+        <div class="pron-ipa">形容詞+名詞（複數）</div>
+        <div class="pron-example">grands_amis<br>正式場合建議聯誦，口語可省略</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在短語 "les_amis" 中，聯誦後的 s 發什麼音？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. /s/ 音</li>
+          <li onclick="checkAnswer(this, true)">B. /z/ 音</li>
+          <li onclick="checkAnswer(this, false)">C. 不發音</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ s 在聯誦時發濁音 /z/，類似英語 z 的聲音。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">錄音朗讀跟練清單中的三個短語，並對比原音</li>
+        <li style="padding: 0.5rem 0;">找出课文中另外兩個需要聯誦的例子並標記 IPA</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 04 · 第 4 課：法語聯誦與連音基礎 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 5 課：常見疑問句結構與倒裝</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+</script>
+</body>
+</html>
