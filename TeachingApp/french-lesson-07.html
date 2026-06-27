@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 07 — 第 7 課：法語喉嚨音 R 的打磨與 rhotique 音位</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 07</span>
+    <h1 class="lesson-title">第 7 課：法語喉嚨音 R 的打磨與 rhotique 音位</h1>
+    <p class="lesson-subtitle">從喉嚨深處釋放法語靈魂般的滾動音</p>
+  </div>
+
+  <!-- Section 1: 認識法語小舌音 R -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 認識法語小舌音 R</div>
+    <p>經過前幾課對元音和輔音基礎的掌握，現在我們要挑戰法語最具標誌性的聲音——<strong>小舌音 /ʁ/</strong>。這個音與英語的 R 完全不同，它不是捲舌，而是利用喉嚨後方的小舌顫動產生。掌握這個音，你的法語聽起來會立刻變得道地且充滿韻律感。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下表格展示了法語 R 在不同環境下的發音特徵，請注意它永遠保持濁音特性。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">/ʁ/</div>
+        <div class="pron-ipa">小舌擦音，聲帶振動，氣流通過狹窄的小舌通道產生摩擦</div>
+        <div class="pron-example"><em>Paris</em>（巴黎）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">rr</div>
+        <div class="pron-ipa">兩個 R 連在一起時，發音時間稍長，但不需要過度用力顫抖</div>
+        <div class="pron-example"><em>mercredi</em>（星期三）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">r + 元音</div>
+        <div class="pron-ipa">在元音前，R 的發音最為清晰，氣流衝擊小舌</div>
+        <div class="pron-example"><em>rouge</em>（紅色）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">詞尾 r</div>
+        <div class="pron-ipa">在大多數單詞詞尾不發音，但在聯誦或特定詞彙（如 cher）中可能發音</div>
+        <div class="pron-example"><em>aimer</em>（愛）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟隨以下清單，從單音開始，逐漸過渡到完整單字。記得放鬆喉嚨，不要緊張。</p>
+    <div class="follow-box">
+      <h4>請跟隨以下清單，從單音開始，逐漸過渡到完整單字。記得放鬆喉嚨，不要緊張。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">rouge</span>
+          <span class="ipa">/ʁuʒ/</span>
+          <span class="meaning">—— 紅色</span>
+        </li>
+        <li>
+          <span class="word">restaurant</span>
+          <span class="ipa">/ʁɛstoʁɑ̃/</span>
+          <span class="meaning">—— 餐廳</span>
+        </li>
+        <li>
+          <span class="word">frère</span>
+          <span class="ipa">/fʁɛʁ/</span>
+          <span class="meaning">—— 兄弟</span>
+        </li>
+        <li>
+          <span class="word">amour</span>
+          <span class="ipa">/amuʁ/</span>
+          <span class="meaning">—— 愛情</span>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：想像你在輕輕漱口或乾咳前的那種喉嚨後部的收縮感，但不要真的咳嗽。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>許多學習者容易混淆法語 R 與其他語言中的類似音，請仔細區分。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">法語 /ʁ/ vs 英語 /r/</div>
+        <div class="pron-ipa">法語 R 在小舌處摩擦，英語 R 舌尖捲起不接觸硬顎後部</div>
+        <div class="pron-example">Rire (笑)<br>切勿發出像 'rih-er' 的聲音</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">法語 /ʁ/ vs 德語 /r/</div>
+        <div class="pron-ipa">標準德語 R 常為大舌音或喉嚨元音化，法語 R 始終帶有明顯的擦音摩擦感</div>
+        <div class="pron-example">Rue (街道)<br>保持聲帶持續振動</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">法語 /ʁ/ vs 西班牙語 /r/</div>
+        <div class="pron-ipa">西班牙語 R 是舌尖顫音，法語 R 是小舌音，位置截然不同</div>
+        <div class="pron-example">Roi (國王)<br>放鬆下巴，專注於喉嚨後方</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在法語單字 "Paris" 中，字母 r 的發音特點是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 舌尖捲起的彈舌音</li>
+          <li onclick="checkAnswer(this, true)">B. 喉嚨後方小舌的摩擦音</li>
+          <li onclick="checkAnswer(this, false)">C. 完全無聲的氣流聲</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 法語 R 是小舌擦音 /ʁ/，需聲帶振動並在喉嚨後方產生摩擦。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪個單字的發音最接近法語的 "rouge"？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 類似英文 "red" 的 r</li>
+          <li onclick="checkAnswer(this, true)">B. 類似輕微清喉音或漱口聲</li>
+          <li onclick="checkAnswer(this, false)">C. 類似中文 "日" 的發音</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 法語 R 聽起來像輕輕的清喉或漱口聲，與英文紅色的 r 差異極大。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">錄製自己朗讀 "Je suis rouge et je vais au restaurant" 的音頻，檢查 R 音是否清晰且帶有摩擦感。</li>
+        <li style="padding: 0.5rem 0;">尋找三個含有字母 "r" 的法語單字，並標註其 IPA 音標，嘗試模仿發音直到流暢為止。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 07 · 第 7 課：法語喉嚨音 R 的打磨與 rhotique 音位 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 8 課：法語雙元音與滑音（oi, eu, ill）</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+</script>
+</body>
+</html>
