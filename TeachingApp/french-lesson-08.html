@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 08 — 第 8 課：法語雙元音與滑音的精準掌握</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 08</span>
+    <h1 class="lesson-title">第 8 課：法語雙元音與滑音的精準掌握</h1>
+    <p class="lesson-subtitle">從單一母音邁向流暢語流的關鍵一步，攻克 ou, ai/ei, oi 等核心組合</p>
+  </div>
+
+  <!-- Section 1: 課程導論 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 課程導論</div>
+    <p>在前七課中，我們已經建立了清晰的元音、鼻化音、輔音以及喉音 R 的基礎。第 8 課將進入<strong>雙元音（Diphthongs）</strong>與<strong>滑音</strong>的世界。法語雖以單元音穩定著稱，但像 ou [u]、ai/ei [ɛ]、oi [wa] 這類組合若發音不純，會直接影響聽感的地道程度。本課將專注於這些高頻音素的肌肉記憶訓練。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下是本課三個最核心的雙元音/滑音組合。請注意口型的穩定性與滑動過程。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ou</div>
+        <div class="pron-ipa">發 [u] 音，嘴唇收圓並向前突出，保持緊繃，類似中文「烏」但唇形更緊更圓。</div>
+        <div class="pron-example"><em>vous</em>（您/你們）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ai / ei</div>
+        <div class="pron-ipa">發 [ɛ] 音，開口度比 [e] 大，嘴角向兩側拉伸，類似中文「艾」的短促版，但舌位較低。</div>
+        <div class="pron-example"><em>papa</em>（爸爸）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">oi</div>
+        <div class="pron-ipa">發 [wa] 音，這是一個滑音。從 [w]（唇圓如發 u）迅速滑向 [a]（口張大）。類似中文「哇」，但起首的 w 要更明顯。</div>
+        <div class="pron-example"><em>moi</em>（我）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下單字，錄音並對比標準發音。特別注意 oi 的滑動過程是否流暢，避免發成兩個分離的元音。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下單字，錄音並對比標準發音。特別注意 oi 的滑動過程是否流暢，避免發成兩個分離的元音。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">fleur</span>
+          <span class="ipa">/flœʁ/</span>
+          <span class="meaning">—— 花</span>
+        </li>
+        <li>
+          <span class="word">boire</span>
+          <span class="ipa">/bwaʁ/</span>
+          <span class="meaning">—— 喝</span>
+        </li>
+        <li>
+          <span class="word">plage</span>
+          <span class="ipa">/plaʒ/</span>
+          <span class="meaning">—— 海灘</span>
+        </li>
+        <li>
+          <span class="word">heureux</span>
+          <span class="ipa">/œʁø/</span>
+          <span class="meaning">—— 快樂的</span>
+        </li>
+        <li>
+          <span class="word">croix</span>
+          <span class="ipa">/kʁwa/</span>
+          <span class="meaning">—— 十字架</span>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發 'oi' [wa] 時，想像你要先做一個吹口哨的嘴型 [w]，然後瞬間張大嘴巴發出 [a]，中間不要停頓。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>許多學習者容易混淆 ou 與 eu，或 ai 與 a。請仔細對照以下差異。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ou vs. u</div>
+        <div class="pron-ipa">ou 通常對應音標 [u]，而單獨的 u 也是 [y]。但在複合元音中，ou 是純粹的圓唇後元音。</div>
+        <div class="pron-example">vous [vu]<br>確保嘴唇始終保持圓形，不要鬆開。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ai vs. a</div>
+        <div class="pron-ipa">ai/ei 發 [ɛ]（開口音），a 發 [a]（前元音，口型扁平或自然張開）。</div>
+        <div class="pron-example">laisse [lɛs] vs. las [la]<br>[ɛ] 需要下巴稍微下沉，嘴角向後拉。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">oi vs. ui</div>
+        <div class="pron-ipa">oi 發 [wa]，ui 發 [ɥi]。兩者滑動方向不同。</div>
+        <div class="pron-example">toi [twɑ] vs. lui [lɥi]<br>ui 的起首音 [ɥ] 是唇齒滑音，比 [w] 更緊湊。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪個單字的畫線部分發音為 [wa]？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. p<u>ai</u>e</li>
+          <li onclick="checkAnswer(this, true)">B. m<u>oi</u></li>
+          <li onclick="checkAnswer(this, false)">C. f<u>eu</u></li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. moi 中的 oi 發音為 [wa]。pai 發 [ɛ]，feu 發 [ø]。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 關於 ou [u] 的發音，以下描述何者正確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 嘴唇放鬆，呈自然橢圓形</li>
+          <li onclick="checkAnswer(this, false)">B. 嘴角向兩側拉伸，類似微笑</li>
+          <li onclick="checkAnswer(this, true)">C. 嘴唇收圓並向前突出，肌肉緊繃</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ C. ou [u] 需要嘴唇緊密收圓並向前突出，保持高張力。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀並錄音：moi, toi, soi, bois, croix, loin。檢查 oi [wa] 的滑動是否流暢。</li>
+        <li style="padding: 0.5rem 0;">對比練習：每日說出三組最小對立詞，如：vous (ou) / vu (u)，paie (ai) / pas (a)。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 08 · 第 8 課：法語雙元音與滑音的精準掌握 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 9 課：否定句 ne...pas 的基本結構與應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+</script>
+</body>
+</html>
