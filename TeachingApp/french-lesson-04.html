@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,17 +255,17 @@
       <div class="pron-card">
         <div class="pron-letter">-s / -z</div>
         <div class="pron-ipa">詞尾靜音 s 在聯誦時發 /z/ 音</div>
-        <div class="pron-example"><em>des amis</em>（朋友們）</div>
+        <div class="pron-example"><em>des amis</em>（朋友們）<button class="speak-btn" onclick='speakFrench("des amis")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">-x / -z</div>
         <div class="pron-ipa">詞尾靜音 x 在聯誦時發 /z/ 音</div>
-        <div class="pron-example"><em>deux amis</em>（兩個朋友）</div>
+        <div class="pron-example"><em>deux amis</em>（兩個朋友）<button class="speak-btn" onclick='speakFrench("deux amis")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">-t / -d</div>
         <div class="pron-ipa">詞尾靜音 t 在聯誦時發 /t/ 音</div>
-        <div class="pron-example"><em>petit ami</em>（小男朋友）</div>
+        <div class="pron-example"><em>petit ami</em>（小男朋友）<button class="speak-btn" onclick='speakFrench("petit ami")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -263,17 +278,17 @@
       <h4>請大聲朗讀以下短語，注意連結處的音變，保持語速平穩。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">les_amis</span>
+          <span class="word">les_amis</span><button class="speak-btn" onclick='speakFrench("les_amis")' aria-label="播放發音">🔊</button>
           <span class="ipa">/le.za.mi/</span>
           <span class="meaning">—— 朋友們</span>
         </li>
         <li>
-          <span class="word">un_amour</span>
+          <span class="word">un_amour</span><button class="speak-btn" onclick='speakFrench("un_amour")' aria-label="播放發音">🔊</button>
           <span class="ipa">/y.na.muʁ/</span>
           <span class="meaning">—— 一份愛</span>
         </li>
         <li>
-          <span class="word">votre_enfant</span>
+          <span class="word">votre_enfant</span><button class="speak-btn" onclick='speakFrench("votre_enfant")' aria-label="播放發音">🔊</button>
           <span class="ipa">/vɔ.tʁə.zɑ̃.fɑ̃/</span>
           <span class="meaning">—— 你的孩子</span>
         </li>
@@ -290,17 +305,17 @@
       <div class="pron-card">
         <div class="pron-letter">必須聯誦</div>
         <div class="pron-ipa">冠詞+名詞、代詞+動詞、介詞+名詞</div>
-        <div class="pron-example">le_amour<br>不可省略，否則聽起來不自然</div>
+        <div class="pron-example">le_amour<button class="speak-btn" onclick='speakFrench("le_amour")' aria-label="播放發音">🔊</button><br>不可省略，否則聽起來不自然</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">禁止聯誦</div>
         <div class="pron-ipa">以呼音 h 開頭的詞、重讀代詞前</div>
-        <div class="pron-example">il_habite<br>中間需有微小停頓或氣口</div>
+        <div class="pron-example">il_habite<button class="speak-btn" onclick='speakFrench("il_habite")' aria-label="播放發音">🔊</button><br>中間需有微小停頓或氣口</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">可選聯誦</div>
         <div class="pron-ipa">形容詞+名詞（複數）</div>
-        <div class="pron-example">grands_amis<br>正式場合建議聯誦，口語可省略</div>
+        <div class="pron-example">grands_amis<button class="speak-btn" onclick='speakFrench("grands_amis")' aria-label="播放發音">🔊</button><br>正式場合建議聯誦，口語可省略</div>
       </div>
     </div>
   </div>
@@ -371,6 +386,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

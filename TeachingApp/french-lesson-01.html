@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>法語課 01 — 法語元音字母與基本發音</title>
 <style>
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -214,6 +213,20 @@
     font-size: 0.85rem;
   }
 
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -226,121 +239,131 @@
     <p class="lesson-subtitle">認識 26 個法文字母，掌握 6 個核心元音音</p>
   </div>
 
-  <!-- Section 1: 法語字母簡介 -->
+  <!-- Section 1: 介紹 -->
   <div class="section">
     <div class="section-title"><span class="icon">1</span> 法語字母簡介</div>
-    <p>法語使用與英文相同的 <strong>26 個拉丁字母</strong>，但發音規則大不相同。法語是<strong>拼讀相對規律</strong>的語言，只要掌握基本規則，看到單字就能大致讀出來。第一課我們先認識最重要的 <strong>6 個元音音</strong>，它們是法語發音的基石。</p>
+    <p>
+      法語使用與英文相同的 <strong>26 個拉丁字母</strong>，但發音規則大不相同。
+      法語是<strong>拼讀相對規律</strong>的語言，只要掌握基本規則，看到單字就能大致讀出來。
+      第一課我們先認識最重要的 <strong>6 個元音音</strong>，它們是法語發音的基石。
+    </p>
   </div>
 
-  <!-- Section 2: 6 個核心元音音 -->
+  <!-- Section 2: 6 個核心元音 -->
   <div class="section">
     <div class="section-title"><span class="icon">2</span> 6 個核心元音音</div>
-    <p>以下 6 個元音音是初學階段最重要的基礎。每個音都配有法語單字範例，請大聲跟讀。</p>
+    <p style="margin-bottom: 1rem; color: #555;">
+      以下 6 個元音音是初學階段最重要的基礎。每個音都配有法語單字範例，請大聲跟讀。
+    </p>
+
     <div class="pron-grid">
       <div class="pron-card">
         <div class="pron-letter">/a/</div>
         <div class="pron-ipa">嘴巴張大，像說「啊」</div>
-        <div class="pron-example"><em>patte</em>（貓爪）</div>
+        <div class="pron-example"><em>patte</em>（貓爪）<button class="speak-btn" onclick='speakFrench("patte")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/e/</div>
         <div class="pron-ipa">嘴角向兩側拉，像微笑</div>
-        <div class="pron-example"><em>cle</em>（鑰匙）</div>
+        <div class="pron-example"><em>clé</em>（鑰匙）<button class="speak-btn" onclick='speakFrench("cl\u00e9")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ɛ/</div>
         <div class="pron-ipa">嘴巴微張，像說「哎」</div>
-        <div class="pron-example"><em>mer</em>（大海）</div>
+        <div class="pron-example"><em>mer</em>（大海）<button class="speak-btn" onclick='speakFrench("mer")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/i/</div>
         <div class="pron-ipa">嘴角用力拉開，像說「一」</div>
-        <div class="pron-example"><em>oui</em>（是）</div>
+        <div class="pron-example"><em>oui</em>（是）<button class="speak-btn" onclick='speakFrench("oui")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/u/</div>
         <div class="pron-ipa">嘴唇圓圓突出，像「烏」但更緊</div>
-        <div class="pron-example"><em>tu</em>（你）</div>
+        <div class="pron-example"><em>tu</em>（你）<button class="speak-btn" onclick='speakFrench("tu")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/y/</div>
         <div class="pron-ipa">嘴巴像說 /u/，但舌頭位置像說 /i/</div>
-        <div class="pron-example"><em>tu</em>（你）</div>
+        <div class="pron-example"><em>tu</em>（你）<button class="speak-btn" onclick='speakFrench("tu")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
 
-  <!-- Section 🎙: 跟練時間 -->
+  <!-- Section 3: 跟練 -->
   <div class="section">
     <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
-    <p>請對著鏡子，大聲朗讀以下每個單字至少 3 次</p>
     <div class="follow-box">
       <h4>請對著鏡子，大聲朗讀以下每個單字至少 3 次</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">patte</span>
+          <span class="word">patte</span><button class="speak-btn" onclick='speakFrench("patte")' aria-label="播放發音">🔊</button>
           <span class="ipa">/pat/</span>
           <span class="meaning">—— 貓的爪子</span>
         </li>
         <li>
-          <span class="word">cle</span>
+          <span class="word">clé</span><button class="speak-btn" onclick='speakFrench("cl\u00e9")' aria-label="播放發音">🔊</button>
           <span class="ipa">/kle/</span>
           <span class="meaning">—— 鑰匙</span>
         </li>
         <li>
-          <span class="word">mer</span>
+          <span class="word">mer</span><button class="speak-btn" onclick='speakFrench("mer")' aria-label="播放發音">🔊</button>
           <span class="ipa">/mɛʁ/</span>
           <span class="meaning">—— 大海</span>
         </li>
         <li>
-          <span class="word">oui</span>
+          <span class="word">oui</span><button class="speak-btn" onclick='speakFrench("oui")' aria-label="播放發音">🔊</button>
           <span class="ipa">/wi/</span>
           <span class="meaning">—— 是</span>
         </li>
         <li>
-          <span class="word">tu</span>
+          <span class="word">tu</span><button class="speak-btn" onclick='speakFrench("tu")' aria-label="播放發音">🔊</button>
           <span class="ipa">/ty/</span>
           <span class="meaning">—— 你</span>
         </li>
         <li>
-          <span class="word">rue</span>
+          <span class="word">rue</span><button class="speak-btn" onclick='speakFrench("rue")' aria-label="播放發音">🔊</button>
           <span class="ipa">/ʁy/</span>
           <span class="meaning">—— 街道</span>
         </li>
         <li>
-          <span class="word">barbe</span>
+          <span class="word">barbe</span><button class="speak-btn" onclick='speakFrench("barbe")' aria-label="播放發音">🔊</button>
           <span class="ipa">/baʁb/</span>
           <span class="meaning">—— 鬍鬚</span>
         </li>
         <li>
-          <span class="word">frere</span>
+          <span class="word">frère</span><button class="speak-btn" onclick='speakFrench("fr\u00e8re")' aria-label="播放發音">🔊</button>
           <span class="ipa">/fʁɛʁ/</span>
           <span class="meaning">—— 兄弟</span>
         </li>
       </ul>
     </div>
-    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：法語的元音要發得「清晰、乾淨、不滑動」。不要像英文那樣有雙元音的滑動感。</p>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">
+      💡 小技巧：法語的元音要發得「清晰、乾淨、不滑動」。不要像英文那樣有雙元音的滑動感。
+    </p>
   </div>
 
-  <!-- Section ⚡: 重點對照：/e/ 與 /ɛ/ 的差別 -->
+  <!-- Section 4: /e/ vs /ɛ/ 對照 -->
   <div class="section">
     <div class="section-title"><span class="icon">⚡</span> 重點對照：/e/ 與 /ɛ/ 的差別</div>
-    <p>這兩個音是初學者最容易混淆的。關鍵差別在於<strong>嘴巴張開的大小</strong>：</p>
+    <p style="margin-bottom: 1rem; color: #555;">
+      這兩個音是初學者最容易混淆的。關鍵差別在於<strong>嘴巴張開的大小</strong>：
+    </p>
     <div class="pron-grid">
       <div class="pron-card">
         <div class="pron-letter">/e/</div>
         <div class="pron-ipa">嘴巴閉合較小，嘴角拉開</div>
-        <div class="pron-example">cle /kle/<br>嘴巴幾乎不張開</div>
+        <div class="pron-example"><em>clé</em> /kle/<br>嘴巴幾乎不張開</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ɛ/</div>
         <div class="pron-ipa">嘴巴張開較大</div>
-        <div class="pron-example">mer /mɛʁ/<br>嘴巴明顯張開</div>
+        <div class="pron-example"><em>mer</em> /mɛʁ/<br>嘴巴明顯張開</div>
       </div>
     </div>
   </div>
 
-  <!-- Section ✏️: 小測驗 -->
+  <!-- Section 5: 小測驗 -->
   <div class="section">
     <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
     <div class="quiz-box">
@@ -381,7 +404,7 @@
     </div>
   </div>
 
-  <!-- Section 📝: 今日任務 -->
+  <!-- Section 6: 今日任務 -->
   <div class="section">
     <div class="section-title"><span class="icon">📝</span> 今日任務</div>
     <div class="follow-box">
@@ -389,14 +412,14 @@
       <ol style="padding-left: 1.5rem;">
         <li style="padding: 0.5rem 0;">拿起手機錄音功能，錄下自己朗讀「跟練時間」中的 8 個單字</li>
         <li style="padding: 0.5rem 0;">聽自己的錄音，檢查每個元音是否發得清晰、不滑動</li>
-        <li style="padding: 0.5rem 0;">在紙上寫下 patte、cle、mer、oui、tu、rue 各 5 遍，同時大聲朗讀</li>
+        <li style="padding: 0.5rem 0;">在紙上寫下 "patte"、"clé"、"mer"、"oui"、"tu"、"rue" 各 5 遍，同時大聲朗讀</li>
       </ol>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="lesson-footer">
-    <p>法語課 01 · 法語元音字母與基本發音 · 2026</p>
+    <p>法語課 01 · 元音字母與基本發音 · 2026</p>
     <p style="margin-top: 0.3rem;">下一課預告：法語鼻化元音（an, in, on, un）</p>
   </div>
 
@@ -412,6 +435,7 @@ function checkAnswer(el, isCorrect) {
     el.classList.add('correct');
   } else {
     el.classList.add('wrong');
+    // Highlight correct
     siblings.forEach(s => {
       if (s.onclick && s.onclick.toString().includes('true')) {
         s.classList.add('correct');
@@ -429,6 +453,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

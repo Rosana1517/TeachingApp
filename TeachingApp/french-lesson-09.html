@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,12 +255,12 @@
       <div class="pron-card">
         <div class="pron-letter">/o/</div>
         <div class="pron-ipa">半閉後圓唇元音。雙脣圓起，比發 /u/ 時開口稍大，但肌肉緊張度高，嘴角向內收。</div>
-        <div class="pron-example"><em>mot</em>（字）</div>
+        <div class="pron-example"><em>mot</em>（字）<button class="speak-btn" onclick='speakFrench("mot")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ɔ/</div>
         <div class="pron-ipa">半開後圓唇元音。雙脣圓起，開口度明顯大於 /o/，下頜下沉，嘴唇肌肉相對放鬆。</div>
-        <div class="pron-example"><em>porte</em>（門）</div>
+        <div class="pron-example"><em>porte</em>（門）<button class="speak-btn" onclick='speakFrench("porte")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -258,22 +273,22 @@
       <h4>請大聲朗讀以下成對的最小對立組（minimal pairs），感受喉嚨後部與嘴唇張力的變化。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">botte / porte</span>
+          <span class="word">botte / porte</span><button class="speak-btn" onclick='speakFrench("botte")' aria-label="播放發音">🔊</button>
           <span class="ipa">/bɔt/ - /pɔʁt/</span>
           <span class="meaning">—— 靴子 / 門</span>
         </li>
         <li>
-          <span class="word">eau / eau froide</span>
+          <span class="word">eau / eau froide</span><button class="speak-btn" onclick='speakFrench("eau")' aria-label="播放發音">🔊</button>
           <span class="ipa">/o/ - /o fʁɔd/</span>
           <span class="meaning">—— 水（熱）/ 冷水</span>
         </li>
         <li>
-          <span class="word">rose / roseau</span>
+          <span class="word">rose / roseau</span><button class="speak-btn" onclick='speakFrench("rose")' aria-label="播放發音">🔊</button>
           <span class="ipa">/ʁoz/ - /ʁozo/</span>
           <span class="meaning">—— 玫瑰 / 蘆葦</span>
         </li>
         <li>
-          <span class="word">mode / monde</span>
+          <span class="word">mode / monde</span><button class="speak-btn" onclick='speakFrench("mode")' aria-label="播放發音">🔊</button>
           <span class="ipa">/mɔd/ - /mɔ̃d/</span>
           <span class="meaning">—— 時尚 / 世界</span>
         </li>
@@ -290,12 +305,12 @@
       <div class="pron-card">
         <div class="pron-letter">/o/ vs /u/</div>
         <div class="pron-ipa">/o/ 開口比 /u/ 大，舌位稍低；/u/ 嘴唇更緊更圓，舌頭後縮更明顯。</div>
-        <div class="pron-example">eau / oui<br>不要發成中文的 '歐' 或 '烏'，保持圓唇不變形。</div>
+        <div class="pron-example">eau / oui<button class="speak-btn" onclick='speakFrench("eau")' aria-label="播放發音">🔊</button><br>不要發成中文的 '歐' 或 '烏'，保持圓唇不變形。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ɔ/ vs /a/</div>
         <div class="pron-ipa">/ɔ/ 嘴唇是圓的，/a/ 嘴唇是展開的；/ɔ/ 舌頭位置比 /a/ 靠後。</div>
-        <div class="pron-example">porte / patte<br>避免將 /ɔ/ 發成開口的 '啊'。</div>
+        <div class="pron-example">porte / patte<button class="speak-btn" onclick='speakFrench("porte")' aria-label="播放發音">🔊</button><br>避免將 /ɔ/ 發成開口的 '啊'。</div>
       </div>
     </div>
   </div>
@@ -377,6 +392,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

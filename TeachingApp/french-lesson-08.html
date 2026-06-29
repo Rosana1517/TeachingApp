@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,17 +255,17 @@
       <div class="pron-card">
         <div class="pron-letter">ou</div>
         <div class="pron-ipa">發 [u] 音，嘴唇收圓並向前突出，保持緊繃，類似中文「烏」但唇形更緊更圓。</div>
-        <div class="pron-example"><em>vous</em>（您/你們）</div>
+        <div class="pron-example"><em>vous</em>（您/你們）<button class="speak-btn" onclick='speakFrench("vous")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">ai / ei</div>
         <div class="pron-ipa">發 [ɛ] 音，開口度比 [e] 大，嘴角向兩側拉伸，類似中文「艾」的短促版，但舌位較低。</div>
-        <div class="pron-example"><em>papa</em>（爸爸）</div>
+        <div class="pron-example"><em>papa</em>（爸爸）<button class="speak-btn" onclick='speakFrench("papa")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">oi</div>
         <div class="pron-ipa">發 [wa] 音，這是一個滑音。從 [w]（唇圓如發 u）迅速滑向 [a]（口張大）。類似中文「哇」，但起首的 w 要更明顯。</div>
-        <div class="pron-example"><em>moi</em>（我）</div>
+        <div class="pron-example"><em>moi</em>（我）<button class="speak-btn" onclick='speakFrench("moi")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -263,27 +278,27 @@
       <h4>請大聲朗讀以下單字，錄音並對比標準發音。特別注意 oi 的滑動過程是否流暢，避免發成兩個分離的元音。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">fleur</span>
+          <span class="word">fleur</span><button class="speak-btn" onclick='speakFrench("fleur")' aria-label="播放發音">🔊</button>
           <span class="ipa">/flœʁ/</span>
           <span class="meaning">—— 花</span>
         </li>
         <li>
-          <span class="word">boire</span>
+          <span class="word">boire</span><button class="speak-btn" onclick='speakFrench("boire")' aria-label="播放發音">🔊</button>
           <span class="ipa">/bwaʁ/</span>
           <span class="meaning">—— 喝</span>
         </li>
         <li>
-          <span class="word">plage</span>
+          <span class="word">plage</span><button class="speak-btn" onclick='speakFrench("plage")' aria-label="播放發音">🔊</button>
           <span class="ipa">/plaʒ/</span>
           <span class="meaning">—— 海灘</span>
         </li>
         <li>
-          <span class="word">heureux</span>
+          <span class="word">heureux</span><button class="speak-btn" onclick='speakFrench("heureux")' aria-label="播放發音">🔊</button>
           <span class="ipa">/œʁø/</span>
           <span class="meaning">—— 快樂的</span>
         </li>
         <li>
-          <span class="word">croix</span>
+          <span class="word">croix</span><button class="speak-btn" onclick='speakFrench("croix")' aria-label="播放發音">🔊</button>
           <span class="ipa">/kʁwa/</span>
           <span class="meaning">—— 十字架</span>
         </li>
@@ -300,17 +315,17 @@
       <div class="pron-card">
         <div class="pron-letter">ou vs. u</div>
         <div class="pron-ipa">ou 通常對應音標 [u]，而單獨的 u 也是 [y]。但在複合元音中，ou 是純粹的圓唇後元音。</div>
-        <div class="pron-example">vous [vu]<br>確保嘴唇始終保持圓形，不要鬆開。</div>
+        <div class="pron-example">vous [vu]<button class="speak-btn" onclick='speakFrench("vous [vu]")' aria-label="播放發音">🔊</button><br>確保嘴唇始終保持圓形，不要鬆開。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">ai vs. a</div>
         <div class="pron-ipa">ai/ei 發 [ɛ]（開口音），a 發 [a]（前元音，口型扁平或自然張開）。</div>
-        <div class="pron-example">laisse [lɛs] vs. las [la]<br>[ɛ] 需要下巴稍微下沉，嘴角向後拉。</div>
+        <div class="pron-example">laisse [lɛs] vs. las [la]<button class="speak-btn" onclick='speakFrench("laisse [l\u025bs] vs. las [la]")' aria-label="播放發音">🔊</button><br>[ɛ] 需要下巴稍微下沉，嘴角向後拉。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">oi vs. ui</div>
         <div class="pron-ipa">oi 發 [wa]，ui 發 [ɥi]。兩者滑動方向不同。</div>
-        <div class="pron-example">toi [twɑ] vs. lui [lɥi]<br>ui 的起首音 [ɥ] 是唇齒滑音，比 [w] 更緊湊。</div>
+        <div class="pron-example">toi [twɑ] vs. lui [lɥi]<button class="speak-btn" onclick='speakFrench("toi [tw\u0251] vs. lui [l\u0265i]")' aria-label="播放發音">🔊</button><br>ui 的起首音 [ɥ] 是唇齒滑音，比 [w] 更緊湊。</div>
       </div>
     </div>
   </div>
@@ -392,6 +407,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

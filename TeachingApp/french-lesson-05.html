@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,32 +255,32 @@
       <div class="pron-card">
         <div class="pron-letter">/p/</div>
         <div class="pron-ipa">雙唇閉合後突然張開，氣流衝出，但<strong>不送氣</strong>。類似普通話的「波」但不帶強勁噴出的氣流。</div>
-        <div class="pron-example"><em>paire</em>（一對）</div>
+        <div class="pron-example"><em>paire</em>（一對）<button class="speak-btn" onclick='speakFrench("paire")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/t/</div>
         <div class="pron-ipa">舌尖抵住上齒齦，阻塞氣流後迅速釋放，<strong>不送氣</strong>。聽起來比英語的 't' 更輕柔、更短促。</div>
-        <div class="pron-example"><em>temps</em>（時間）</div>
+        <div class="pron-example"><em>temps</em>（時間）<button class="speak-btn" onclick='speakFrench("temps")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/k/</div>
         <div class="pron-ipa">舌後部抵住軟顎，阻塞氣流後釋放。常見於字母 c, q, k。同樣保持<strong>不送氣</strong>特徵。</div>
-        <div class="pron-example"><em>quatre</em>（四）</div>
+        <div class="pron-example"><em>quatre</em>（四）<button class="speak-btn" onclick='speakFrench("quatre")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/f/</div>
         <div class="pron-ipa">上齒輕咬下唇，氣流從狹窄通道摩擦而出。聲帶不振動。</div>
-        <div class="pron-example"><em>fait</em>（事實/做）</div>
+        <div class="pron-example"><em>fait</em>（事實/做）<button class="speak-btn" onclick='speakFrench("fait")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/s/</div>
         <div class="pron-ipa">舌尖靠近下齒背，舌側貼住上齒，氣流從中間狹縫流出，產生嘶嘶聲。</div>
-        <div class="pron-example"><em>soixante</em>（六十）</div>
+        <div class="pron-example"><em>soixante</em>（六十）<button class="speak-btn" onclick='speakFrench("soixante")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ʃ/</div>
         <div class="pron-ipa">舌位同 /s/，但舌面更抬高靠近硬顎，氣流更集中，產生柔和的摩擦音。類似普通話的「詩」但氣流更細長。</div>
-        <div class="pron-example"><em>chaise</em>（椅子）</div>
+        <div class="pron-example"><em>chaise</em>（椅子）<button class="speak-btn" onclick='speakFrench("chaise")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -278,32 +293,32 @@
       <h4>請大聲朗讀以下單字，並錄製自己的聲音進行對比。注意每個單字的開頭輔音是否乾淨利落，且沒有多餘的送氣。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">porte</span>
+          <span class="word">porte</span><button class="speak-btn" onclick='speakFrench("porte")' aria-label="播放發音">🔊</button>
           <span class="ipa">/pɔʁt/</span>
           <span class="meaning">—— 門</span>
         </li>
         <li>
-          <span class="word">table</span>
+          <span class="word">table</span><button class="speak-btn" onclick='speakFrench("table")' aria-label="播放發音">🔊</button>
           <span class="ipa">/tabl/</span>
           <span class="meaning">—— 桌子</span>
         </li>
         <li>
-          <span class="word">café</span>
+          <span class="word">café</span><button class="speak-btn" onclick='speakFrench("caf\u00e9")' aria-label="播放發音">🔊</button>
           <span class="ipa">/kafe/</span>
           <span class="meaning">—— 咖啡</span>
         </li>
         <li>
-          <span class="word">fil</span>
+          <span class="word">fil</span><button class="speak-btn" onclick='speakFrench("fil")' aria-label="播放發音">🔊</button>
           <span class="ipa">/fil/</span>
           <span class="meaning">—— 線</span>
         </li>
         <li>
-          <span class="word">sel</span>
+          <span class="word">sel</span><button class="speak-btn" onclick='speakFrench("sel")' aria-label="播放發音">🔊</button>
           <span class="ipa">/sɛl/</span>
           <span class="meaning">—— 鹽</span>
         </li>
         <li>
-          <span class="word">chat</span>
+          <span class="word">chat</span><button class="speak-btn" onclick='speakFrench("chat")' aria-label="播放發音">🔊</button>
           <span class="ipa">/ʃa/</span>
           <span class="meaning">—— 貓</span>
         </li>
@@ -320,22 +335,22 @@
       <div class="pron-card">
         <div class="pron-letter">/p/ vs /b/</div>
         <div class="pron-ipa">/p/ 無聲不送氣；/b/ 有聲。法語 /p/ 聽起來不像英語 pig 那樣噴氣強烈。</div>
-        <div class="pron-example">pair (對) vs baiser (吻)<br>注意 /b/ 是濁音，聲帶需震動。</div>
+        <div class="pron-example">pair (對) vs baiser (吻)<button class="speak-btn" onclick='speakFrench("pair (\u5c0d) vs baiser (\u543b)")' aria-label="播放發音">🔊</button><br>注意 /b/ 是濁音，聲帶需震動。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/t/ vs /d/</div>
         <div class="pron-ipa">/t/ 無聲；/d/ 有聲。法語 /t/ 在元音前非常清脆。</div>
-        <div class="pron-example">tout (全部) vs doux (溫柔)<br>濁音 /d/ 會有明顯的喉嚨震動感。</div>
+        <div class="pron-example">tout (全部) vs doux (溫柔)<button class="speak-btn" onclick='speakFrench("tout (\u5168\u90e8) vs doux (\u6eab\u67d4)")' aria-label="播放發音">🔊</button><br>濁音 /d/ 會有明顯的喉嚨震動感。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/s/ vs /z/</div>
         <div class="pron-ipa">/s/ 是嘶嘶聲；/z/ 是嗡嗡聲。兩者口型相同，差別在於聲帶是否震動。</div>
-        <div class="pron-example">sans (沒有) vs dans (在...裡)<br>聯誦時，s 常變為 /z/ 音，如 les amis -> le-z-ami。</div>
+        <div class="pron-example">sans (沒有) vs dans (在...裡)<button class="speak-btn" onclick='speakFrench("sans (\u6c92\u6709) vs dans (\u5728...\u88e1)")' aria-label="播放發音">🔊</button><br>聯誦時，s 常變為 /z/ 音，如 les amis -> le-z-ami。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ʃ/ vs /ʒ/</div>
         <div class="pron-ipa">/ʃ/ 像 chaise；/ʒ/ 像 garage 的 g。前者無聲，後者有聲。</div>
-        <div class="pron-example">cher (貴) vs jeu (遊戲)<br>法語中沒有像英語 'sh' 那麼強的摩擦感，/ʃ/ 相對柔和。</div>
+        <div class="pron-example">cher (貴) vs jeu (遊戲)<button class="speak-btn" onclick='speakFrench("cher (\u8cb4) vs jeu (\u904a\u6232)")' aria-label="播放發音">🔊</button><br>法語中沒有像英語 'sh' 那麼強的摩擦感，/ʃ/ 相對柔和。</div>
       </div>
     </div>
   </div>
@@ -428,6 +443,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

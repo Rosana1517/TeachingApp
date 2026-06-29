@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,12 +255,12 @@
       <div class="pron-card">
         <div class="pron-letter">/e/ (閉口音)</div>
         <div class="pron-ipa">嘴角向兩側拉開，像微笑狀，下巴幾乎不張開，舌頭抵住下齒。</div>
-        <div class="pron-example"><em>clé, été, mer, bien</em>（鑰匙、夏天、海、好）</div>
+        <div class="pron-example"><em>clé, été, mer, bien</em>（鑰匙、夏天、海、好）<button class="speak-btn" onclick='speakFrench("cl\u00e9, \u00e9t\u00e9, mer, bien")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">/ɛ/ (開口音)</div>
         <div class="pron-ipa">嘴巴張開約一指寬，下巴放鬆下沉，舌頭位置比 /e/ 低。</div>
-        <div class="pron-example"><em>père, fête, père, lait</em>（父親、節日、父親、牛奶）</div>
+        <div class="pron-example"><em>père, fête, père, lait</em>（父親、節日、父親、牛奶）<button class="speak-btn" onclick='speakFrench("p\u00e8re, f\u00eate, p\u00e8re, lait")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -258,27 +273,27 @@
       <h4>請大聲朗讀以下詞彙，並注意對比成對的最小對立組（Minimal Pairs），感受喉嚨與下巴的肌肉變化。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">mer - mère</span>
+          <span class="word">mer - mère</span><button class="speak-btn" onclick='speakFrench("mer - m\u00e8re")' aria-label="播放發音">🔊</button>
           <span class="ipa">[mɛʁ] - [mɛʁ]</span>
           <span class="meaning">—— 海 - 母親</span>
         </li>
         <li>
-          <span class="word">clé - clé (錯誤示範)</span>
+          <span class="word">clé - clé (錯誤示範)</span><button class="speak-btn" onclick='speakFrench("cl\u00e9 - cl\u00e9 (\u932f\u8aa4\u793a\u7bc4)")' aria-label="播放發音">🔊</button>
           <span class="ipa">[kle] - [klɛ]</span>
           <span class="meaning">—— 鑰匙 - 錯誤發音（請修正為開口音若單字為 clé 則為閉口音，此處僅作對比練習，建議練習：clef [klɛf] 鑰匙）</span>
         </li>
         <li>
-          <span class="word">bien - bien (錯誤示範)</span>
+          <span class="word">bien - bien (錯誤示範)</span><button class="speak-btn" onclick='speakFrench("bien - bien (\u932f\u8aa4\u793a\u7bc4)")' aria-label="播放發音">🔊</button>
           <span class="ipa">[bjɛ̃] - [bjɛ]</span>
           <span class="meaning">—— 好(鼻化) - 好(非鼻化，如 bien joué)</span>
         </li>
         <li>
-          <span class="word">verre - vers - vert - verre</span>
+          <span class="word">verre - vers - vert - verre</span><button class="speak-btn" onclick='speakFrench("verre - vers - vert - verre")' aria-label="播放發音">🔊</button>
           <span class="ipa">[vɛʁ] - [vɛʁ] - [vɛʁ] - [vɛʁ]</span>
           <span class="meaning">—— 玻璃杯 - 方向 - 綠色 - 玻璃杯 (注意：這些在標準法語中發音相同，但拼法不同，本課重點在於區分 e 的不同拼法對應的音，此處為進階辨認練習)</span>
         </li>
         <li>
-          <span class="word">petit - pâté</span>
+          <span class="word">petit - pâté</span><button class="speak-btn" onclick='speakFrench("petit - p\u00e2t\u00e9")' aria-label="播放發音">🔊</button>
           <span class="ipa">[pəti] - [pate]</span>
           <span class="meaning">—— 小的 - 肉餡餅</span>
         </li>
@@ -295,17 +310,17 @@
       <div class="pron-card">
         <div class="pron-letter">e (單獨或在詞尾)</div>
         <div class="pron-ipa">通常發 /ə/ (schwa)，但在許多現代口語中弱化或消失。若 e 後面有無聲輔音 + 另一個元音，常發 /e/。</div>
-        <div class="pron-example">le [lə], aller [ale]<br>注意：詞尾的 e 通常不發音，除非是為了區分同音詞或特殊詩歌韻律。</div>
+        <div class="pron-example">le [lə], aller [ale]<button class="speak-btn" onclick='speakFrench("le [l\u0259], aller [ale]")' aria-label="播放發音">🔊</button><br>注意：詞尾的 e 通常不發音，除非是為了區分同音詞或特殊詩歌韻律。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">ei, ai, ez</div>
         <div class="pron-ipa">這些組合幾乎總是發開口音 /ɛ/。</div>
-        <div class="pron-example">neiger, pain, chez<br>這是 /ɛ/ 最常見的拼法來源之一。</div>
+        <div class="pron-example">neiger, pain, chez<button class="speak-btn" onclick='speakFrench("neiger, pain, chez")' aria-label="播放發音">🔊</button><br>這是 /ɛ/ 最常見的拼法來源之一。</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">er, et, ez (詞尾)</div>
         <div class="pron-ipa">詞尾的 -er 和 -et 通常發閉口音 /e/。</div>
-        <div class="pron-example">parler, paquet<br>這是一個重要的規則：詞尾的 -er 絕大多數情況下發 /e/。</div>
+        <div class="pron-example">parler, paquet<button class="speak-btn" onclick='speakFrench("parler, paquet")' aria-label="播放發音">🔊</button><br>這是一個重要的規則：詞尾的 -er 絕大多數情況下發 /e/。</div>
       </div>
     </div>
   </div>
@@ -387,6 +402,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

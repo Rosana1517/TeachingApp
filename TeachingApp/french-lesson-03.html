@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,17 +255,17 @@
       <div class="pron-card">
         <div class="pron-letter">p / t / k</div>
         <div class="pron-ipa">清塞音，聲帶不振動，無強烈送氣</div>
-        <div class="pron-example"><em>patte (爪子), tapis (地毯), cap (海岬)</em>（清音組）</div>
+        <div class="pron-example"><em>patte (爪子), tapis (地毯), cap (海岬)</em>（清音組）<button class="speak-btn" onclick='speakFrench("patte (\u722a\u5b50), tapis (\u5730\u6bef), cap (\u6d77\u5cac)")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">b / d / g</div>
         <div class="pron-ipa">濁塞音，聲帶必須振動，聽覺上有嗡嗡感</div>
-        <div class="pron-example"><em>bateau (船), dire (說), gateau (蛋糕)</em>（濁音組）</div>
+        <div class="pron-example"><em>bateau (船), dire (說), gateau (蛋糕)</em>（濁音組）<button class="speak-btn" onclick='speakFrench("bateau (\u8239), dire (\u8aaa), gateau (\u86cb\u7cd5)")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">f / v</div>
         <div class="pron-ipa">唇齒擦音，v 為濁音，需振動聲帶</div>
-        <div class="pron-example"><em>fait (事實), voix (聲音)</em>（摩擦音對）</div>
+        <div class="pron-example"><em>fait (事實), voix (聲音)</em>（摩擦音對）<button class="speak-btn" onclick='speakFrench("fait (\u4e8b\u5be6), voix (\u8072\u97f3)")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -263,32 +278,32 @@
       <h4>請對著鏡子觀察自己的喉嚨，或者用手輕觸喉結。發濁音時應能感覺到震動，發清音時則應保持靜止。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">patte</span>
+          <span class="word">patte</span><button class="speak-btn" onclick='speakFrench("patte")' aria-label="播放發音">🔊</button>
           <span class="ipa">/pat/</span>
           <span class="meaning">—— 爪子</span>
         </li>
         <li>
-          <span class="word">bateau</span>
+          <span class="word">bateau</span><button class="speak-btn" onclick='speakFrench("bateau")' aria-label="播放發音">🔊</button>
           <span class="ipa">/bato/</span>
           <span class="meaning">—— 船</span>
         </li>
         <li>
-          <span class="word">tapis</span>
+          <span class="word">tapis</span><button class="speak-btn" onclick='speakFrench("tapis")' aria-label="播放發音">🔊</button>
           <span class="ipa">/tapi/</span>
           <span class="meaning">—— 地毯</span>
         </li>
         <li>
-          <span class="word">dame</span>
+          <span class="word">dame</span><button class="speak-btn" onclick='speakFrench("dame")' aria-label="播放發音">🔊</button>
           <span class="ipa">/dam/</span>
           <span class="meaning">—— 女士</span>
         </li>
         <li>
-          <span class="word">cap</span>
+          <span class="word">cap</span><button class="speak-btn" onclick='speakFrench("cap")' aria-label="播放發音">🔊</button>
           <span class="ipa">/kap/</span>
           <span class="meaning">—— 海岬</span>
         </li>
         <li>
-          <span class="word">galette</span>
+          <span class="word">galette</span><button class="speak-btn" onclick='speakFrench("galette")' aria-label="播放發音">🔊</button>
           <span class="ipa">/galɛt/</span>
           <span class="meaning">—— 圓形薄餅</span>
         </li>
@@ -305,17 +320,17 @@
       <div class="pron-card">
         <div class="pron-letter">p (法) vs p (英)</div>
         <div class="pron-ipa">法語 p 不送氣，類似中文 'b' 的清音版；英語 p 有強烈噴氣</div>
-        <div class="pron-example">Paris<br>不要發成 'ph' 的聲音</div>
+        <div class="pron-example">Paris<button class="speak-btn" onclick='speakFrench("Paris")' aria-label="播放發音">🔊</button><br>不要發成 'ph' 的聲音</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">t (法) vs t (英)</div>
         <div class="pron-ipa">法語 t 清脆不送氣；英語 t 在重音開頭時送氣明顯</div>
-        <div class="pron-example">temps<br>保持舌尖輕觸上齶即可</div>
+        <div class="pron-example">temps<button class="speak-btn" onclick='speakFrench("temps")' aria-label="播放發音">🔊</button><br>保持舌尖輕觸上齶即可</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">k (法) vs g (法)</div>
         <div class="pron-ipa">k 為清音無震動；g 為濁音有震動，類似英語 'go' 但更柔和</div>
-        <div class="pron-example">cœur / gare<br>利用摸喉嚨的方式確認 g 的震動</div>
+        <div class="pron-example">cœur / gare<button class="speak-btn" onclick='speakFrench("c\u0153ur")' aria-label="播放發音">🔊</button><br>利用摸喉嚨的方式確認 g 的震動</div>
       </div>
     </div>
   </div>
@@ -398,6 +413,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>

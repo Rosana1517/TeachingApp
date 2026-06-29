@@ -214,6 +214,21 @@
     font-size: 0.85rem;
   }
 
+
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 </style>
 </head>
 <body>
@@ -240,22 +255,22 @@
       <div class="pron-card">
         <div class="pron-letter">/ʁ/</div>
         <div class="pron-ipa">小舌擦音，聲帶振動，氣流通過狹窄的小舌通道產生摩擦</div>
-        <div class="pron-example"><em>Paris</em>（巴黎）</div>
+        <div class="pron-example"><em>Paris</em>（巴黎）<button class="speak-btn" onclick='speakFrench("Paris")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">rr</div>
         <div class="pron-ipa">兩個 R 連在一起時，發音時間稍長，但不需要過度用力顫抖</div>
-        <div class="pron-example"><em>mercredi</em>（星期三）</div>
+        <div class="pron-example"><em>mercredi</em>（星期三）<button class="speak-btn" onclick='speakFrench("mercredi")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">r + 元音</div>
         <div class="pron-ipa">在元音前，R 的發音最為清晰，氣流衝擊小舌</div>
-        <div class="pron-example"><em>rouge</em>（紅色）</div>
+        <div class="pron-example"><em>rouge</em>（紅色）<button class="speak-btn" onclick='speakFrench("rouge")' aria-label="播放發音">🔊</button></div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">詞尾 r</div>
         <div class="pron-ipa">在大多數單詞詞尾不發音，但在聯誦或特定詞彙（如 cher）中可能發音</div>
-        <div class="pron-example"><em>aimer</em>（愛）</div>
+        <div class="pron-example"><em>aimer</em>（愛）<button class="speak-btn" onclick='speakFrench("aimer")' aria-label="播放發音">🔊</button></div>
       </div>
     </div>
   </div>
@@ -268,22 +283,22 @@
       <h4>請跟隨以下清單，從單音開始，逐漸過渡到完整單字。記得放鬆喉嚨，不要緊張。</h4>
       <ul class="follow-list">
         <li>
-          <span class="word">rouge</span>
+          <span class="word">rouge</span><button class="speak-btn" onclick='speakFrench("rouge")' aria-label="播放發音">🔊</button>
           <span class="ipa">/ʁuʒ/</span>
           <span class="meaning">—— 紅色</span>
         </li>
         <li>
-          <span class="word">restaurant</span>
+          <span class="word">restaurant</span><button class="speak-btn" onclick='speakFrench("restaurant")' aria-label="播放發音">🔊</button>
           <span class="ipa">/ʁɛstoʁɑ̃/</span>
           <span class="meaning">—— 餐廳</span>
         </li>
         <li>
-          <span class="word">frère</span>
+          <span class="word">frère</span><button class="speak-btn" onclick='speakFrench("fr\u00e8re")' aria-label="播放發音">🔊</button>
           <span class="ipa">/fʁɛʁ/</span>
           <span class="meaning">—— 兄弟</span>
         </li>
         <li>
-          <span class="word">amour</span>
+          <span class="word">amour</span><button class="speak-btn" onclick='speakFrench("amour")' aria-label="播放發音">🔊</button>
           <span class="ipa">/amuʁ/</span>
           <span class="meaning">—— 愛情</span>
         </li>
@@ -300,17 +315,17 @@
       <div class="pron-card">
         <div class="pron-letter">法語 /ʁ/ vs 英語 /r/</div>
         <div class="pron-ipa">法語 R 在小舌處摩擦，英語 R 舌尖捲起不接觸硬顎後部</div>
-        <div class="pron-example">Rire (笑)<br>切勿發出像 'rih-er' 的聲音</div>
+        <div class="pron-example">Rire (笑)<button class="speak-btn" onclick='speakFrench("Rire (\u7b11)")' aria-label="播放發音">🔊</button><br>切勿發出像 'rih-er' 的聲音</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">法語 /ʁ/ vs 德語 /r/</div>
         <div class="pron-ipa">標準德語 R 常為大舌音或喉嚨元音化，法語 R 始終帶有明顯的擦音摩擦感</div>
-        <div class="pron-example">Rue (街道)<br>保持聲帶持續振動</div>
+        <div class="pron-example">Rue (街道)<button class="speak-btn" onclick='speakFrench("Rue (\u8857\u9053)")' aria-label="播放發音">🔊</button><br>保持聲帶持續振動</div>
       </div>
       <div class="pron-card">
         <div class="pron-letter">法語 /ʁ/ vs 西班牙語 /r/</div>
         <div class="pron-ipa">西班牙語 R 是舌尖顫音，法語 R 是小舌音，位置截然不同</div>
-        <div class="pron-example">Roi (國王)<br>放鬆下巴，專注於喉嚨後方</div>
+        <div class="pron-example">Roi (國王)<button class="speak-btn" onclick='speakFrench("Roi (\u570b\u738b)")' aria-label="播放發音">🔊</button><br>放鬆下巴，專注於喉嚨後方</div>
       </div>
     </div>
   </div>
@@ -392,6 +407,15 @@ function revealAnswer(btn) {
     answer.style.display = 'block';
     btn.textContent = '隱藏答案';
   }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 </body>
