@@ -229,6 +229,16 @@ def get_next_lesson_id():
     
     return max_id + 1
 
+def speak_button(text):
+    """產生一個會用瀏覽器內建 Web Speech API 朗讀法語單字的按鈕。
+    不需要產生/上傳任何音檔，iOS 的 WKWebView 也支援 speechSynthesis。"""
+    clean_text = text.split('/')[0].strip()  # 去掉像 "cle /kle/" 裡的 IPA 部分
+    # 法語單字常見如 l'eau、c'est 這類含單引號的字，json.dumps 不會跳脫單引號，
+    # 因此另外把它轉成 HTML 實體，避免提早結束用單引號包住的 onclick 屬性。
+    js_literal = json.dumps(clean_text).replace("'", "&#39;")
+    return f"<button class=\"speak-btn\" onclick='speakFrench({js_literal})' aria-label=\"播放發音\">🔊</button>"
+
+
 def generate_html(lesson):
     """生成精美的 HTML 課程頁面"""
     lesson_num = f"{lesson['id']:02d}"
@@ -275,10 +285,10 @@ def generate_html(lesson):
                 html_parts.append('      <div class="pron-card">')
                 html_parts.append(f'        <div class="pron-letter">{item["letter"]}</div>')
                 html_parts.append(f'        <div class="pron-ipa">{item["desc"]}</div>')
-                html_parts.append(f'        <div class="pron-example"><em>{item["example"]}</em>（{item["meaning"]}）</div>')
+                html_parts.append(f'        <div class="pron-example"><em>{item["example"]}</em>（{item["meaning"]}）{speak_button(item["example"])}</div>')
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
-        
+
         # Follow-along list
         if 'follow_list' in section:
             html_parts.append('    <div class="follow-box">')
@@ -289,13 +299,14 @@ def generate_html(lesson):
                 html_parts.append(f'          <span class="word">{item["word"]}</span>')
                 html_parts.append(f'          <span class="ipa">{item["ipa"]}</span>')
                 html_parts.append(f'          <span class="meaning">—— {item["meaning"]}</span>')
+                html_parts.append(f'          {speak_button(item["word"])}')
                 html_parts.append('        </li>')
             html_parts.append('      </ul>')
             html_parts.append('    </div>')
             tip_text = section.get("tip", "")
             if tip_text:
                 html_parts.append(f'    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：{tip_text}</p>')
-        
+
         # Comparison grid
         if 'comparison' in section:
             html_parts.append('    <div class="pron-grid">')
@@ -303,17 +314,17 @@ def generate_html(lesson):
                 html_parts.append('      <div class="pron-card">')
                 html_parts.append(f'        <div class="pron-letter">{item["letter"]}</div>')
                 html_parts.append(f'        <div class="pron-ipa">{item["desc"]}</div>')
-                html_parts.append(f'        <div class="pron-example">{item["example"]}<br>{item["note"]}</div>')
+                html_parts.append(f'        <div class="pron-example">{item["example"]}{speak_button(item["example"])}<br>{item["note"]}</div>')
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
-        
+
         # Spelling rules
         if 'spelling_rules' in section:
             for rule_group in section['spelling_rules']:
                 html_parts.append(f'      <h4 style="margin-top: 1rem;">{rule_group["sound"]}</h4>')
                 html_parts.append('      <ul class="follow-list">')
                 for item in rule_group['items']:
-                    html_parts.append(f'        <li><span class="word">{item["spell"]}</span> <span class="ipa">{item["example"]}</span> <span class="meaning">{item["meaning"]}</span></li>')
+                    html_parts.append(f'        <li><span class="word">{item["spell"]}</span> <span class="ipa">{item["example"]}</span> <span class="meaning">{item["meaning"]}</span> {speak_button(item["spell"])}</li>')
                 html_parts.append('      </ul>')
         
         # Quiz
@@ -385,6 +396,15 @@ def generate_html(lesson):
     html_parts.append('    answer.style.display = \'block\';')
     html_parts.append('    btn.textContent = \'隱藏答案\';')
     html_parts.append('  }')
+    html_parts.append('}')
+    html_parts.append('')
+    html_parts.append('function speakFrench(text) {')
+    html_parts.append('  if (!(\'speechSynthesis\' in window)) return;')
+    html_parts.append('  window.speechSynthesis.cancel();')
+    html_parts.append('  const utterance = new SpeechSynthesisUtterance(text);')
+    html_parts.append('  utterance.lang = \'fr-FR\';')
+    html_parts.append('  utterance.rate = 0.85;')
+    html_parts.append('  window.speechSynthesis.speak(utterance);')
     html_parts.append('}')
     html_parts.append('</script>')
     html_parts.append('</body>')
@@ -534,6 +554,22 @@ def get_css():
     min-width: 80px;
   }
   .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
 
   /* Quiz */
   .quiz-box {
