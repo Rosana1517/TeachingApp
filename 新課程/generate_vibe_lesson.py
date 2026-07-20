@@ -155,7 +155,7 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
 
 
 def get_next_lesson_id():
-    """獲取下一個課程 ID"""
+    """獲取下一個課程 ID；L01 已由手動優化的版本，自動跳過"""
     existing_files = [f for f in os.listdir('.') if f.startswith('vibe-lesson-') and f.endswith('.html')]
     if not existing_files:
         return 1
@@ -168,7 +168,8 @@ def get_next_lesson_id():
         except:
             pass
 
-    return max_id + 1
+    # L01 已手動優化為 Tufte 風格，不讓腳本覆蓋
+    return max(max_id + 1, 2)
 
 
 def get_previous_topics():
