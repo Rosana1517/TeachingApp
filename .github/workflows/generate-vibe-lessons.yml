@@ -1,0 +1,55 @@
+name: Generate Vibe Coding Lessons
+
+on:
+  # 改由 cron-job.org 透過 API 呼叫 workflow_dispatch 觸發，
+  # 不再依賴 GitHub 自己的 schedule（時間不準、可能被跳過）。
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-vibe-lesson:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 新課程
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Generate Vibe Coding lesson
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in directory:"
+          ls -la
+          echo "Running Python script..."
+          python generate_vibe_lesson.py
+          echo "Python script completed successfully"
+        env:
+          LLM_API_URL: ${{ secrets.LLM_API_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add vibe-lesson-*.html
+          git diff --cached --quiet || git commit -m "Add Vibe Coding lesson: $(date +%Y-%m-%d)"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

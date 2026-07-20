@@ -1,0 +1,99 @@
+# Node.js Cheatsheet — Vibe Coding 速查表
+
+## 核心概念
+
+| 概念 | 說明 |
+|------|------|
+| **Node.js** | JavaScript 的伺服器端執行環境，基於 V8 引擎 |
+| **NPM** | Node Package Manager，隨 Node.js 安裝，管理第三方套件 |
+| **npx** | NPM 附帶的工具，用於執行一次性套件命令 |
+| **package.json** | 專案描述檔，記錄名稱、版本、依賴、腳本 |
+| **node_modules/** | 本地安裝的套件資料夾（不推上 Git） |
+| **package-lock.json** | 鎖定依賴版本，確保團隊環境一致 |
+
+## 常用命令
+
+```bash
+node -v              # 檢查 Node 版本
+npm -v               # 檢查 NPM 版本
+npx -v               # 檢查 npx 版本
+
+npm init -y          # 快速建立 package.json
+npm install <pkg>    # 安裝套件
+npm install <pkg> -D # 安裝為開發依賴
+npm uninstall <pkg>  # 卸載套件
+npm run dev          # 執行 package.json scripts 中的 dev
+npm run build        # 建置專案
+
+npx create-next-app@latest my-project   # 建立 Next.js 專案
+npx shadcn@latest init                  # 初始化 shadcn/ui
+```
+
+## package.json scripts 範例
+
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "better-auth": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}
+```
+
+## Event Loop 簡易流程
+
+```
+Call Stack → Web APIs / OS APIs → Callback Queue → Call Stack 空閒時取出執行
+```
+
+- **單執行緒**：一次只能做一件事
+- **非同步**：I/O 操作丟給作業系統，自己回頭處理其他請求
+- **適合**：API 服務、資料庫查詢、檔案讀寫
+- **不適合**：大量 CPU 計算
+
+## CommonJS vs ESM
+
+| 特性 | CommonJS | ESM |
+|------|----------|-----|
+| 引入語法 | `const x = require('x')` | `import x from 'x'` |
+| 匯出語法 | `module.exports = x` | `export default x` |
+| 載入方式 | 同步 | 靜態分析 |
+| 適用場景 | Node.js 原生 | Next.js / 現代前端 |
+
+## .env 環境變數
+
+```bash
+# .env 檔案（不要推上 Git！）
+STRIPE_SECRET_KEY=sk_live_xxx
+DATABASE_URL=postgresql://...
+NEXT_PUBLIC_API_URL=http://localhost:3000
+
+# 程式碼中讀取
+const key = process.env.STRIPE_SECRET_KEY;
+```
+
+## PATH 環境變數
+
+Windows 檢查：
+```powershell
+echo %PATH%
+```
+
+常見 Node.js 路徑：
+```
+C:\Program Files\nodejs\
+```
+
+如果出現 `node: command not found`，重新開啟終端機通常能解決。
