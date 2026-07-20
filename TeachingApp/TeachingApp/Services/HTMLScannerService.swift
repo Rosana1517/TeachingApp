@@ -101,22 +101,85 @@ final class HTMLScannerService: ObservableObject {
     }
 
     private func fetchRemoteCourses() async throws -> [RemoteCourse] {
+        async let releaseCoursesTask = fetchReleaseCourses()
+        async let repoCoursesTask = fetchRepositoryCourses()
+
+        let releaseCourses = try await releaseCoursesTask
+        let repoCourses = try await repoCoursesTask
+
+        // Prefer release assets when present because they carry publish metadata,
+        // but fall back to repo HTML files so freshly committed lessons are still
+        // readable before the release-upload workflow catches up.
+        var mergedCoursesByFileName = Dictionary(
+            uniqueKeysWithValues: releaseCourses.map { ($0.fileName, $0) }
+        )
+
+        for repoCourse in repoCourses where mergedCoursesByFileName[repoCourse.fileName] == nil {
+            mergedCoursesByFileName[repoCourse.fileName] = repoCourse
+        }
+
+        return mergedCoursesByFileName.values.sorted { lhs, rhs in
+            if lhs.generatedDate != rhs.generatedDate {
+                return lhs.generatedDate > rhs.generatedDate
+            }
+            return Self.lessonOrder(for: lhs.fileName) > Self.lessonOrder(for: rhs.fileName)
+        }
+    }
+
+    private func fetchReleaseCourses() async throws -> [RemoteCourse] {
         let releases = try await fetchAllReleases()
 
         return releases.flatMap { release in
-            release.assets.filter { $0.name.hasSuffix(".html") }.map { asset in
-                let metadata = Self.parseCourseMetadata(fileName: asset.name)
+            release.assets
+                .filter { Self.isLessonHTMLFile($0.name) }
+                .map { asset in
+                    let metadata = Self.parseCourseMetadata(fileName: asset.name)
+                    return RemoteCourse(
+                        id: "\(release.id)-\(asset.name)",
+                        title: metadata.title,
+                        category: metadata.category,
+                        fileName: asset.name,
+                        downloadUrl: asset.downloadUrl,
+                        generatedDate: release.publishedAt ?? Date(),
+                        description: release.body ?? ""
+                    )
+                }
+        }
+    }
+
+    private func fetchRepositoryCourses() async throws -> [RemoteCourse] {
+        guard let url = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/contents/TeachingApp?ref=main") else {
+            throw ScannerError.invalidURL
+        }
+
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        request.httpMethod = "GET"
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        if !accessToken.isEmpty {
+            request.setValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
+
+        let decoder = JSONDecoder()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw ScannerError.networkError
+        }
+
+        let contents = try decoder.decode([RepositoryContent].self, from: data)
+        return contents
+            .filter { $0.type == "file" && Self.isLessonHTMLFile($0.name) }
+            .map { item in
+                let metadata = Self.parseCourseMetadata(fileName: item.name)
                 return RemoteCourse(
-                    id: "\(release.id)-\(asset.name)",
+                    id: "repo-\(item.path)",
                     title: metadata.title,
                     category: metadata.category,
-                    fileName: asset.name,
-                    downloadUrl: asset.downloadUrl,
-                    generatedDate: release.publishedAt ?? Date(),
-                    description: release.body ?? ""
+                    fileName: item.name,
+                    downloadUrl: item.downloadUrl ?? "https://raw.githubusercontent.com/\(owner)/\(repo)/main/\(item.path)",
+                    generatedDate: Date(),
+                    description: "Loaded from repository contents"
                 )
             }
-        }
     }
 
     /// Lesson HTML assets follow the naming convention `{category}-lesson-{number}.html`
@@ -136,6 +199,26 @@ final class HTMLScannerService: ObservableObject {
         let category = categoryRaw.replacingOccurrences(of: "-", with: " ").capitalized
         let title = "\(category) Lesson \(numberPart)"
         return (category: category, title: title)
+    }
+
+    private static func isLessonHTMLFile(_ fileName: String) -> Bool {
+        fileName.hasSuffix(".html") && fileName.contains("-lesson-")
+    }
+
+    private static func lessonOrder(for fileName: String) -> Int {
+        let pattern = #"-lesson-(\d+)\.html$"#
+        guard
+            let regex = try? NSRegularExpression(pattern: pattern),
+            let match = regex.firstMatch(
+                in: fileName,
+                range: NSRange(location: 0, length: fileName.utf16.count)
+            ),
+            let range = Range(match.range(at: 1), in: fileName)
+        else {
+            return 0
+        }
+
+        return Int(fileName[range]) ?? 0
     }
 
     private func filterNewCourses(_ allCourses: [RemoteCourse]) -> [RemoteCourse] {
@@ -201,6 +284,22 @@ extension HTMLScannerService {
             case name
             case downloadUrl = "browser_download_url"
             case downloadCount = "download_count"
+        }
+    }
+
+    struct RepositoryContent: Codable, Identifiable {
+        let name: String
+        let path: String
+        let downloadUrl: String?
+        let type: String
+
+        var id: String { path }
+
+        enum CodingKeys: String, CodingKey {
+            case name
+            case path
+            case downloadUrl = "download_url"
+            case type
         }
     }
 }

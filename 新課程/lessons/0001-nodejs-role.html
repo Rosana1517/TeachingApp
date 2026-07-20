@@ -1,261 +1,116 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>L01 — Node.js 的角色</title>
-  <link rel="stylesheet" href="../assets/styles.css">
-  <style>
-    .deep-dive {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 1rem;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .deep-dive summary {
-      cursor: pointer;
-      font-weight: 700;
-      color: #334155;
-      font-size: 1.05rem;
-    }
-    .deep-dive[open] summary {
-      margin-bottom: 1rem;
-      color: #1e40af;
-    }
-    .primary-source {
-      background: linear-gradient(135deg, #fefce8, #fef9c3);
-      border-left: 4px solid #eab308;
-      border-radius: 0.75rem;
-      padding: 1.25rem;
-      margin-top: 2rem;
-    }
-    .primary-source h4 {
-      color: #854d0e;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-    }
-    .primary-source a {
-      color: #a16207;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .primary-source p {
-      color: #713f12;
-      font-size: 0.9rem;
-    }
-    .followup {
-      background: #f0fdf4;
-      border: 1px dashed #86efac;
-      border-radius: 0.75rem;
-      padding: 1rem 1.25rem;
-      margin-top: 1.5rem;
-      color: #166534;
-      font-size: 0.9rem;
-    }
-    .nav-links {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #e2e8f0;
-      font-size: 0.85rem;
-    }
-    .nav-links a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .nav-links a:hover { text-decoration: underline; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L01 — Node.js 的角色</title>
+<link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
 <div class="container">
 
-  <!-- Header -->
-  <div class="lesson-header">
-    <span class="lesson-phase">Phase 1: The Core</span>
-    <span class="lesson-number">LESSON 01 / 23</span>
-    <h1 class="lesson-title">Node.js 的角色</h1>
-    <p class="lesson-subtitle">JavaScript 脫離瀏覽器後的完整運作原理，以及 AI Agent 是如何調用它來執行你的專案。</p>
-  </div>
+<header class="lesson-header">
+<span class="lesson-phase">Phase 1: The Core</span>
+<span class="lesson-number">Lesson 01 / 23</span>
+<h1 class="lesson-title">Node.js 的角色</h1>
+<p class="lesson-subtitle">JavaScript 為什麼能離開瀏覽器，在你的電腦上直接執行？</p>
+</header>
 
-  <!-- Section 1 -->
-  <div class="section">
-    <div class="section-title"><span class="icon">1</span> JavaScript 的兩條世界線</div>
-    <p>JavaScript 原本是一種「瀏覽器內嵌語言」——它只能在 Chrome、Safari 裡跑。直到 2009 年，Ryan Dahl 把 Google Chrome 的 <strong>V8 JavaScript 引擎</strong> 抽出來，包了一層 C++ 外殼，讓 JavaScript 能直接在作業系統上執行。這就是 <strong>Node.js</strong>。</p>
-    <div class="diagram-grid">
-      <div class="diagram-card">
-        <span class="tag tag-blue">瀏覽器端</span>
-        <p style="font-size:0.9rem;color:#64748b;">Chrome / Safari<br>操作 DOM、CSS、事件<br><strong>受限於安全沙箱</strong></p>
-      </div>
-      <div class="diagram-card">
-        <span class="tag tag-green">伺服器端</span>
-        <p style="font-size:0.9rem;color:#64748b;">Node.js + V8 引擎<br>讀寫檔案、連資料庫<br><strong>擁有系統級權限</strong></p>
-      </div>
-    </div>
-  </div>
+<section class="section">
+<h2 class="section-title">JavaScript 原本只能待在瀏覽器裡</h2>
+<p>JavaScript 誕生於 1995 年，設計初衷只是讓網頁能互動——按鈕點擊、表單驗證。它一直被關在 Chrome、Safari 這些瀏覽器的「安全沙箱」裡，不能讀取你的硬碟、不能連資料庫、不能架設伺服器。</p>
+<p>直到 2009 年，Ryan Dahl 做了一件事：他把 Google Chrome 裡的 <strong>V8 JavaScript 引擎</strong> 抽出來，包上一層 C++ 外殼，讓 JavaScript 能直接在作業系統上執行。這就是 <strong>Node.js</strong>。</p>
+</section>
 
-  <!-- Section 2 -->
-  <div class="section">
-    <div class="section-title"><span class="icon">2</span> AI Agent 調用 Node.js 的完整流程</div>
-    <p>當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它實際上經歷了以下步驟：</p>
-    <div class="highlight-box">
-      <p><strong>Step 1</strong> — 建立專案結構：執行 <code>npx create-next-app@latest my-project</code></p>
-      <p><strong>Step 2</strong> — 安裝依賴：執行 <code>npm install better-auth</code>，將套件寫入 package.json 並下載到 node_modules</p>
-      <p><strong>Step 3</strong> — 寫入代碼：直接編輯你的 .ts/.tsx 檔案</p>
-      <p><strong>Step 4</strong> — 啟動開發伺服器：執行 <code>npm run dev</code>，Node.js 啟動 Next.js 伺服器，監聽 Port 3000</p>
-      <p><strong>Step 5</strong> — 讀取錯誤：如果報錯，AI 會分析終端機輸出的 Stack Trace，然後修正代碼</p>
-    </div>
-  </div>
+<section class="section">
+<h2 class="section-title">同一個語言，兩個世界</h2>
+<div class="diagram-grid">
+<div class="diagram-card">
+<span class="tag tag-blue">瀏覽器端</span>
+<p style="font-size:0.85rem;color:#666;">Chrome / Safari<br>操作 DOM、CSS、事件<br><strong>受限於安全沙箱</strong></p>
+</div>
+<div class="diagram-card">
+<span class="tag tag-green">伺服器端</span>
+<p style="font-size:0.85rem;color:#666;">Node.js + V8 引擎<br>讀寫檔案、連資料庫<br><strong>擁有系統級權限</strong></p>
+</div>
+</div>
+</section>
 
-  <!-- Deep Dive: V8 Engine -->
-  <details class="deep-dive">
-    <summary>🔬 深入：V8 引擎到底是怎麼工作的？</summary>
-    <div style="color:#475569;">
-      <p>V8 是 Google 用 C++ 寫的開源 JavaScript 引擎，也是 Chrome 瀏覽器的核心。它的任務是把人類寫的 JavaScript 原始碼轉換成 CPU 能執行的機器碼。</p>
-      <div class="terminal-block" style="margin-top:0.8rem;">
-        <span class="output">Parser（解析器）</span> → 拆解成抽象語法樹（AST）<br>
-        <span class="output">Ignition（解釋器）</span> → 逐行翻譯成位元組碼（Bytecode）<br>
-        <span class="output">TurboFan（編譯器）</span> → 偵測 Hot Path，編譯成高度優化的機器碼<br>
-        <span class="output">GC（垃圾回收器）</span> → 自動清理不再使用的記憶體
-      </div>
-      <p style="font-size:0.9rem;font-style:italic;margin-top:0.5rem;">這代表 Node.js 的效能之所以快，是因為 V8 不只是「解釋」程式碼，還會在執行過程中動態優化。</p>
-    </div>
-  </details>
+<section class="section">
+<h2 class="section-title">AI Agent 怎麼用到 Node.js？</h2>
+<p>當你對 Claude Code 說「幫我安裝一個套件」時，它底層做的事情只有一個：<code>npm install</code>。</p>
+<div class="terminal-block"><span class="prompt">$</span> <span class="cmd">npm install date-fns</span><br><span class="output">added 1 package in 2.3s</span></div>
+<p><strong>NPM（Node Package Manager）</strong> 隨 Node.js 一起安裝。它是全球最大的開源套件倉庫，裡面有超過 200 萬個套件。沒有 Node.js，AI 就沒有「手」來幫你下載和管理這些工具。</p>
+</section>
 
-  <!-- Deep Dive: Event Loop -->
-  <details class="deep-dive">
-    <summary>🧠 深入：Event Loop —— Node.js 的單執行緒秘密</summary>
-    <div style="color:#475569;">
-      <p>Node.js 是<strong>單執行緒</strong>的。當它讀取一個檔案時，不會「等」檔案讀完，而是把讀取任務丟給作業系統，自己回頭處理其他請求。檔案讀完後，結果放進 Callback Queue，Event Loop 會在 Call Stack 空閒時取出執行。</p>
-      <div class="terminal-block" style="margin-top:0.8rem;">
-        <span class="output">Call Stack</span> → <span class="output">Web APIs / OS APIs</span> → <span class="output">Callback Queue</span> → <span class="output">Call Stack 有空時取出執行</span>
-      </div>
-      <p style="font-size:0.9rem;font-style:italic;margin-top:0.5rem;">這就是為什麼 Node.js 適合 I/O 密集型應用（API、資料庫查詢），但不適合大量計算。</p>
-    </div>
-  </details>
+<details class="deep-dive">
+<summary>🔬 深入：V8 引擎如何把程式碼變成機器能懂的指令？</summary>
+<p>V8 是 Google 用 C++ 寫的開源 JavaScript 引擎。它的工作是把人類寫的 JavaScript 原始碼轉換成 CPU 能執行的機器碼。</p>
+<div class="terminal-block"><span class="output">原始碼</span> → <span class="cmd">Parser</span>（拆解成 AST）→ <span class="cmd">Ignition</span>（解釋成 Bytecode）→ <span class="cmd">TurboFan</span>（優化為機器碼）→ <span class="cmd">GC</span>（清理記憶體）</div>
+<p style="font-size:0.9rem;color:#666;font-style:italic;">這代表 Node.js 的效能之所以快，是因為 V8 不只是「解釋」程式碼，還會在執行過程中動態優化被頻繁呼叫的區域。</p>
+</details>
 
-  <!-- Deep Dive: CommonJS vs ESM -->
-  <details class="deep-dive">
-    <summary>📦 深入：CommonJS vs ESM —— Node.js 的模組系統之爭</summary>
-    <div class="diagram-grid">
-      <div class="diagram-card" style="text-align:left;">
-        <span class="tag tag-red">CommonJS</span>
-        <div class="terminal-block" style="margin-top:0.5rem;">
-          <span class="cmd">const fs = require('fs');</span><br>
-          <span class="cmd">module.exports = myFunc;</span>
-        </div>
-      </div>
-      <div class="diagram-card" style="text-align:left;">
-        <span class="tag tag-blue">ESM</span>
-        <div class="terminal-block" style="margin-top:0.5rem;">
-          <span class="cmd">import fs from 'fs';</span><br>
-          <span class="cmd">export default myFunc;</span>
-        </div>
-      </div>
-    </div>
-    <p style="font-size:0.9rem;color:#64748b;">如果你看到 <code>require()</code> 和 <code>import</code> 混用導致報錯，這就是模組系統的衝突。AI 通常會根據專案配置自動選擇正確的語法。</p>
-  </details>
+<details class="deep-dive">
+<summary>🧠 深入：Event Loop —— Node.js 為什麼是「單執行緒」卻不卡住？</summary>
+<p>Node.js 是<strong>單執行緒</strong>的。當它讀取一個檔案時，不會傻等檔案讀完，而是把任務丟給作業系統，自己回頭處理其他請求。檔案讀完後，結果放進 Callback Queue，Event Loop 會在 Call Stack 空閒時取出執行。</p>
+<div class="terminal-block"><span class="output">Call Stack</span> → <span class="output">OS API</span> → <span class="output">Callback Queue</span> → <span class="cmd">有空時取出執行</span></div>
+<p style="font-size:0.9rem;color:#666;font-style:italic;">這就是為什麼 Node.js 適合 API 服務和資料庫查詢，但不適合大量數學運算。</p>
+</details>
 
-  <!-- Deep Dive: PATH & .env -->
-  <details class="deep-dive">
-    <summary>⚙️ 深入：PATH 環境變數與 .env 安全規範</summary>
-    <div style="color:#475569;">
-      <p>當你在終端機輸入 <code>node</code>，作業系統會去一串叫做 <strong>PATH</strong> 的路徑清單裡搜尋可執行檔。如果出現 <code>node: command not found</code>，代表 Node.js 的路徑沒有被正確設定。</p>
-      <p style="margin-top:0.8rem;"><strong>.env 安全規範：</strong>API Key 不能寫死在代碼裡推上 GitHub。</p>
-      <div class="diagram-grid">
-        <div class="diagram-card" style="text-align:left;border-color:#fecaca;">
-          <span class="tag tag-red">❌ 錯誤</span>
-          <div class="terminal-block" style="margin-top:0.5rem;">
-            <span class="error">const key = "sk_live_xxx";</span>
-          </div>
-        </div>
-        <div class="diagram-card" style="text-align:left;border-color:#bbf7d0;">
-          <span class="tag tag-green">✅ 正確</span>
-          <div class="terminal-block" style="margin-top:0.5rem;">
-            <span class="cmd">STRIPE_KEY=sk_live_xxx</span><br>
-            <span class="cmd">process.env.STRIPE_KEY</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </details>
-
-  <!-- Quiz -->
-  <div class="quiz-box">
-    <h4>✏️ 小測驗</h4>
-
-    <div class="quiz-item">
-      <div class="quiz-question">1. Node.js 的本質是什麼？</div>
-      <ul class="quiz-options">
-        <li onclick="checkAnswer(this, false)">A. 一種新的程式語言</li>
-        <li onclick="checkAnswer(this, true)">B. 把 V8 引擎帶出瀏覽器的執行環境</li>
-        <li onclick="checkAnswer(this, false)">C. 瀏覽器內建的 JavaScript 引擎</li>
-      </ul>
-      <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
-      <div class="answer">✅ 正確答案：B。Node.js 是 Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行。</div>
-    </div>
-
-    <div class="quiz-item">
-      <div class="quiz-question">2. 當你對 AI 說「幫我安裝套件」，它底層執行的是哪個命令？</div>
-      <ul class="quiz-options">
-        <li onclick="checkAnswer(this, false)">A. pip install</li>
-        <li onclick="checkAnswer(this, false)">B. cargo add</li>
-        <li onclick="checkAnswer(this, true)">C. npm install</li>
-      </ul>
-      <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
-      <div class="answer">✅ 正確答案：C。NPM 隨 Node.js 一起安裝，是 AI 用來管理第三方套件的管家。</div>
-    </div>
-
-    <div class="quiz-item">
-      <div class="quiz-question">3. 為什麼 API Key 不能寫在代碼裡？</div>
-      <ul class="quiz-options">
-        <li onclick="checkAnswer(this, true)">A. 會被推上 GitHub 洩漏給所有人</li>
-        <li onclick="checkAnswer(this, false)">B. 會影響程式執行速度</li>
-        <li onclick="checkAnswer(this, false)">C. Node.js 無法讀取字串變數</li>
-      </ul>
-      <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
-      <div class="answer">✅ 正確答案：A。敏感資訊應放在 .env 中，並透過 .gitignore 排除在版本控制之外。</div>
-    </div>
-  </div>
-
-  <!-- Task -->
-  <div class="task-box">
-    <h4>🚀 今日任務：檢查你的 Node.js 環境</h4>
-    <ol>
-      <li>打開終端機，依序執行 <code>node -v</code>、<code>npm -v</code>、<code>npx -v</code></li>
-      <li>確認三個命令都有輸出版本號</li>
-      <li>進階挑戰：執行 <code>node -e "console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);"</code>，體驗 Event Loop</li>
-    </ol>
-  </div>
-
-  <!-- Primary Source -->
-  <div class="primary-source">
-    <h4>📖 推薦延伸閱讀</h4>
-    <p><a href="https://nodejs.org/en/learn/getting-started/introduction-to-nodejs" target="_blank">Node.js 官方入門指南</a> — 最權威的 Node.js 介紹，涵蓋 V8、Event Loop、模組系統等核心概念。</p>
-    <p style="margin-top:0.4rem;"><a href="https://developer.mozilla.org/en-US/docs/Glossary/V8" target="_blank">MDN: V8 JavaScript Engine</a> — 深入了解 V8 的編譯與優化機制。</p>
-  </div>
-
-  <!-- Followup Reminder -->
-  <div class="followup">
-    💡 有任何不清楚的地方嗎？隨時問我！例如：「為什麼 Node.js 是單執行緒？」、「Event Loop 的 Timer 階段在做什麼？」、「CommonJS 和 ESM 什麼時候會衝突？」——這些都可以繼續深入。
-  </div>
-
-  <!-- Navigation -->
-  <div class="nav-links">
-    <a href="#">← 上一課</a>
-    <a href="./0002-localhost-port.html">下一課：Localhost 與 Port →</a>
-  </div>
-
-  <!-- Footer -->
-  <div class="lesson-footer">
-    <p>Vibe Coding Masterclass · Lesson 01 · Node.js 的角色</p>
-    <p style="margin-top:0.3rem;">參考文件：<a href="../reference/nodejs-cheatsheet.html">Node.js Cheatsheet</a></p>
-  </div>
-
+<div class="quiz-box">
+<h4>✏️ 小測驗</h4>
+<div class="quiz-item">
+<div class="quiz-question">Node.js 的本質是什麼？</div>
+<ul class="quiz-options">
+<li onclick="checkAnswer(this, false)">一種全新的程式語言</li>
+<li onclick="checkAnswer(this, true)">把 V8 引擎帶出瀏覽器的執行環境</li>
+<li onclick="checkAnswer(this, false)">瀏覽器內建的 JavaScript 引擎</li>
+</ul>
+<button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+<div class="answer">正確答案：把 V8 引擎帶出瀏覽器的執行環境。Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行。</div>
+</div>
+<div class="quiz-item">
+<div class="quiz-question">AI 幫你安裝套件時，底層執行的是哪個命令？</div>
+<ul class="quiz-options">
+<li onclick="checkAnswer(this, false)">pip install</li>
+<li onclick="checkAnswer(this, true)">npm install</li>
+<li onclick="checkAnswer(this, false)">cargo add</li>
+</ul>
+<button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+<div class="answer">正確答案：npm install。NPM 隨 Node.js 一起安裝，是 AI 用來管理第三方套件的管家。</div>
+</div>
 </div>
 
+<div class="task-box">
+<h4>🚀 今日任務</h4>
+<ol>
+<li>打開終端機，執行 <code>node -v</code>，確認有輸出版本號</li>
+<li>執行 <code>npm -v</code>，確認 NPM 也隨 Node.js 一起安裝了</li>
+<li>進階挑戰：執行 <code>node -e "console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);"</code>，體驗 Event Loop 的非同步行為</li>
+</ol>
+</div>
+
+<div class="primary-source">
+<h4>📖 推薦延伸閱讀</h4>
+<p><a href="https://nodejs.org/en/learn/getting-started/introduction-to-nodejs" target="_blank">Node.js 官方入門指南</a> — 最權威的 Node.js 介紹，涵蓋 V8、Event Loop、模組系統等核心概念。</p>
+<p style="margin-top:0.4rem;"><a href="https://developer.mozilla.org/en-US/docs/Glossary/V8" target="_blank">MDN: V8 JavaScript Engine</a> — 深入了解 V8 的編譯與優化機制。</p>
+</div>
+
+<div class="followup">
+💡 有任何不清楚的地方嗎？隨時問我！例如：「為什麼 Node.js 是單執行緒？」、「Event Loop 的 Timer 階段在做什麼？」——這些都可以繼續深入。
+</div>
+
+<div class="nav-links">
+<a href="#">← 上一課</a>
+<a href="./0002-localhost-port.html">下一課：Localhost 與 Port →</a>
+</div>
+
+<footer class="lesson-footer">
+<p>Vibe Coding Masterclass · Lesson 01 · Node.js 的角色</p>
+<p style="margin-top:0.3rem;">參考文件：<a href="../reference/nodejs-cheatsheet.html">Node.js Cheatsheet</a></p>
+</footer>
+
+</div>
 <script src="../assets/quiz-widget.js"></script>
 </body>
 </html>

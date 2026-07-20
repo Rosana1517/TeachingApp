@@ -55,39 +55,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to GitHub Release
-        id: upload_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get the latest french-lesson file
-          LESSON_FILE=$(ls -t french-lesson-*.html | head -1)
-          TAG_NAME=$(echo $LESSON_FILE | sed 's/french-lesson-\([0-9]*\)\.html/lesson-\1/')
-          
+          # The generator writes exactly one new lesson file each run. Use the
+          # highest lesson number rather than raw mtime so checkout timestamps
+          # or runner clock quirks never pick the wrong file.
+          LESSON_FILE=$(ls french-lesson-*.html | sort | tail -1)
+          TAG_NAME=$(echo "$LESSON_FILE" | sed 's/french-lesson-\([0-9]*\)\.html/lesson-\1/')
+
           echo "Generating lesson file: $LESSON_FILE"
           echo "Tag name: $TAG_NAME"
-          
-          # Create release body JSON
-          cat > release-body.json <<EOF
-          {"tag_name":"$TAG_NAME","name":"Lesson $TAG_NAME","body":"Auto-generated French lesson"}
-          EOF
-          
-          # Create release
-          UPLOAD_URL=$(curl -s -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "Content-Type: application/json" \
-            https://api.github.com/repos/${{ github.repository }}/releases \
-            --data-binary @release-body.json | \
-            jq -r '.upload_url | gsub("\\{.*$";"")')
-          
-          echo "upload_url=$UPLOAD_URL" >> $GITHUB_OUTPUT
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-          
-          # Upload HTML file as asset
-          curl -s -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: text/html" \
-            --data-binary @"$LESSON_FILE" \
-            "${UPLOAD_URL}?name=$LESSON_FILE"
-          
+
+          if gh release view "$TAG_NAME" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "$LESSON_FILE" \
+              --repo "${{ github.repository }}" \
+              --clobber
+          else
+            gh release create "$TAG_NAME" "$LESSON_FILE" \
+              --repo "${{ github.repository }}" \
+              --title "Lesson $TAG_NAME" \
+              --notes "Auto-generated French lesson"
+          fi
+
           echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG_NAME"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
