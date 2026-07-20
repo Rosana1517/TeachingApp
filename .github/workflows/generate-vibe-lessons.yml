@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write  # 允許寫入 Releases
 
 jobs:
   generate-vibe-lesson:
@@ -51,5 +51,39 @@ jobs:
           git add vibe-lesson-*.html
           git diff --cached --quiet || git commit -m "Add Vibe Coding lesson: $(date +%Y-%m-%d)"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to GitHub Release
+        id: upload_release
+        run: |
+          LESSON_FILE=$(ls -t vibe-lesson-*.html | head -1)
+          TAG_NAME="vibe-lesson-$(echo $LESSON_FILE | sed 's/vibe-lesson-\([0-9]*\)\.html/\1/')"
+
+          echo "Generating lesson file: $LESSON_FILE"
+          echo "Tag name: $TAG_NAME"
+
+          cat > release-body.json <<EOF
+          {"tag_name":"$TAG_NAME","name":"Vibe Coding Lesson $TAG_NAME","body":"Auto-generated Vibe Coding lesson"}
+          EOF
+
+          UPLOAD_URL=$(curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/${{ github.repository }}/releases \
+            --data-binary @release-body.json | \
+            jq -r '.upload_url | gsub("\\{.*$";"")')
+
+          echo "upload_url=$UPLOAD_URL" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: text/html" \
+            --data-binary @"$LESSON_FILE" \
+            "${UPLOAD_URL}?name=$LESSON_FILE"
+
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG_NAME"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
