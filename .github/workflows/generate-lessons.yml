@@ -26,11 +26,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
       - name: Generate French lesson
         run: |
           echo "Current directory: $(pwd)"
