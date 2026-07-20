@@ -2,6 +2,7 @@
 """
 自動生成 Vibe Coding 教學課程腳本
 參考 generate_french_lesson.py 的模式，生成精美的 HTML 課程頁面。
+所有 CSS 和 JavaScript 都內嵌在單一 HTML 檔案中（自包含），與 TeachingApp/ 下的 french-lesson 保持一致風格。
 """
 
 import os
@@ -11,7 +12,6 @@ import urllib.request
 import urllib.error
 from datetime import datetime
 
-# 硬編碼課程資料庫（前幾課使用預設內容）
 LESSONS = [
     {
         "id": 1,
@@ -106,7 +106,6 @@ LESSONS = [
     }
 ]
 
-# 課程 JSON Schema 指令（供 LLM 生成下一課使用）
 LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要加任何說明文字、不要用 markdown code block），結構必須完全符合：
 
 {
@@ -156,7 +155,11 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
 
 def get_next_lesson_id():
     """獲取下一個課程 ID；L01 已由手動優化的版本，自動跳過"""
-    existing_files = [f for f in os.listdir('.') if f.startswith('vibe-lesson-') and f.endswith('.html')]
+    search_dirs = ['.', os.path.join('..', 'TeachingApp')]
+    existing_files = []
+    for d in search_dirs:
+        if os.path.isdir(d):
+            existing_files.extend(f for f in os.listdir(d) if f.startswith('vibe-lesson-') and f.endswith('.html'))
     if not existing_files:
         return 1
 
@@ -168,24 +171,26 @@ def get_next_lesson_id():
         except:
             pass
 
-    # L01 已手動優化為 Tufte 風格，不讓腳本覆蓋
     return max(max_id + 1, 2)
 
 
 def get_previous_topics():
     """掃描已經存在的課程 HTML，抓出每堂課的標題，避免新課程主題重複。"""
     topics = [lesson["title"] for lesson in LESSONS]
-    existing_files = sorted(f for f in os.listdir(".") if f.startswith("vibe-lesson-") and f.endswith(".html"))
-    for filename in existing_files:
-        try:
-            with open(filename, encoding="utf-8") as f:
-                html = f.read()
-        except OSError:
+    search_dirs = ['.', os.path.join('..', 'TeachingApp')]
+    for d in search_dirs:
+        if not os.path.isdir(d):
             continue
-        match = re.search(r'<h1 class="lesson-title">([^<]+)</h1>', html)
-        if match:
-            topics.append(match.group(1).strip())
-    # 去重但保留順序
+        existing_files = sorted(f for f in os.listdir(d) if f.startswith("vibe-lesson-") and f.endswith(".html"))
+        for filename in existing_files:
+            try:
+                with open(os.path.join(d, filename), encoding="utf-8") as f:
+                    html = f.read()
+            except OSError:
+                continue
+            match = re.search(r'<h1 class="lesson-title">([^<]+)</h1>', html)
+            if match:
+                topics.append(match.group(1).strip())
     seen = set()
     deduped = []
     for topic in topics:
@@ -196,13 +201,7 @@ def get_previous_topics():
 
 
 def generate_lesson_via_llm(next_id, previous_topics):
-    """呼叫第三方 OpenAI 相容 API 生成下一堂課的內容（JSON），失敗時回傳 None。
-
-    透過環境變數設定第三方服務：
-      LLM_API_URL   — 完整的 chat completions 端點
-      LLM_API_KEY   — 該服務的 API key
-      LLM_MODEL     — 要使用的 model 名稱
-    """
+    """呼叫第三方 OpenAI 相容 API 生成下一堂課的內容（JSON），失敗時回傳 None。"""
     api_url = os.environ.get("LLM_API_URL")
     api_key = os.environ.get("LLM_API_KEY")
     model = os.environ.get("LLM_MODEL")
@@ -254,7 +253,6 @@ def generate_lesson_via_llm(next_id, previous_topics):
         print(f"無法從回應中取出內容：{error}；原始回應：{result}")
         return None
 
-    # 防止模型還是包了 ```json ... ``` 之類的 code block
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if not match:
         print("LLM 回應裡找不到 JSON 物件")
@@ -271,23 +269,19 @@ def generate_lesson_via_llm(next_id, previous_topics):
 
 
 def generate_html(lesson):
-    """生成精美的 HTML 課程頁面"""
+    """生成精美的 HTML 課程頁面（自包含，無外部 CSS/JS 依賴）"""
     lesson_num = f"{lesson['id']:02d}"
     phase = lesson.get("phase", "Phase 1: The Core")
 
     html_parts = []
 
-    # HTML head
     html_parts.append('<!DOCTYPE html>')
     html_parts.append('<html lang="zh-Hant">')
     html_parts.append('<head>')
     html_parts.append('<meta charset="UTF-8">')
     html_parts.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
-    html_parts.append(f'<title>L{lesson_num} — {lesson["title"]}</title>')
-    html_parts.append('<link rel="stylesheet" href="../assets/styles.css">')
-    html_parts.append('<style>')
-    html_parts.append(get_lesson_css())
-    html_parts.append('</style>')
+    html_parts.append(f'<title>Vibe Coding 課 {lesson_num} — {lesson["title"]}</title>')
+    html_parts.append(get_full_css())
     html_parts.append('</head>')
     html_parts.append('<body>')
     html_parts.append('<div class="container">')
@@ -296,8 +290,7 @@ def generate_html(lesson):
     html_parts.append('')
     html_parts.append('  <!-- Header -->')
     html_parts.append('  <div class="lesson-header">')
-    html_parts.append(f'    <span class="lesson-phase">{phase}</span>')
-    html_parts.append(f'    <span class="lesson-number">LESSON {lesson_num} / 23</span>')
+    html_parts.append(f'    <span class="lesson-number">{phase}</span>')
     html_parts.append(f'    <h1 class="lesson-title">{lesson["title"]}</h1>')
     html_parts.append(f'    <p class="lesson-subtitle">{lesson["subtitle"]}</p>')
     html_parts.append('  </div>')
@@ -309,17 +302,14 @@ def generate_html(lesson):
         html_parts.append('  <div class="section">')
         html_parts.append(f'    <div class="section-title"><span class="icon">{section["icon"]}</span> {section["title"]}</div>')
 
-        # Content paragraph
         if 'content' in section:
             html_parts.append(f'    <p>{section["content"]}</p>')
 
-        # Terminal block
         if 'terminal_block' in section:
             html_parts.append('    <div class="terminal-block">')
             html_parts.append(section['terminal_block'])
             html_parts.append('    </div>')
 
-        # Comparison grid
         if 'comparison' in section:
             html_parts.append('    <div class="diagram-grid">')
             for item in section['comparison']:
@@ -330,10 +320,9 @@ def generate_html(lesson):
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
 
-        # Quiz
         if 'quiz' in section:
             html_parts.append('    <div class="quiz-box">')
-            html_parts.append('      <h4>✏️ 小測驗</h4>')
+            html_parts.append('      <h4>請先回答，再點擊「查看答案」</h4>')
             for idx, quiz_item in enumerate(section['quiz'], 1):
                 html_parts.append('')
                 html_parts.append('      <div class="quiz-item">')
@@ -348,41 +337,22 @@ def generate_html(lesson):
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
 
-        # Tasks
         if 'tasks' in section:
-            html_parts.append('    <div class="task-box">')
-            html_parts.append(f'      <h4>🚀 今日任務</h4>')
-            html_parts.append('      <ol>')
+            html_parts.append('    <div class="follow-box">')
+            html_parts.append(f'      <h4>請依序完成以下練習</h4>')
+            html_parts.append('      <ol style="padding-left: 1.5rem;">')
             for task in section['tasks']:
-                html_parts.append(f'        <li>{task}</li>')
+                html_parts.append(f'        <li style="padding: 0.5rem 0;">{task}</li>')
             html_parts.append('      </ol>')
             html_parts.append('    </div>')
 
         html_parts.append('  </div>')
-
-    # Primary Source
-    html_parts.append('')
-    html_parts.append('  <!-- Primary Source -->')
-    html_parts.append('  <div class="primary-source">')
-    html_parts.append('    <h4>📖 推薦延伸閱讀</h4>')
-    html_parts.append(f'    <p>參考文件：<a href="../reference/lesson-{lesson_num}-cheatsheet.html">Lesson {lesson_num} Cheatsheet</a></p>')
-    html_parts.append('  </div>')
 
     # Followup Reminder
     html_parts.append('')
     html_parts.append('  <!-- Followup Reminder -->')
     html_parts.append('  <div class="followup">')
     html_parts.append('    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。')
-    html_parts.append('  </div>')
-
-    # Navigation
-    html_parts.append('')
-    html_parts.append('  <!-- Navigation -->')
-    html_parts.append('  <div class="nav-links">')
-    prev_link = f"./000{lesson['id']-1:02d}-previous.html" if lesson['id'] > 1 else "#"
-    next_link = f"./000{lesson['id']+1:02d}-next.html" if lesson['id'] < 23 else "#"
-    html_parts.append(f'    <a href="{prev_link}">← 上一課</a>')
-    html_parts.append(f'    <a href="{next_link}">下一課 →</a>')
     html_parts.append('  </div>')
 
     # Footer
@@ -395,80 +365,301 @@ def generate_html(lesson):
     html_parts.append('')
     html_parts.append('</div>')
 
-    # JavaScript
+    # Inline JavaScript (self-contained, no external dependency)
     html_parts.append('')
-    html_parts.append('<script src="../assets/quiz-widget.js"></script>')
+    html_parts.append('<script>')
+    html_parts.append(INLINE_JS)
+    html_parts.append('</script>')
     html_parts.append('</body>')
     html_parts.append('</html>')
 
     return '\n'.join(html_parts)
 
 
-def get_lesson_css():
-    """返回課程專屬 CSS"""
-    return """
-    .deep-dive {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 1rem;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .deep-dive summary {
-      cursor: pointer;
-      font-weight: 700;
-      color: #334155;
-      font-size: 1.05rem;
-    }
-    .deep-dive[open] summary {
-      margin-bottom: 1rem;
-      color: #1e40af;
-    }
-    .primary-source {
-      background: linear-gradient(135deg, #fefce8, #fef9c3);
-      border-left: 4px solid #eab308;
-      border-radius: 0.75rem;
-      padding: 1.25rem;
-      margin-top: 2rem;
-    }
-    .primary-source h4 {
-      color: #854d0e;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-    }
-    .primary-source a {
-      color: #a16207;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .primary-source p {
-      color: #713f12;
-      font-size: 0.9rem;
-    }
-    .followup {
-      background: #f0fdf4;
-      border: 1px dashed #86efac;
-      border-radius: 0.75rem;
-      padding: 1rem 1.25rem;
-      margin-top: 1.5rem;
-      color: #166534;
-      font-size: 0.9rem;
-    }
-    .nav-links {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #e2e8f0;
-      font-size: 0.85rem;
-    }
-    .nav-links a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .nav-links a:hover { text-decoration: underline; }
-    """
+INLINE_JS = """
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+"""
+
+
+def get_full_css():
+    """返回完整的自包含 CSS（與 TeachingApp/french-lesson 風格一致）"""
+    return '''<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>'''
 
 
 def main():
@@ -497,11 +688,14 @@ def main():
     # 生成檔案名稱
     filename = f"vibe-lesson-{lesson['id']:02d}.html"
 
-    # 寫入檔案
-    with open(filename, 'w', encoding='utf-8') as f:
+    # 寫入檔案到 TeachingApp/ 目錄（與 french-lesson 同級）
+    output_dir = os.path.join('..', 'TeachingApp')
+    os.makedirs(output_dir, exist_ok=True)
+    filepath = os.path.join(output_dir, filename)
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(html_content)
 
-    print(f"已成功生成課程: {filename}")
+    print(f"已成功生成課程: {filepath}")
     print(f"   標題: {lesson['title']}")
     print(f"   副標題: {lesson['subtitle']}")
     print(f"   檔案大小: {len(html_content)} bytes")

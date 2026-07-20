@@ -48,7 +48,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add vibe-lesson-*.html
+          git add TeachingApp/vibe-lesson-*.html
           git diff --cached --quiet || git commit -m "Add Vibe Coding lesson: $(date +%Y-%m-%d)"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
         env:
@@ -57,32 +57,23 @@ jobs:
       - name: Upload to GitHub Release
         id: upload_release
         run: |
-          LESSON_FILE=$(ls -t vibe-lesson-*.html | head -1)
-          TAG_NAME="vibe-lesson-$(echo $LESSON_FILE | sed 's/vibe-lesson-\([0-9]*\)\.html/\1/')"
+          LESSON_FILE=$(ls -t TeachingApp/vibe-lesson-*.html | head -1)
+          TAG_NAME="vibe-lesson-$(echo $LESSON_FILE | sed 's/.*vibe-lesson-\([0-9]*\)\.html/\1/')"
+          FILENAME=$(basename "$LESSON_FILE")
 
-          echo "Generating lesson file: $LESSON_FILE"
+          echo "Uploading lesson file: $FILENAME"
           echo "Tag name: $TAG_NAME"
 
-          cat > release-body.json <<EOF
-          {"tag_name":"$TAG_NAME","name":"Vibe Coding Lesson $TAG_NAME","body":"Auto-generated Vibe Coding lesson"}
-          EOF
+          # Delete existing asset if present (to replace with updated version)
+          gh release delete-asset "$TAG_NAME" "$FILENAME" --repo "${{ github.repository }}" --yes 2>/dev/null || true
 
-          UPLOAD_URL=$(curl -s -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "Content-Type: application/json" \
-            https://api.github.com/repos/${{ github.repository }}/releases \
-            --data-binary @release-body.json | \
-            jq -r '.upload_url | gsub("\\{.*$";"")')
-
-          echo "upload_url=$UPLOAD_URL" >> $GITHUB_OUTPUT
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-
-          curl -s -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: text/html" \
-            --data-binary @"$LESSON_FILE" \
-            "${UPLOAD_URL}?name=$LESSON_FILE"
+          # Create or update release with asset
+          gh release create "$TAG_NAME" \
+            --title "Vibe Coding Lesson $TAG_NAME" \
+            --notes "Auto-generated Vibe Coding lesson" \
+            --repo "${{ github.repository }}" \
+            "$LESSON_FILE" || \
+          gh release upload "$TAG_NAME" "$LESSON_FILE" --repo "${{ github.repository }}"
 
           echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG_NAME"
         env:

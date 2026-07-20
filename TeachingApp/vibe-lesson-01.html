@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 01 — Node.js 的角色</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Code / terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+  .tag-purple { background: #faf5ff; color: #9333ea; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Primary source */
+  .primary-source {
+    background: linear-gradient(135deg, #fefce8, #fef9c3);
+    border-left: 4px solid #eab308;
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    margin-top: 2rem;
+  }
+  .primary-source h4 {
+    color: #854d0e;
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .primary-source a {
+    color: #a16207;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .primary-source a:hover { text-decoration: underline; }
+  .primary-source p {
+    color: #713f12;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LESSON 01 / 23</span>
+    <h1 class="lesson-title">Node.js 的角色</h1>
+    <p class="lesson-subtitle">JavaScript 脫離瀏覽器後的完整運作原理，以及 AI Agent 是如何調用它來執行你的專案。</p>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> JavaScript 的兩條世界線</div>
+    <p>JavaScript 原本是一種「瀏覽器內嵌語言」——它只能在 Chrome、Safari 裡跑。直到 2009 年，Ryan Dahl 把 Google Chrome 的 <strong>V8 JavaScript 引擎</strong> 抽出來，包了一層 C++ 外殼，讓 JavaScript 能直接在作業系統上執行。這就是 <strong>Node.js</strong>。</p>
+    <p style="margin-top: 0.8rem;">這意味著同一套 JavaScript 語法，現在可以在兩個地方運行：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card">
+        <span class="tag tag-blue">瀏覽器</span>
+        <div class="terminal-block" style="margin-bottom:0;">
+          <div><span class="comment">// 受限環境</span></div>
+          <div>DOM、fetch、localStorage</div>
+          <div>無法讀檔案系統</div>
+          <div>無法開啟網路端口</div>
+        </div>
+      </div>
+      <div class="diagram-card">
+        <span class="tag tag-green">Node.js</span>
+        <div class="terminal-block" style="margin-bottom:0;">
+          <div><span class="comment">// 完整系統權限</span></div>
+          <div>readFile、writeFile</div>
+          <div>開啟 HTTP server</div>
+          <div>執行 shell 命令</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI Agent 調用 Node.js 的完整流程</div>
+    <p>當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它實際上經歷了以下步驟：</p>
+    <div class="terminal-block">
+      <div><span class="prompt">$</span> <span class="cmd">npx create-next-app@latest my-app</span></div>
+      <div><span class="output">✔ What is your project named? ... my-app</span></div>
+      <div><span class="output">✔ Would you like to use TypeScript? ... No</span></div>
+      <div><span class="output">✔ Would you like to use Tailwind CSS? ... Yes</span></div>
+      <div><span class="output"></span></div>
+      <div><span class="prompt">$</span> <span class="cmd">cd my-app && npm run dev</span></div>
+      <div><span class="output">▲ Next.js dev server running on http://localhost:3000</span></div>
+      <div><span class="output">  Ready in 1.2s</span></div>
+    </div>
+    <p style="margin-top: 0.8rem;"><code>npx</code> 本質上就是讓 Node.js 下載並執行一個工具。<code>npm run dev</code> 則是啟動 Next.js 的開發伺服器——它背後跑的是一個 <strong>Node.js HTTP Server</strong>。</p>
+  </div>
+
+  <!-- Section 3: Deep Dive -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 深入理解</div>
+
+    <details class="deep-dive">
+      <summary>V8 引擎：JavaScript 的發動機</summary>
+      <div class="deep-dive-content">
+        <p>Chrome 瀏覽器內建一個叫做 <strong>V8</strong> 的 JavaScript 引擎，負責把 JS 程式碼編譯成電腦能執行的機器碼。V8 的速度非常快，因為它使用即時編譯（JIT Compilation）技術——邊解釋邊優化。</p>
+        <p>Node.js 的做法很聰明：<strong>不重新發明輪子</strong>，直接借用 V8，再加上檔案系統、網路、進程管理等作業系統 API。這就是為什麼 Node.js 能同時處理大量連線——它不需要為每個連線開一個新執行緒。</p>
+      </div>
+    </details>
+
+    <details class="deep-dive">
+      <summary>Event Loop：單執行緒如何處理所有事情？</summary>
+      <div class="deep-dive-content">
+        <p>Node.js 的核心是 <strong>事件循環（Event Loop）</strong>。想像一個餐廳服務生：他只有一雙手（單執行緒），但他不需要等每一道菜做完才去下一桌——他把訂單遞給廚房（非同步 I/O），然後立刻去服務下一位客人。</p>
+        <p>當廚房做好菜（I/O 完成），會通知服務生去送菜。這個「通知」機制就是 <strong>Callback / Promise / Async-Await</strong>。</p>
+        <div class="terminal-block" style="margin-top: 0.8rem;">
+          <div><span class="prompt">$</span> <span class="cmd">node -e "console.log('開始'); setTimeout(() => console.log('2秒後'), 2000); console.log('結束');"</span></div>
+          <div><span class="output">開始</span></div>
+          <div><span class="output">結束</span></div>
+          <div><span class="output">2秒後</span></div>
+        </div>
+        <p style="margin-top: 0.8rem;">注意「結束」出現在「2秒後」前面——這就是非同步的魔力。</p>
+      </div>
+    </details>
+
+    <details class="deep-dive">
+      <summary>Port 衝突：EADDRINUSE 是什麼意思？</summary>
+      <div class="deep-dive-content">
+        <p>每台電腦有 65,535 個連接埠（Port）。當 Node.js 啟動伺服器時，它需要「佔用」一個 Port 來對外服務。如果兩個程式都想用 <code>3000</code>，就會噴出：</p>
+        <div class="terminal-block" style="margin-top: 0.8rem;">
+          <div><span class="error">Error: listen EADDRINUSE: address already in use :::3000</span></div>
+        </div>
+        <p style="margin-top: 0.8rem;">解決方法很簡單：換一個 Port。<code>npm run dev -- -p 3001</code> 就能讓第二個專案用 <code>3001</code> 號房。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section 4: Quiz -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. Node.js 的本質是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 一種新的程式語言</li>
+          <li onclick="checkAnswer(this, true)">B. 把 V8 引擎帶出瀏覽器的執行環境</li>
+          <li onclick="checkAnswer(this, false)">C. 瀏覽器內建的 JavaScript 引擎</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案：B。Node.js 是 Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當兩個 Node.js 伺服器都嘗試使用 Port 3000 時，會發生什麼事？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 第二個伺服器會報 EADDRINUSE 錯誤</li>
+          <li onclick="checkAnswer(this, false)">B. 兩個伺服器會自動平分流量</li>
+          <li onclick="checkAnswer(this, false)">C. Node.js 會自動關閉第一個伺服器</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案：A。Port 就像房間號碼，同一時間只能被一個程序佔用。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. Event Loop 讓 Node.js 能夠：</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 同時使用多個 CPU 核心</li>
+          <li onclick="checkAnswer(this, true)">B. 單執行緒處理大量非同步 I/O 操作</li>
+          <li onclick="checkAnswer(this, false)">C. 自動修復程式碼中的 Bug</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案：B。Node.js 用單執行緒 + 非同步 I/O 來高效處理大量連線。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Tasks -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">打開終端機，執行 <code>node -v</code>、<code>npm -v</code>、<code>npx -v</code>，確認三個命令都有輸出版本號。</li>
+        <li style="padding: 0.5rem 0;">執行 <code>node -e "console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);"</code>，體驗 Event Loop 的非同步行為。</li>
+        <li style="padding: 0.5rem 0;">進階挑戰：啟動一個 Next.js 專案到 port 3000，再啟動另一個到 port 3008，確認兩者可以同時運行。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Primary Source -->
+  <div class="primary-source">
+    <h4>📖 推薦延伸閱讀</h4>
+    <p>Node.js 官方文件：<a href="https://nodejs.org/docs/latest/api/" target="_blank" rel="noopener">nodejs.org/docs</a></p>
+    <p>Event Loop 圖解：<a href="https://nodejs.org/en/learn/asynchronous-work/understanding-nodejs-event-loop" target="_blank" rel="noopener">Understanding Node.js Event Loop</a></p>
+    <p>V8 引擎原始碼：<a href="https://v8.dev/" target="_blank" rel="noopener">v8.dev</a></p>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 01 · Node.js 的角色</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Localhost 與 Port（連接埠）</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+</script>
+</body>
+</html>
