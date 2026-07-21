@@ -1,0 +1,83 @@
+name: Generate Mind Growth Lessons
+
+on:
+  # 與 french / vibe 兩套一致：改由 cron-job.org 透過 API 呼叫 workflow_dispatch 觸發，
+  # 不依賴 GitHub 自己的 schedule（時間不準、可能被跳過）。
+  workflow_dispatch:
+
+permissions:
+  contents: write  # 允許寫入 Releases
+
+jobs:
+  generate-mind-lesson:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TeachingApp/mind
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Generate mind lesson
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in directory:"
+          ls -la
+          echo "Running Python script..."
+          python generate_mind_lesson.py
+          echo "Python script completed successfully"
+        env:
+          LLM_API_URL: ${{ secrets.LLM_API_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+
+      # 生成器在 LLM 失敗時會刻意不產出檔案（心理健康內容重複投放比沒有更糟），
+      # 因此後續步驟都必須容忍「這次沒有新課」的情況，不可直接失敗。
+      - name: Commit and push if changed
+        working-directory: .
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add TeachingApp/mind/mind-lesson-*.html
+          git diff --cached --quiet || git commit -m "Add mind growth lesson: $(date +%Y-%m-%d)"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 用最大課號而非 mtime 取檔，避免 checkout 時間戳或 runner 時鐘造成選錯檔案。
+          LESSON_FILE=$(ls mind-lesson-*.html 2>/dev/null | sort | tail -1)
+
+          if [ -z "$LESSON_FILE" ]; then
+            echo "沒有找到課程檔案，略過 Release 上傳"
+            exit 0
+          fi
+
+          TAG_NAME=$(echo "$LESSON_FILE" | sed 's/mind-lesson-\([0-9]*\)\.html/mind-lesson-\1/')
+
+          echo "Lesson file: $LESSON_FILE"
+          echo "Tag name: $TAG_NAME"
+
+          if gh release view "$TAG_NAME" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "$LESSON_FILE" \
+              --repo "${{ github.repository }}" \
+              --clobber
+          else
+            gh release create "$TAG_NAME" "$LESSON_FILE" \
+              --repo "${{ github.repository }}" \
+              --title "心靈成長 $TAG_NAME" \
+              --notes "Auto-generated mind growth lesson"
+          fi
+
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG_NAME"
