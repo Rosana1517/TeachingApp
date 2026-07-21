@@ -148,38 +148,54 @@ final class HTMLScannerService: ObservableObject {
     }
 
     private func fetchRepositoryCourses() async throws -> [RemoteCourse] {
-        guard let url = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/contents/TeachingApp?ref=main") else {
-            throw ScannerError.invalidURL
+        let topLevel = try await fetchContents(at: "TeachingApp")
+
+        // Legacy: HTML files directly in TeachingApp/ (kept for backwards compat)
+        var allCourses = topLevel
+            .filter { $0.type == "file" && Self.isLessonHTMLFile($0.name) }
+            .map { mapContentToCourse($0) }
+
+        // Scan category subdirectories (e.g. french/, vibe/)
+        let subdirs = topLevel.filter { $0.type == "dir" }
+        for subdir in subdirs {
+            let subItems = try await fetchContents(at: subdir.path)
+            let lessonCourses = subItems
+                .filter { $0.type == "file" && Self.isLessonHTMLFile($0.name) }
+                .map { mapContentToCourse($0) }
+            allCourses.append(contentsOf: lessonCourses)
         }
 
+        return allCourses
+    }
+
+    private func fetchContents(at path: String) async throws -> [RepositoryContent] {
+        guard let url = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/contents/\(path)?ref=main") else {
+            throw ScannerError.invalidURL
+        }
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
         request.httpMethod = "GET"
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         if !accessToken.isEmpty {
             request.setValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
         }
-
-        let decoder = JSONDecoder()
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw ScannerError.networkError
         }
+        return try JSONDecoder().decode([RepositoryContent].self, from: data)
+    }
 
-        let contents = try decoder.decode([RepositoryContent].self, from: data)
-        return contents
-            .filter { $0.type == "file" && Self.isLessonHTMLFile($0.name) }
-            .map { item in
-                let metadata = Self.parseCourseMetadata(fileName: item.name)
-                return RemoteCourse(
-                    id: "repo-\(item.path)",
-                    title: metadata.title,
-                    category: metadata.category,
-                    fileName: item.name,
-                    downloadUrl: item.downloadUrl ?? "https://raw.githubusercontent.com/\(owner)/\(repo)/main/\(item.path)",
-                    generatedDate: Date(),
-                    description: "Loaded from repository contents"
-                )
-            }
+    private func mapContentToCourse(_ item: RepositoryContent) -> RemoteCourse {
+        let metadata = Self.parseCourseMetadata(fileName: item.name)
+        return RemoteCourse(
+            id: "repo-\(item.path)",
+            title: metadata.title,
+            category: metadata.category,
+            fileName: item.name,
+            downloadUrl: item.downloadUrl ?? "https://raw.githubusercontent.com/\(owner)/\(repo)/main/\(item.path)",
+            generatedDate: Date(),
+            description: "Loaded from repository contents"
+        )
     }
 
     /// Lesson HTML assets follow the naming convention `{category}-lesson-{number}.html`

@@ -155,7 +155,7 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
 
 def get_next_lesson_id():
     """獲取下一個課程 ID；L01 已由手動優化的版本，自動跳過"""
-    search_dirs = ['.', os.path.join('..', 'TeachingApp')]
+    search_dirs = [os.path.join('..', 'TeachingApp', 'vibe')]
     existing_files = []
     for d in search_dirs:
         if os.path.isdir(d):
@@ -177,7 +177,7 @@ def get_next_lesson_id():
 def get_previous_topics():
     """掃描已經存在的課程 HTML，抓出每堂課的標題，避免新課程主題重複。"""
     topics = [lesson["title"] for lesson in LESSONS]
-    search_dirs = ['.', os.path.join('..', 'TeachingApp')]
+    search_dirs = [os.path.join('..', 'TeachingApp', 'vibe')]
     for d in search_dirs:
         if not os.path.isdir(d):
             continue
@@ -688,8 +688,8 @@ def main():
     # 生成檔案名稱
     filename = f"vibe-lesson-{lesson['id']:02d}.html"
 
-    # 寫入檔案到 TeachingApp/ 目錄（與 french-lesson 同級）
-    output_dir = os.path.join('..', 'TeachingApp')
+    # 寫入檔案到 TeachingApp/vibe/ 目錄
+    output_dir = os.path.join('..', 'TeachingApp', 'vibe')
     os.makedirs(output_dir, exist_ok=True)
     filepath = os.path.join(output_dir, filename)
     with open(filepath, 'w', encoding='utf-8') as f:

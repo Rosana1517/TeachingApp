@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: 新課程
+        working-directory: Vibe課程
 
     steps:
       - name: Checkout repository
@@ -45,10 +45,11 @@ jobs:
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
 
       - name: Commit and push if changed
+        working-directory: .
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add TeachingApp/vibe-lesson-*.html
+          git add TeachingApp/vibe/vibe-lesson-*.html
           git diff --cached --quiet || git commit -m "Add Vibe Coding lesson: $(date +%Y-%m-%d)"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
         env:
@@ -56,8 +57,9 @@ jobs:
 
       - name: Upload to GitHub Release
         id: upload_release
+        working-directory: .
         run: |
-          LESSON_FILE=$(ls -t TeachingApp/vibe-lesson-*.html | head -1)
+          LESSON_FILE=$(ls -t TeachingApp/vibe/vibe-lesson-*.html | head -1)
           TAG_NAME="vibe-lesson-$(echo $LESSON_FILE | sed 's/.*vibe-lesson-\([0-9]*\)\.html/\1/')"
           FILENAME=$(basename "$LESSON_FILE")
 

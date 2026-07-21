@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: TeachingApp
+        working-directory: TeachingApp/french
 
     steps:
       - name: Checkout repository
@@ -40,10 +40,11 @@ jobs:
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
 
       - name: Commit and push if changed
+        working-directory: .
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add french-lesson-*.html
+          git add TeachingApp/french/french-lesson-*.html
           git diff --cached --quiet || git commit -m "Add French lesson: $(date +%Y-%m-%d)"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
         env:
