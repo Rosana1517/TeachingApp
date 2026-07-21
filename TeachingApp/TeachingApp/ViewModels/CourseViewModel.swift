@@ -98,9 +98,9 @@ final class CourseViewModel: ObservableObject {
                     content: remoteCourse.description,
                     fileName: remoteCourse.fileName,
                     filePath: remoteCourse.downloadUrl,
-                    isRead: false,
+                    isRead: ProgressService.shared.loadReadState(for: remoteCourse.id),
                     readDate: nil,
-                    progress: 0.0,
+                    progress: ProgressService.shared.loadProgress(for: remoteCourse.id),
                     generatedDate: remoteCourse.generatedDate
                 )
 
@@ -132,8 +132,19 @@ final class CourseViewModel: ObservableObject {
     func markAsRead(course: Course) {
         guard let index = courses.firstIndex(where: { $0.id == course.id }) else { return }
         courses[index].isRead = true
+        ProgressService.shared.saveProgress(courses[index])
         filterCourses()
     }
+
+    func toggleLearned(course: Course) {
+        guard let index = courses.firstIndex(where: { $0.id == course.id }) else { return }
+        courses[index].isRead.toggle()
+        ProgressService.shared.saveProgress(courses[index])
+        filterCourses()
+    }
+
+    var unlearnedCourses: [Course] { filteredCourses.filter { !$0.isRead } }
+    var learnedCourses: [Course] { filteredCourses.filter { $0.isRead } }
 
     func updateProgress(course: Course, progress: Double) {
         guard let index = courses.firstIndex(where: { $0.id == course.id }) else { return }
@@ -148,13 +159,15 @@ final class CourseViewModel: ObservableObject {
     }
 
     func filterCourses() {
-        filteredCourses = courses.filter { course in
-            let matchesCategory = selectedCategory == "全部" || course.category == selectedCategory
-            let matchesSearch = searchText.isEmpty
-                || course.title.localizedCaseInsensitiveContains(searchText)
-                || course.category.localizedCaseInsensitiveContains(searchText)
-            return matchesCategory && matchesSearch
-        }
+        filteredCourses = courses
+            .filter { course in
+                let matchesCategory = selectedCategory == "全部" || course.category == selectedCategory
+                let matchesSearch = searchText.isEmpty
+                    || course.title.localizedCaseInsensitiveContains(searchText)
+                    || course.category.localizedCaseInsensitiveContains(searchText)
+                return matchesCategory && matchesSearch
+            }
+            .sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
     }
 
     var allCategories: [String] {

@@ -14,7 +14,7 @@ struct HomeView: View {
                         if viewModel.isLoading {
                             ProgressView("載入中...")
                                 .frame(maxWidth: .infinity, minHeight: 240)
-                        } else if let course = viewModel.courses.first {
+                        } else if let course = viewModel.unlearnedCourses.first ?? viewModel.filteredCourses.first {
                             todaySection(course: course)
                         } else {
                             emptyState
@@ -121,17 +121,15 @@ struct HomeView: View {
     }
 
     private var unreadSection: some View {
-        let unreadCount = viewModel.courses.filter { !$0.isRead }.count
-
-        return HStack {
-            Text("未讀課程")
+        HStack {
+            Text("未學習")
                 .font(.title3)
                 .fontWeight(.bold)
                 .foregroundColor(NeumorphicColors.primary)
 
             Spacer()
 
-            Text("\(unreadCount)")
+            Text("\(viewModel.unlearnedCourses.count)")
                 .font(.title3)
                 .fontWeight(.bold)
                 .foregroundColor(NeumorphicColors.accent)
@@ -157,14 +155,61 @@ struct HomeView: View {
         }
     }
 
+    @State private var showLearned = false
+
     private var courseList: some View {
         LazyVStack(spacing: 16) {
-            ForEach(viewModel.filteredCourses) { course in
+            ForEach(viewModel.unlearnedCourses) { course in
                 NeumorphicCourseCard(
                     course: course,
                     onTap: { navigateToCourse = course },
+                    onToggleLearned: { viewModel.toggleLearned(course: course) },
                     onDelete: { viewModel.deleteCourse(course) }
                 )
+            }
+
+            if !viewModel.learnedCourses.isEmpty {
+                learnedSection
+            }
+        }
+    }
+
+    private var learnedSection: some View {
+        VStack(spacing: 12) {
+            Button {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    showLearned.toggle()
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(NeumorphicColors.success)
+                    Text("已學習")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(NeumorphicColors.primary)
+                    Spacer()
+                    Text("\(viewModel.learnedCourses.count)")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(NeumorphicColors.success)
+                    Image(systemName: showLearned ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundColor(NeumorphicColors.secondary)
+                }
+                .padding(.horizontal, 4)
+            }
+            .buttonStyle(.plain)
+
+            if showLearned {
+                ForEach(viewModel.learnedCourses) { course in
+                    NeumorphicCourseCard(
+                        course: course,
+                        onTap: { navigateToCourse = course },
+                        onToggleLearned: { viewModel.toggleLearned(course: course) },
+                        onDelete: { viewModel.deleteCourse(course) }
+                    )
+                }
             }
         }
     }

@@ -69,8 +69,11 @@ struct CategoryView: View {
 
     private func categoryCourseList(_ category: String) -> some View {
         CourseListView(
-            courses: viewModel.courses.filter { $0.category == category },
+            courses: viewModel.courses
+                .filter { $0.category == category }
+                .sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending },
             onTap: { navigateToCourse = $0 },
+            onToggleLearned: { viewModel.toggleLearned(course: $0) },
             onDelete: { viewModel.deleteCourse($0) }
         )
         .navigationTitle(category)
@@ -104,7 +107,13 @@ struct CategoryView: View {
 struct CourseListView: View {
     let courses: [Course]
     let onTap: (Course) -> Void
+    var onToggleLearned: ((Course) -> Void)? = nil
     var onDelete: ((Course) -> Void)? = nil
+
+    @State private var showLearned = false
+
+    private var unlearnedCourses: [Course] { courses.filter { !$0.isRead } }
+    private var learnedCourses: [Course] { courses.filter { $0.isRead } }
 
     var body: some View {
         ZStack {
@@ -112,12 +121,51 @@ struct CourseListView: View {
 
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    ForEach(courses) { course in
+                    ForEach(unlearnedCourses) { course in
                         NeumorphicCourseCard(
                             course: course,
                             onTap: { onTap(course) },
+                            onToggleLearned: onToggleLearned.map { toggle in { toggle(course) } },
                             onDelete: onDelete.map { delete in { delete(course) } }
                         )
+                    }
+
+                    if !learnedCourses.isEmpty {
+                        Button {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                showLearned.toggle()
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(NeumorphicColors.success)
+                                Text("已學習")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(NeumorphicColors.primary)
+                                Spacer()
+                                Text("\(learnedCourses.count)")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(NeumorphicColors.success)
+                                Image(systemName: showLearned ? "chevron.up" : "chevron.down")
+                                    .font(.caption)
+                                    .foregroundColor(NeumorphicColors.secondary)
+                            }
+                            .padding(.horizontal, 4)
+                        }
+                        .buttonStyle(.plain)
+
+                        if showLearned {
+                            ForEach(learnedCourses) { course in
+                                NeumorphicCourseCard(
+                                    course: course,
+                                    onTap: { onTap(course) },
+                                    onToggleLearned: onToggleLearned.map { toggle in { toggle(course) } },
+                                    onDelete: onDelete.map { delete in { delete(course) } }
+                                )
+                            }
+                        }
                     }
                 }
                 .padding()

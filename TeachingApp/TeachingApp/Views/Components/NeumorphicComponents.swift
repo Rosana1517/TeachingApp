@@ -507,6 +507,7 @@ struct NeumorphicTabBar: View {
 struct NeumorphicCourseCard: View {
     let course: Course
     let onTap: () -> Void
+    var onToggleLearned: (() -> Void)? = nil
     var onDelete: (() -> Void)? = nil
 
     var body: some View {
@@ -520,23 +521,41 @@ struct NeumorphicCourseCard: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 5)
                         .background(
-                            Capsule(style: .continuous).fill(NeumorphicColors.accent)
+                            Capsule(style: .continuous).fill(
+                                course.isRead
+                                    ? NeumorphicColors.success
+                                    : NeumorphicColors.accent
+                            )
                         )
 
                     Spacer()
 
-                    if !course.isRead {
-                        Circle()
-                            .fill(NeumorphicColors.error)
-                            .frame(width: 10, height: 10)
-                            .shadow(color: NeumorphicColors.error.opacity(0.4), radius: 4)
+                    if let onToggleLearned {
+                        Button(action: onToggleLearned) {
+                            ZStack {
+                                Circle()
+                                    .strokeBorder(
+                                        course.isRead ? NeumorphicColors.success : NeumorphicColors.secondary,
+                                        lineWidth: 2
+                                    )
+                                    .frame(width: 26, height: 26)
+
+                                if course.isRead {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(NeumorphicColors.success)
+                                }
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .frame(width: 44, height: 44)
                     }
                 }
 
                 Text(course.title)
                     .font(.headline)
                     .fontWeight(.semibold)
-                    .foregroundColor(NeumorphicColors.primary)
+                    .foregroundColor(course.isRead ? NeumorphicColors.secondary : NeumorphicColors.primary)
                     .lineLimit(2)
 
                 HStack(spacing: 12) {
@@ -554,9 +573,18 @@ struct NeumorphicCourseCard: View {
             .background(NeumorphicColors.background)
             .clipShape(RoundedRectangle(cornerRadius: NeumorphicRadius.large, style: .continuous))
             .modifier(NeumorphicShadow(size: 15))
+            .opacity(course.isRead ? 0.75 : 1.0)
         }
         .buttonStyle(.plain)
         .contextMenu {
+            if let onToggleLearned {
+                Button(action: onToggleLearned) {
+                    Label(
+                        course.isRead ? "標記為未學習" : "標記為已學習",
+                        systemImage: course.isRead ? "circle" : "checkmark.circle"
+                    )
+                }
+            }
             if let onDelete {
                 Button(role: .destructive, action: onDelete) {
                     Label("刪除課程", systemImage: "trash")
