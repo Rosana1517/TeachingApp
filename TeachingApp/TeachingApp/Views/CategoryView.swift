@@ -17,7 +17,9 @@ struct CategoryView: View {
             }
             .navigationTitle("分類")
             .sheet(item: $navigateToCourse) { course in
-                CourseDetailView(course: course)
+                CourseDetailView(course: course, onToggleLearned: {
+                    viewModel.toggleLearned(course: course)
+                })
             }
         }
     }

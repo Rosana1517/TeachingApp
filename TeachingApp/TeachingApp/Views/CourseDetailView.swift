@@ -3,12 +3,14 @@ import UIKit
 
 struct CourseDetailView: View {
     let course: Course
+    var onToggleLearned: (() -> Void)? = nil
     @State private var isRead: Bool
     @State private var showingShareSheet = false
     @Environment(\.dismiss) private var dismiss
 
-    init(course: Course) {
+    init(course: Course, onToggleLearned: (() -> Void)? = nil) {
         self.course = course
+        self.onToggleLearned = onToggleLearned
         self._isRead = State(initialValue: course.isRead)
     }
 
@@ -53,11 +55,7 @@ struct CourseDetailView: View {
         .overlay(alignment: .bottomTrailing) {
             Button {
                 isRead.toggle()
-                if isRead {
-                    ProgressService.shared.markAsRead(courseId: course.id)
-                } else {
-                    ProgressService.shared.markAsUnread(courseId: course.id)
-                }
+                onToggleLearned?()
             } label: {
                 Image(systemName: isRead ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
