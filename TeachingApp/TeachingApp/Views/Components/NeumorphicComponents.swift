@@ -511,71 +511,70 @@ struct NeumorphicCourseCard: View {
     var onDelete: (() -> Void)? = nil
 
     var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text(course.category)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 5)
-                        .background(
-                            Capsule(style: .continuous).fill(
-                                course.isRead
-                                    ? NeumorphicColors.success
-                                    : NeumorphicColors.accent
-                            )
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(course.category)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 5)
+                    .background(
+                        Capsule(style: .continuous).fill(
+                            course.isRead
+                                ? NeumorphicColors.success
+                                : NeumorphicColors.accent
                         )
+                    )
 
-                    Spacer()
+                Spacer()
 
-                    if let onToggleLearned {
-                        Button(action: onToggleLearned) {
-                            ZStack {
-                                Circle()
-                                    .strokeBorder(
-                                        course.isRead ? NeumorphicColors.success : NeumorphicColors.secondary,
-                                        lineWidth: 2
-                                    )
-                                    .frame(width: 26, height: 26)
+                if let onToggleLearned {
+                    Button(action: onToggleLearned) {
+                        ZStack {
+                            Circle()
+                                .strokeBorder(
+                                    course.isRead ? NeumorphicColors.success : NeumorphicColors.secondary,
+                                    lineWidth: 2
+                                )
+                                .frame(width: 26, height: 26)
 
-                                if course.isRead {
-                                    Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .bold))
-                                        .foregroundColor(NeumorphicColors.success)
-                                }
+                            if course.isRead {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundColor(NeumorphicColors.success)
                             }
                         }
-                        .buttonStyle(.plain)
-                        .frame(width: 44, height: 44)
                     }
-                }
-
-                Text(course.title)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(course.isRead ? NeumorphicColors.secondary : NeumorphicColors.primary)
-                    .lineLimit(2)
-
-                HStack(spacing: 12) {
-                    Label(formatDate(course.generatedDate), systemImage: "calendar")
-                        .font(.caption)
-                        .foregroundColor(NeumorphicColors.secondary)
-
-                    if course.progress > 0 && course.progress < 1 {
-                        Spacer()
-                        NeumorphicProgressCircle(course.progress, size: 32, strokeWidth: 3)
-                    }
+                    .buttonStyle(.plain)
+                    .frame(width: 44, height: 44)
                 }
             }
-            .padding()
-            .background(NeumorphicColors.background)
-            .clipShape(RoundedRectangle(cornerRadius: NeumorphicRadius.large, style: .continuous))
-            .modifier(NeumorphicShadow(size: 15))
-            .opacity(course.isRead ? 0.75 : 1.0)
+
+            Text(course.title)
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundColor(course.isRead ? NeumorphicColors.secondary : NeumorphicColors.primary)
+                .lineLimit(2)
+
+            HStack(spacing: 12) {
+                Label(formatDate(course.generatedDate), systemImage: "calendar")
+                    .font(.caption)
+                    .foregroundColor(NeumorphicColors.secondary)
+
+                if course.progress > 0 && course.progress < 1 {
+                    Spacer()
+                    NeumorphicProgressCircle(course.progress, size: 32, strokeWidth: 3)
+                }
+            }
         }
-        .buttonStyle(.plain)
+        .padding()
+        .background(NeumorphicColors.background)
+        .clipShape(RoundedRectangle(cornerRadius: NeumorphicRadius.large, style: .continuous))
+        .modifier(NeumorphicShadow(size: 15))
+        .opacity(course.isRead ? 0.75 : 1.0)
+        .contentShape(RoundedRectangle(cornerRadius: NeumorphicRadius.large, style: .continuous))
+        .onTapGesture { onTap() }
         .contextMenu {
             if let onToggleLearned {
                 Button(action: onToggleLearned) {
