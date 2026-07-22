@@ -46,6 +46,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add TeachingApp/french/french-lesson-*.html
           git diff --cached --quiet || git commit -m "Add French lesson: $(date +%Y-%m-%d)"
+          git pull --rebase https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.ref }}
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
