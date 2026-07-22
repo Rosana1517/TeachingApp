@@ -1,0 +1,41 @@
+name: Generate All Daily Lessons
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write   # 允許呼叫其他 workflow
+
+jobs:
+  trigger-french:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger French lesson workflow
+        run: |
+          gh workflow run generate-lessons.yml \
+            --repo ${{ github.repository }} \
+            --ref ${{ github.ref }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  trigger-vibe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vibe lesson workflow
+        run: |
+          gh workflow run generate-vibe-lessons.yml \
+            --repo ${{ github.repository }} \
+            --ref ${{ github.ref }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  trigger-mind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Mind Growth lesson workflow
+        run: |
+          gh workflow run generate-mind-lessons.yml \
+            --repo ${{ github.repository }} \
+            --ref ${{ github.ref }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
