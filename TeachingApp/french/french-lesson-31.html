@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 31 — 第 31 課：法語所有格形容詞 mon / ton / son 的精準應用</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 31</span>
+    <h1 class="lesson-title">第 31 課：法語所有格形容詞 mon / ton / son 的精準應用</h1>
+    <p class="lesson-subtitle">學會用所有格形容詞表達「我的、你的、他的」，並掌握與名詞性別的配合規則。</p>
+  </div>
+
+  <!-- Section 📖: 認識所有格形容詞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📖</span> 認識所有格形容詞</div>
+    <p>所有格形容詞（adjectifs possessifs）用来表示物品歸屬權，位置固定在名詞之前。最核心的規則：<strong>所有格形容詞必須跟「被擁有的名詞」的性別和數量一致</strong>，而不是跟擁有者一致。例如，「他的姐姐」在法語中是 <em>sa sœur</em>，因為 <em>sœur</em> 是陰性名詞；「他的車」則是 <em>sa voiture</em>。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>請注意 <strong>mon/ton/son</strong> 與 <em>ma/ta/sa</em> 的發音差異主要在於元音的開口度與鼻化程度，而 <em>notre/votre/leur</em> 的尾音通常不發音或輕化。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">mon / mɔ̃</div>
+        <div class="pron-ipa">鼻化元音，用於陽性單數名詞前</div>
+        <div class="pron-example"><em>mon père</em>（我的父親）<button class="speak-btn" onclick='speakFrench("mon p\u00e8re")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ma / ma</div>
+        <div class="pron-ipa">開口元音，用於陰性單數名詞前</div>
+        <div class="pron-example"><em>ma mère</em>（我的母親）<button class="speak-btn" onclick='speakFrench("ma m\u00e8re")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">son / sɔ̃</div>
+        <div class="pron-ipa">鼻化元音，用於陽性單數名詞前（他/她的）</div>
+        <div class="pron-example"><em>son livre</em>（他的書）<button class="speak-btn" onclick='speakFrench("son livre")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sa / sa</div>
+        <div class="pron-ipa">開口元音，用於陰性單數名詞前（他/她的）</div>
+        <div class="pron-example"><em>sa voiture</em>（她的車）<button class="speak-btn" onclick='speakFrench("sa voiture")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">notre / nɔ̃tʁ</div>
+        <div class="pron-ipa">鼻化元音，尾音 r 輕微發聲</div>
+        <div class="pron-example"><em>notre école</em>（我們的學校）<button class="speak-btn" onclick='speakFrench("notre \u00e9cole")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">leur / lœʁ</div>
+        <div class="pron-ipa">圓唇元音，用於他們/她們的單數名詞</div>
+        <div class="pron-example"><em>leur chien</em>（他們的狗）<button class="speak-btn" onclick='speakFrench("leur chien")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ⚠️: 特殊規則：元音開頭的名詞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚠️</span> 特殊規則：元音開頭的名詞</div>
+    <p>當陰性單數名詞以<strong>元音</strong>或<strong>不發音的 h</strong> 開頭時，為了發音流暢，必須使用陽性形式的 <strong>mon, ton, son</strong>。這跟指示形容詞 <em>cet</em> 的邏輯類似。例如：「我的姐姐」不是 ~~ma sœur~~，而是 <strong>mon frère</strong>（如果指兄弟）或 <strong>mon amie</strong>（我的女性朋友）。</p>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下詞組，注意 <strong>mon/ma</strong> 與 <strong>son/sa</strong> 的切換要自然。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下詞組，注意 <strong>mon/ma</strong> 與 <strong>son/sa</strong> 的切換要自然。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">mon sac</span>
+          <span class="ipa">/mɔ̃ sak/</span>
+          <span class="meaning">—— 我的包（陽性）</span>
+          <button class="speak-btn" onclick='speakFrench("mon sac")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">ma maison</span>
+          <span class="ipa">/ma mɛzɔ̃/</span>
+          <span class="meaning">—— 我的房子（陰性）</span>
+          <button class="speak-btn" onclick='speakFrench("ma maison")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">son ami</span>
+          <span class="ipa">/sɔ̃ ni/</span>
+          <span class="meaning">—— 他的朋友（元音開頭，用 son）</span>
+          <button class="speak-btn" onclick='speakFrench("son ami")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">sa mère</span>
+          <span class="ipa">/sa mɛʁ/</span>
+          <span class="meaning">—— 他的母親</span>
+          <button class="speak-btn" onclick='speakFrench("sa m\u00e8re")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">notre ville</span>
+          <span class="ipa">/nɔ̃tʁ vil/</span>
+          <span class="meaning">—— 我們的城市</span>
+          <button class="speak-btn" onclick='speakFrench("notre ville")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">votre voiture</span>
+          <span class="ipa">/vɔ̃tʁ vwatʁ/</span>
+          <span class="meaning">—— 您的車</span>
+          <button class="speak-btn" onclick='speakFrench("votre voiture")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：練習時想像名詞的性別：看到 masculine 就選 mon/ton/son，看到 feminine 就選 ma/ta/sa。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>所有格形容詞的變化容易混淆，請特別留意第三人稱單數（他/她）的用法。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">mon vs ma</div>
+        <div class="pron-ipa">根據名詞性別選擇。mon ami（我的朋友，陽性）vs ma amie（我的朋友，陰性）</div>
+        <div class="pron-example">mon chat / ma chienne<button class="speak-btn" onclick='speakFrench("mon chat")' aria-label="播放發音">🔊</button><br>名詞是貓/母狗，決定用 ma</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">son vs sa</div>
+        <div class="pron-ipa">都翻譯成「他的/她的」，完全由後面的名詞決定</div>
+        <div class="pron-example">son frère / sa sœur<button class="speak-btn" onclick='speakFrench("son fr\u00e8re")' aria-label="播放發音">🔊</button><br>他的兄弟用 son，他的姐妹用 sa</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">leur vs leurs</div>
+        <div class="pron-ipa">leur 修飾單數名詞，leurs 修飾複數名詞</div>
+        <div class="pron-example">leur maison / leurs maisons<button class="speak-btn" onclick='speakFrench("leur maison")' aria-label="播放發音">🔊</button><br>發音相同，拼寫不同</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「他的姐姐」該怎麼說？（提示：sœur 是陰性名詞）</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Son sœur</li>
+          <li onclick="checkAnswer(this, true)">B. Sa sœur</li>
+          <li onclick="checkAnswer(this, false)">C. Se sœur</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. Sa sœur，因為 sœur 是陰性名詞，所以用 sa。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「我的父親」在法語中是 mon père，為什麼不用 ma？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 因為 père 是陰性名詞</li>
+          <li onclick="checkAnswer(this, true)">B. 因為 père 是陽性名詞</li>
+          <li onclick="checkAnswer(this, false)">C. 因為 ma 只能用於人</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. 因為 père 是陽性名詞，所以搭配 mon。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「我的阿姨」該怎麼說？（提示：tante 是陰性名詞，但以元音 t 開頭...不對，以輔音 t 開頭）</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Mon tante</li>
+          <li onclick="checkAnswer(this, true)">B. Ma tante</li>
+          <li onclick="checkAnswer(this, false)">C. Mante</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. Ma tante，因為 tante 是陰性且以輔音開頭，維持標準的 ma。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀發音對照表中的詞組 3 次，確保 mon 和 ma 的鼻化與否發音正確。</li>
+        <li style="padding: 0.5rem 0;">環顧四周，用 mon/ma/son/sa 描述你看到的 5 個物品（例如：mon téléphone, sa table）。</li>
+        <li style="padding: 0.5rem 0;">嘗試用 notre 和 votre 造兩個句子，區分「我們」和「你們/您」。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 31 · 第 31 課：法語所有格形容詞 mon / ton / son 的精準應用 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語部分冠詞 du / de la / de l' / des 的用量概念</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
