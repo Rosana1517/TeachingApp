@@ -166,7 +166,7 @@ def get_next_lesson_id():
     max_id = 0
     for file in existing_files:
         try:
-            lesson_id = int(file.split('-')[1].split('.')[0])
+            lesson_id = int(file.split('-')[2].split('.')[0])
             max_id = max(max_id, lesson_id)
         except:
             pass
