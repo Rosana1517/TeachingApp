@@ -56,6 +56,14 @@ final class CourseViewModel: ObservableObject {
         filterCourses()
     }
 
+    func clearHiddenCourses() {
+        hiddenCourseIDs = []
+        Categories.all.removeAll()
+        courses.removeAll()
+        filteredCourses.removeAll()
+        Task { await checkForNewCourses() }
+    }
+
     func deleteCourse(_ course: Course) {
         var hidden = hiddenCourseIDs
         hidden.insert(course.id)

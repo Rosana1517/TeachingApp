@@ -179,7 +179,8 @@ struct SettingsView: View {
 
                 Button(action: {
                     ProgressService.shared.resetAll()
-                    alertMessage = "本機設定已清除"
+                    courseViewModel.clearHiddenCourses()
+                    alertMessage = "本機設定已清除，正在重新載入課程…"
                     showAlert = true
                 }) {
                     HStack {
