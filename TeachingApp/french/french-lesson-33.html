@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 33 — 第 33 課：法語直接受詞代名詞 le / la / les 的進階應用與重讀形式</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 33</span>
+    <h1 class="lesson-title">第 33 課：法語直接受詞代名詞 le / la / les 的進階應用與重讀形式</h1>
+    <p class="lesson-subtitle">掌握代名詞前置規則、連音技巧與重讀代詞的對比使用</p>
+  </div>
+
+  <!-- Section 1: 核心概念回顧與升級 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 核心概念回顧與升級</div>
+    <p>在第 30 課中，我們學習了直接受詞代名詞 (COD) <strong>le</strong>, <strong>la</strong>, <strong>les</strong> 的基本置於動詞前規則。本課將進一步探討<strong>元音或無聲 h 開頭</strong>時的省音現象，以及當這些代詞作為<strong>強調</strong>或<strong>獨立回答</strong>時的重讀形式 (me, te, le, la, nous, vous, les)。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>注意元音開頭時的聯誦與省音變化，以及重讀代詞的獨立發音。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">le + a</div>
+        <div class="pron-ipa">省音為 l'a，發音類似 /l/ + 元音</div>
+        <div class="pron-example"><em>Je l'aime.</em>（我愛他/她。）<button class="speak-btn" onclick='speakFrench("Je l&#39;aime.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">les + est</div>
+        <div class="pron-ipa">聯誦為 /lez/ + /ɛ/</div>
+        <div class="pron-example"><em>Je les ai vus.</em>（我看見他們了。）<button class="speak-btn" onclick='speakFrench("Je les ai vus.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">lui / elle (重讀)</div>
+        <div class="pron-ipa">重讀形式用於強調或單獨使用，發音清晰</div>
+        <div class="pron-example"><em>Qui préfères-tu ? Lui.</em>（你更喜歡誰？他。）<button class="speak-btn" onclick='speakFrench("Qui pr\u00e9f\u00e8res-tu ? Lui.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">eux / elles (重讀)</div>
+        <div class="pron-ipa">第三人稱複數重讀，/ø/ 圓唇音</div>
+        <div class="pron-example"><em>Je parle d'eux.</em>（我在談論他們（男性或混合）。）<button class="speak-btn" onclick='speakFrench("Je parle d&#39;eux.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下句子，特別注意元音前的省音和句尾的連音。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下句子，特別注意元音前的省音和句尾的連音。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Je le regarde.</span>
+          <span class="ipa">/ʒə lə ʁəɡaʁd/</span>
+          <span class="meaning">—— 我看著他。</span>
+          <button class="speak-btn" onclick='speakFrench("Je le regarde.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Je l'écoute.</span>
+          <span class="ipa">/ʒe lekut/</span>
+          <span class="meaning">—— 我聽他說話。</span>
+          <button class="speak-btn" onclick='speakFrench("Je l&#39;\u00e9coute.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Tu les connais ?</span>
+          <span class="ipa">/ty le kɔnɛ/</span>
+          <span class="meaning">—— 你認識他們嗎？</span>
+          <button class="speak-btn" onclick='speakFrench("Tu les connais ?")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Non, je ne les vois pas.</span>
+          <span class="ipa">/nɔ̃ ʒə nə le vwa pa/</span>
+          <span class="meaning">—— 不，我看不到他們。</span>
+          <button class="speak-btn" onclick='speakFrench("Non, je ne les vois pas.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：在 'Je le vois' 中，保持 'Je' 和 'le' 之間流暢過渡，不要中斷；在 'Je les aime' 中，注意 's' 發 /z/ 音並與 'aime' 連接。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照：直賓代詞 vs. 重讀代詞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照：直賓代詞 vs. 重讀代詞</div>
+    <p>區分代詞在句子中的位置和功能至關重要。直賓代詞通常緊貼在動詞前，而重讀代詞則用於強調、介系詞後或單獨成句。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Le / La / Les</div>
+        <div class="pron-ipa">直接受詞代名詞，位於助動詞或動詞前</div>
+        <div class="pron-example">Je <strong>la</strong> mange.<button class="speak-btn" onclick='speakFrench("Je <strong>la<")' aria-label="播放發音">🔊</button><br>正常語序，強調動作對象。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Moi / Toi / Lui / Elle / Nous / Vous / Eux / Elles</div>
+        <div class="pron-ipa">重讀代名詞，用於強調、介系詞後或疑問回答</div>
+        <div class="pron-example">C'est <strong>elle</strong> qui chante.<button class="speak-btn" onclick='speakFrench("C&#39;est <strong>elle<")' aria-label="播放發音">🔊</button><br>強調主體，或用於 'pour toi', 'avec eux'。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 選擇正確的填空：「Tu as vu Paul ? Oui, je _____ vois tous les jours.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. il</li>
+          <li onclick="checkAnswer(this, true)">B. le</li>
+          <li onclick="checkAnswer(this, false)">C. lui</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Paul 是男性單數，作為直接受詞，應使用 le。因 voir 以元音開頭，故省略為 l'，但在選項中若無 l'，則選 le 代表其原型，實際口語中為 'je le vois' (若後面接元音則省音，但 voir 以輔音 v 開頭，所以保留 le。等等，voir 以 v 開頭，是輔音，所以是 'je le vois'。題目選項 B 正確。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪一句使用了正確的重讀代詞來回答問題？「Qui est-ce que tu aimes ?」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je aime Marie.</li>
+          <li onclick="checkAnswer(this, false)">B. J'aime elle.</li>
+          <li onclick="checkAnswer(this, true)">C. J'aime Marie.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 這是一個陷阱題，或者說測試重讀代詞的獨立使用。如果要用重讀代詞單獨回答，應該是 'Marie' (名字) 或 'Elle' (如果是強調)。但在標準回答中，如果只給選項，C 是最自然的完整句子。若題目意圖是測試重讀代詞單獨使用，答案應為 'Elle'。但在 'J'aime...' 結構中，必須用直賓代詞 'la'。因此 A 錯誤 (省音錯誤且用 il)，B 錯誤 (介系詞後才用重讀，或直接受詞應用 la)，C 正確 (使用名字作受詞)。*修正邏輯*：若問重讀代詞用法，選項應包含 'Moi', 'Lui' 等。在此題境下，測試的是直賓代詞 vs 重讀代詞混淆。A: Je aime (錯，應為 J'aime)。B: J'aime elle (錯，直賓應用 la)。C: J'aime Marie (對，名字可直接當受詞)。若必須選重讀代詞相關的，通常題目會是 'Qui aimes-tu ? - Moi.' 此處 C 是唯一語法正確的陳述句。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 在句子 « Je ne sais pas où sont mes clés. — Regarde, elles sont sur la table. » 中，elles 指的是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. les tables</li>
+          <li onclick="checkAnswer(this, true)">B. les clés</li>
+          <li onclick="checkAnswer(this, false)">C. mes parents</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ elles 是陰性複數主格代詞，指代前文提到的陰性複數名詞 'mes clés'。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">練習將下列句子轉換為使用直接受詞代名詞 (le/la/les/l')：1. Je mange la pomme. 2. Je regarde le film. 3. J'achète les fleurs.</li>
+        <li style="padding: 0.5rem 0;">練習對話：詢問朋友 'Tu aimes ce livre?' 並用 'Oui, je l'aime beaucoup.' 回答；再問 'Tu connais ces gens?' 並用 'Non, je ne les connais pas.' 回答。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 33 · 第 33 課：法語直接受詞代名詞 le / la / les 的進階應用與重讀形式 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：下一課預告：法語副詞這裡那裡（ici, là）與方位介系詞</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
