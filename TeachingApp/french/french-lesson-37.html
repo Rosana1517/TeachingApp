@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 37 — 第 37 課：法語複合過去時與 être 動詞的連讀實戰進階</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 37</span>
+    <h1 class="lesson-title">第 37 課：法語複合過去時與 être 動詞的連讀實戰進階</h1>
+    <p class="lesson-subtitle">掌握 être 作助動詞時的性數配合與連讀流暢度</p>
+  </div>
+
+  <!-- Section 1: 重點概念回顧 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 重點概念回顧</div>
+    <p>上一課我們學習了<strong>être</strong>作為助動詞時的連讀規則，但要注意：<strong>être</strong>作助動詞時，過去分詞必須與主詞在性數上配合。這是最常見的口語錯誤之一，本課將透過重複跟練強化記憶。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p><strong>性數配合的發音差異：</strong>雖然書寫不同，但口語中多數不發音，需靠聽辨與情境判斷。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Il est parti.</div>
+        <div class="pron-ipa"> masculine singular — past participle matches subject</div>
+        <div class="pron-example"><em>Il est parti.</em>（他走了。）<button class="speak-btn" onclick='speakFrench("Il est parti.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Elle est partie.</div>
+        <div class="pron-ipa"> feminine singular — added -e</div>
+        <div class="pron-example"><em>Elle est partie.</em>（她走了。）<button class="speak-btn" onclick='speakFrench("Elle est partie.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Ils sont partis.</div>
+        <div class="pron-ipa"> masculine plural — added -s</div>
+        <div class="pron-example"><em>Ils sont partis.</em>（他們（男/混合）走了。）<button class="speak-btn" onclick='speakFrench("Ils sont partis.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Elles sont parties.</div>
+        <div class="pron-ipa"> feminine plural — added -es</div>
+        <div class="pron-example"><em>Elles sont parties.</em>（她們走了。）<button class="speak-btn" onclick='speakFrench("Elles sont parties.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請逐句重複以下句子，注意<strong>être</strong>與過去分詞的連讀與語氣起伏，並強調性數變化。</p>
+    <div class="follow-box">
+      <h4>請逐句重複以下句子，注意<strong>être</strong>與過去分詞的連讀與語氣起伏，並強調性數變化。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Il est allé au cinéma.</span>
+          <span class="ipa">/il ɛ a lɔ te si ne ma/</span>
+          <span class="meaning">—— 他去了電影院。</span>
+          <button class="speak-btn" onclick='speakFrench("Il est all\u00e9 au cin\u00e9ma.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle est allée au cinéma.</span>
+          <span class="ipa">/ɛl ɛ a lɔ te si ne ma/</span>
+          <span class="meaning">—— 她去了電影院。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle est all\u00e9e au cin\u00e9ma.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ils sont allés au cinéma.</span>
+          <span class="ipa">/il sɔ̃ t‿ɑ le ʒə ki ne ma/</span>
+          <span class="meaning">—— 他們去了電影院。</span>
+          <button class="speak-btn" onclick='speakFrench("Ils sont all\u00e9s au cin\u00e9ma.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elles sont allées au cinéma.</span>
+          <span class="ipa">/ɛl sɔ̃ t‿ɑ le ʒə ki ne ma/</span>
+          <span class="meaning">—— 她們去了電影院。</span>
+          <button class="speak-btn" onclick='speakFrench("Elles sont all\u00e9es au cin\u00e9ma.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發音時不要過度強調 -e 或 -s，但口型要明確，讓聽者能分辨性別與數量。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p><strong>常見錯誤區分：</strong>很多學習者會忽略性數配合，尤其在快速口語中。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">est parti / est partie</div>
+        <div class="pron-ipa">性不同，-e 是否出現影響語意</div>
+        <div class="pron-example">Il est parti. / Elle est partie.<button class="speak-btn" onclick='speakFrench("Il est parti.")' aria-label="播放發音">🔊</button><br>-e 雖常不發音，但口型要到位</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sont partis / sont parties</div>
+        <div class="pron-ipa">複數形式需加 -s 或 -es</div>
+        <div class="pron-example">Ils sont partis. / Elles sont parties.<button class="speak-btn" onclick='speakFrench("Ils sont partis.")' aria-label="播放發音">🔊</button><br>-s 不發音，但語氣可稍作停頓</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">est allé / est allée</div>
+        <div class="pron-ipa">allée 是 aller 的陰性過去分詞</div>
+        <div class="pron-example">Elle est allée en France.<button class="speak-btn" onclick='speakFrench("Elle est all\u00e9e en France.")' aria-label="播放發音">🔊</button><br>aller 的過去分詞要與主詞性數配合</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一句的法語過去分詞與主詞性數配合正確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Elle est parti.</li>
+          <li onclick="checkAnswer(this, false)">B. Il est partie.</li>
+          <li onclick="checkAnswer(this, true)">C. Elles sont allées.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ C 正確。'elles' 是陰性複數，過去分詞 'allées' 也應為陰性複數，加 -es。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用'être'寫下 5 句個人經歷的簡單句子，注意性數配合</li>
+        <li style="padding: 0.5rem 0;">錄製自己朗讀這些句子的音頻，並對比標準發音修正</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 37 · 第 37 課：法語複合過去時與 être 動詞的連讀實戰進階 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語未完成過去時（Imparfait）的語感建立與用法初探</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
