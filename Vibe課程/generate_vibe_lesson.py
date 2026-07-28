@@ -106,6 +106,130 @@ LESSONS = [
     }
 ]
 
+
+# 完整課程大綱（對應 Vibe Coding.md）。id 1~2 由上面的 LESSONS 手動撰寫；
+# id 3~31 由 LLM 依此大綱逐課生成；超過 31 課後才交由 LLM 自由延伸進階主題。
+# 第三階段（The Brain, id 10~21）的深度參考自兩份開源書籍的章節架構：
+#   - bojieli/ai-agent-book（Agent = LLM + 上下文 + 工具、Context Engineering、記憶、工具設計、
+#     Coding Agent、Agent 評估、多 Agent 協作）
+#   - didilili/ai-agents-from-zero（MCP、RAG、向量資料庫與 Embedding）
+# 內容一律用繁體中文原創改寫，不逐字翻譯來源書籍。
+OUTLINE = [
+    {"id": 1, "phase": "Phase 1: The Core", "title": "Node.js 的角色",
+     "core": "JS 的脫離瀏覽器執行環境", "logic": "為什麼 AI 需要 Node 才能執行 npm install？",
+     "task": "檢查電腦的 Node 版本與環境路徑"},
+    {"id": 2, "phase": "Phase 1: The Core", "title": "Localhost 與 Port（連接埠）",
+     "core": "本地伺服器公寓理論", "logic": "EADDRINUSE（打架）發生時，AI 是如何幫你換房的",
+     "task": "啟動一個服務並手動指定不同 Port"},
+    {"id": 3, "phase": "Phase 1: The Core", "title": "Git/GitHub 協作",
+     "core": "版本控制與雲端同步", "logic": "理解 AI 的 git commit 邏輯與 push 到雲端的流程",
+     "task": "建立一個 Repo 並完成第一次 Push"},
+    {"id": 4, "phase": "Phase 1: The Core", "title": "GitHub 寶庫挖掘",
+     "core": "精準搜索與 Snippet 提取", "logic": "如何將 GitHub 上的開源功能餵給 AI Agent 並整合進專案",
+     "task": "找一個開源組件並讓 AI 遷移到你的專案中"},
+    {"id": 5, "phase": "Phase 1: The Core", "title": "Package Management（NPM/Bun）",
+     "core": "依賴地圖與 package.json", "logic": "當依賴衝突時，AI 是如何修改 package-lock.json 修復問題的",
+     "task": "練習安裝與卸載依賴，觀察檔案變化"},
+    {"id": 6, "phase": "Phase 2: The Shell", "title": "AI 原型工具（v0/Bolt）",
+     "core": "從 Prompt 到 UI 的瞬間轉化", "logic": "理解 v0 生成代碼的組件化思維",
+     "task": "生成一個 Landing Page 並導出到本地"},
+    {"id": 7, "phase": "Phase 2: The Shell", "title": "Next.js 全家桶",
+     "core": "App Router 與渲染機制", "logic": "use client 與 server component 在 Vibe Coding 中的標記邏輯",
+     "task": "建立一個包含 API Routes 的 Next.js 基本架構"},
+    {"id": 8, "phase": "Phase 2: The Shell", "title": "UI 組件與設計（shadcn/ui）",
+     "core": "組件組裝與 Tailwind CSS", "logic": "為什麼 AI 喜歡 shadcn？複製代碼而非安裝插件的優勢",
+     "task": "使用 shadcn 快速搭建一個註冊頁面"},
+    {"id": 9, "phase": "Phase 2: The Shell", "title": "資源自動化（Icons/Images）",
+     "core": "Lucide 與 Unsplash API", "logic": "AI 如何根據主題自動挑選正確的 Icon 與占位圖",
+     "task": "建立一個動態 Icon 列表頁面"},
+    {"id": 10, "phase": "Phase 3: The Brain", "title": "AI Agents 對比",
+     "core": "Claude Code vs Cursor 的場景選擇", "logic": "什麼時候該用終端機 Agent，什麼時候該用 IDE Agent",
+     "task": "在同一任務下對比兩個 Agent 的執行效率"},
+    {"id": 11, "phase": "Phase 3: The Brain", "title": "Agent 核心公式：LLM + 上下文 + 工具",
+     "core": "拆解 Agent 的三個組成部分——大腦（模型）、視野（上下文）、手腳（工具）",
+     "logic": "為什麼同一顆模型換了 Harness（工具骨架）表現天差地遠，Claude Code 與普通聊天視窗的差異",
+     "task": "畫出你正在用的 Agent 的 LLM + 上下文 + 工具拆解圖"},
+    {"id": 12, "phase": "Phase 3: The Brain", "title": "上下文工程（Context Engineering）",
+     "core": "系統指令、工具描述、對話歷史如何組成 AI 每次決策時看到的全部資訊",
+     "logic": "為什麼 CLAUDE.md／.cursorrules 會直接影響 AI 表現，上下文太長為什麼會讓 AI 變笨",
+     "task": "幫自己的專案寫一份精簡的專案規則檔，觀察 AI 回答品質的變化"},
+    {"id": 13, "phase": "Phase 3: The Brain", "title": "記憶系統與知識庫",
+     "core": "個人記憶（針對單一使用者）vs 共享知識庫（面向所有使用者的集體知識）",
+     "logic": "AI 工具的記住我的偏好功能是怎麼做到跨對話持久化的",
+     "task": "讓 AI 記住一項你的專案偏好，並在新對話中驗證它是否還記得"},
+    {"id": 14, "phase": "Phase 3: The Brain", "title": "工具設計與 Function Calling",
+     "core": "工具是連接語言模型與真實世界的手腳",
+     "logic": "AI 如何從一堆工具中選對該用哪一個、決定要傳什麼參數",
+     "task": "觀察一次 AI 呼叫工具的完整過程，寫下它選擇該工具的原因"},
+    {"id": 15, "phase": "Phase 3: The Brain", "title": "MCP 協議深度解析",
+     "core": "Model Context Protocol，讓 AI 用標準化方式操作外部系統",
+     "logic": "MCP 出現前每個 AI 工具都要重新對接一次 GitHub/瀏覽器，MCP 之後大家共用同一套插頭規格",
+     "task": "啟動一個 MCP Server（例如 GitHub 或 Browser），讓 AI 完成一項真實操作"},
+    {"id": 16, "phase": "Phase 3: The Brain", "title": "Coding Agent 與檔案系統架構",
+     "core": "會寫代碼的 Agent + 檔案系統，是業界驗證過最強的通用 Agent 範式",
+     "logic": "為什麼 Claude Code、Cursor 都選擇代碼執行、檔案讀寫、搜尋這三種通用工具作為核心",
+     "task": "觀察 AI 在完成一項任務時如何運用檔案系統當作暫存記憶體"},
+    {"id": 17, "phase": "Phase 3: The Brain", "title": "RAG 檢索增強生成基礎",
+     "core": "讓 AI 在回答前先查資料，而不是只靠訓練時記住的知識",
+     "logic": "AI Agent 是如何從專案裡成千上百個檔案中準確找出相關內容再回答的",
+     "task": "問 AI 一個關於你專案內部文件的問題，觀察它如何先搜尋再回答"},
+    {"id": 18, "phase": "Phase 3: The Brain", "title": "向量資料庫與 Embedding 實戰",
+     "core": "把文字轉成向量，讓語意相近的內容在數學空間裡也相近",
+     "logic": "pgvector 如何讓 Supabase 同時具備關聯式資料庫與語意搜索的能力",
+     "task": "在 Supabase 開啟 pgvector，寫入幾筆資料並做一次語意搜索查詢"},
+    {"id": 19, "phase": "Phase 3: The Brain", "title": "Agent 的評估與除錯",
+     "core": "面對模型選什麼、上下文怎麼設計、工具好不好用這些沒有標準答案的選擇，如何用數據驗證",
+     "logic": "Vibe 破裂時如何分層排查：是模型能力不夠、上下文餵錯資訊，還是工具本身設計有缺陷",
+     "task": "針對一次失敗的 AI 回應，依模型/上下文/工具三層列出可能原因並逐一排除"},
+    {"id": 20, "phase": "Phase 3: The Brain", "title": "多 Agent 協作",
+     "core": "群體智能——當任務超出單一 Agent 的能力邊界或上下文窗口時的解法",
+     "logic": "拆解任務給多個專責 Agent（例如一個負責寫代碼、一個負責審查）分工合作的架構模式",
+     "task": "設計一個雙 Agent 分工流程（例如產出 + 審查），並實際跑一次"},
+    {"id": 21, "phase": "Phase 3: The Brain", "title": "自動化流程（n8n）",
+     "core": "流程自動化", "logic": "串接 GitHub Actions，實現代碼提交到自動測試到自動部署",
+     "task": "搭建一個簡單的自動化觸發流"},
+    {"id": 22, "phase": "Phase 4: The Soul", "title": "BaaS 核心（Supabase）",
+     "core": "雲端資料庫與表結構", "logic": "理解 AI 如何撰寫 SQL 並在 Supabase 中執行",
+     "task": "建立一個 User Profile 表並實現 CRUD"},
+    {"id": 23, "phase": "Phase 4: The Soul", "title": "緩存與存儲（Redis/R2）",
+     "core": "效能優化與對象存儲", "logic": "為什麼圖片要放 R2 而不是放資料庫",
+     "task": "上傳一張圖片到 Cloudflare R2 並獲得訪問連結"},
+    {"id": 24, "phase": "Phase 4: The Soul", "title": "API 通訊與第三方整合",
+     "core": "API Routes 與 Webhooks", "logic": "理解 API 調用時的 Request 與 Response 結構",
+     "task": "整合一個天氣 API 並在頁面顯示"},
+    {"id": 25, "phase": "Phase 5: The Money", "title": "身份驗證（Better Auth）",
+     "core": "安全認證流程", "logic": "理解 OAuth（Google/GitHub 登入）的跳轉與權限邏輯",
+     "task": "實現一個完整的登入/登出功能"},
+    {"id": 26, "phase": "Phase 5: The Money", "title": "支付系統（Stripe）",
+     "core": "訂閱制與結帳", "logic": "理解 Stripe Checkout 與 Webhook 的非同步通知",
+     "task": "在測試模式下完成一筆虛擬訂單"},
+    {"id": 27, "phase": "Phase 5: The Money", "title": "郵件通訊（Resend）",
+     "core": "交易性郵件發送", "logic": "為什麼 AI 需要 Resend API 而不是 SMTP",
+     "task": "發送一封包含動態內容的歡迎郵件"},
+    {"id": 28, "phase": "Phase 6: The Shield", "title": "容器化（Docker）",
+     "core": "環境隔離與部署包", "logic": "理解 Dockerfile 如何定義代碼的生存環境",
+     "task": "將一個簡單的專案打包成 Docker Image"},
+    {"id": 29, "phase": "Phase 6: The Shield", "title": "部署地圖（Vercel/CF）",
+     "core": "全球部署", "logic": "理解 CDN 與 Edge Functions 的執行位置",
+     "task": "將專案部署到 Vercel 並設定自定義域名"},
+    {"id": 30, "phase": "Phase 6: The Shield", "title": "監控與分析（PostHog）",
+     "core": "錯誤監控與用戶行為", "logic": "如何在 Vibe Coding 過程中利用數據發現 Vibe 破裂的地方",
+     "task": "埋入一個按鈕點擊事件並在後台查看"},
+    {"id": 31, "phase": "Phase 6: The Shield", "title": "市場洞察與決策",
+     "core": "數據驅動開發", "logic": "獨立開發者如何利用數據判斷下一個 Feature 該做什麼",
+     "task": "撰寫一份簡單的產品數據分析報告"},
+]
+
+REFERENCE_BOOKS_NOTE = (
+    "第三階段（The Brain）內容在深度與觀念上請參考兩份開源教材的章節架構："
+    "bojieli/ai-agent-book《AI Agent 实战：从原理到落地》"
+    "（https://github.com/bojieli/ai-agent-book/tree/main/book，核心公式 Agent = LLM + 上下文 + 工具、"
+    "Context Engineering、記憶與知識庫、工具設計、Coding Agent、Agent 評估、多 Agent 協作）"
+    "與 didilili/ai-agents-from-zero《AI Agents From Zero》"
+    "（https://github.com/didilili/ai-agents-from-zero/tree/main，MCP、RAG、向量資料庫與 Embedding）。"
+    "務必只借用觀念與結構作為靈感，用你自己的話以繁體中文原創撰寫，不得逐字翻譯或大段抄錄原書（原書為簡體中文）。"
+)
+
 LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要加任何說明文字、不要用 markdown code block），結構必須完全符合：
 
 {
@@ -200,7 +324,81 @@ def get_previous_topics():
     return deduped
 
 
-def generate_lesson_via_llm(next_id, previous_topics):
+def get_outline_item(lesson_id):
+    """依課程 ID 找出對應的固定大綱項目；超出大綱範圍則回傳 None。"""
+    for item in OUTLINE:
+        if item["id"] == lesson_id:
+            return item
+    return None
+
+
+def build_fallback_lesson(next_id, outline_item):
+    """LLM 呼叫失敗時的備用課程內容：若在大綱範圍內，至少保留正確的標題與方向。"""
+    if outline_item is None:
+        lesson = dict(LESSONS[-1])
+        lesson["id"] = next_id
+        return lesson
+
+    next_item = get_outline_item(next_id + 1)
+    return {
+        "id": next_id,
+        "title": outline_item["title"],
+        "subtitle": outline_item["core"],
+        "phase": outline_item["phase"],
+        "next_topic": next_item["title"] if next_item else "",
+        "sections": [
+            {
+                "title": outline_item["title"],
+                "icon": "1",
+                "content": f"{outline_item['core']}。{outline_item['logic']}"
+            },
+            {
+                "title": "今日任務",
+                "icon": "🚀",
+                "tasks": [outline_item["task"]]
+            }
+        ]
+    }
+
+
+def build_outline_prompt(next_id, outline_item, previous_topics):
+    """依固定大綱產生指定主題的課程 prompt。"""
+    topics_list = "、".join(previous_topics) if previous_topics else "（尚無）"
+    reference_note = REFERENCE_BOOKS_NOTE if outline_item["phase"] == "Phase 3: The Brain" else ""
+    return (
+        f"你是一位資深的 Vibe Coding 技術導師，正在為一套給繁體中文使用者的獨立開發技術棧課程撰寫第 {next_id} 課的教材。\n"
+        f"這一課在整體大綱中屬於「{outline_item['phase']}」，主題已經固定為：「{outline_item['title']}」。\n"
+        f"核心概念：{outline_item['core']}\n"
+        f"AI 調用邏輯重點：{outline_item['logic']}\n"
+        f"建議的實戰任務方向（可依此發揮，不必逐字照用）：{outline_item['task']}\n"
+        f"已經教過的主題依序是：{topics_list}，撰寫時避免與這些內容重複。\n"
+        f"{reference_note}\n\n"
+        "課程重點應該放在：\n"
+        "- 這個技術/概念在 Vibe Coding 中的角色是什麼？\n"
+        "- AI Agent 是如何調用或運用這個概念的？\n"
+        "- 當 Vibe 破裂（報錯或行為異常）時，如何診斷和修復？\n\n"
+        + LESSON_SCHEMA_INSTRUCTIONS
+    )
+
+
+def build_freeform_prompt(next_id, previous_topics):
+    """大綱（31 課）跑完後，交由 LLM 自由延伸進階主題的 prompt。"""
+    topics_list = "、".join(previous_topics) if previous_topics else "（尚無）"
+    return (
+        f"你是一位資深的 Vibe Coding 技術導師，正在為一套給繁體中文使用者的獨立開發技術棧課程撰寫第 {next_id} 課的教材。\n"
+        f"這套課程原本規劃的 31 課大綱已經教完，現在要延伸進階主題。\n"
+        f"已經教過的主題依序是：{topics_list}。\n"
+        "請挑選一個循序漸進、難度適中地往下延伸的新主題，絕對不要跟已經教過的主題重複或高度相似，"
+        "可以考慮更進階的 AI Agent 工程主題（例如 Prompt 快取、Agent 沙盒安全、長任務中斷恢復、成本控管等）。\n\n"
+        "課程重點應該放在：\n"
+        "- 這個技術在 Vibe Coding 中的角色是什麼？\n"
+        "- AI Agent 是如何調用這個技術的？\n"
+        "- 當 Vibe 破裂（報錯）時，如何診斷和修復？\n\n"
+        + LESSON_SCHEMA_INSTRUCTIONS
+    )
+
+
+def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     """呼叫第三方 OpenAI 相容 API 生成下一堂課的內容（JSON），失敗時回傳 None。"""
     api_url = os.environ.get("LLM_API_URL")
     api_key = os.environ.get("LLM_API_KEY")
@@ -210,17 +408,10 @@ def generate_lesson_via_llm(next_id, previous_topics):
         print("缺少 LLM_API_URL / LLM_API_KEY / LLM_MODEL，無法呼叫 LLM 生成課程")
         return None
 
-    topics_list = "、".join(previous_topics) if previous_topics else "（尚無）"
-    prompt = (
-        f"你是一位資深的 Vibe Coding 技術導師，正在為一套給繁體中文使用者的獨立開發技術棧課程撰寫第 {next_id} 課的教材。\n"
-        f"已經教過的主題依序是：{topics_list}。\n"
-        "請挑選一個循序漸進、難度適中地往下延伸的新主題，絕對不要跟已經教過的主題重複或高度相似。\n\n"
-        "課程重點應該放在：\n"
-        "- 這個技術在 Vibe Coding 中的角色是什麼？\n"
-        "- AI Agent 是如何調用這個技術的？\n"
-        "- 當 Vibe 破裂（報錯）時，如何診斷和修復？\n\n"
-        + LESSON_SCHEMA_INSTRUCTIONS
-    )
+    if outline_item is not None:
+        prompt = build_outline_prompt(next_id, outline_item, previous_topics)
+    else:
+        prompt = build_freeform_prompt(next_id, previous_topics)
 
     body = json.dumps({
         "model": model,
@@ -265,6 +456,13 @@ def generate_lesson_via_llm(next_id, previous_topics):
         return None
 
     lesson["id"] = next_id
+    if outline_item is not None:
+        # 大綱範圍內的課程：標題與階段強制對齊大綱，避免 LLM 偏題
+        lesson["title"] = outline_item["title"]
+        lesson["phase"] = outline_item["phase"]
+        next_item = get_outline_item(next_id + 1)
+        if next_item is not None:
+            lesson["next_topic"] = next_item["title"]
     return lesson
 
 
@@ -671,14 +869,14 @@ def main():
     print(f"將生成第 {next_id:02d} 課")
 
     # 選擇對應的課程
+    outline_item = get_outline_item(next_id)
     if next_id <= len(LESSONS):
         lesson = LESSONS[next_id - 1]
     else:
-        lesson = generate_lesson_via_llm(next_id, get_previous_topics())
+        lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
         if lesson is None:
-            print("LLM 生成失敗，改用最後一個預設課程內容")
-            lesson = dict(LESSONS[-1])
-            lesson["id"] = next_id
+            print("LLM 生成失敗，改用備用課程內容")
+            lesson = build_fallback_lesson(next_id, outline_item)
         else:
             print(f"已透過 LLM API 生成第 {next_id:02d} 課內容")
 

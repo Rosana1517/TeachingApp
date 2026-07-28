@@ -39,6 +39,13 @@
 - [Claude Code 官方文件](https://docs.anthropic.com/en/docs/claude-code) — Anthropic 的 CLI 編程工具。
 - [Cursor 官方文檔](https://docs.cursor.com/) — AI IDE 的使用指南。
 
+## AI Agent 架構深讀（第三階段 The Brain 主要參考）
+
+- [AI Agent 实战：从原理到落地](https://github.com/bojieli/ai-agent-book/tree/main/book)（bojieli/ai-agent-book） — 「Agent = LLM + 上下文 + 工具」核心框架、Context Engineering、記憶與知識庫、工具設計、Coding Agent 架構、Agent 評估、多 Agent 協作，共 10 章，是 L11-L20 內容的主要靈感來源。
+- [AI Agents From Zero](https://github.com/didilili/ai-agents-from-zero/tree/main)（didilili/ai-agents-from-zero） — 涵蓋 LangChain、RAG、向量資料庫、MCP、LangGraph 的實作教學，是 L15、L17、L18 的主要參考。
+- [LangChain 官方文件](https://python.langchain.com/docs/introduction/) — 若想深入 RAG/Agent 框架的程式實作可延伸閱讀。
+- [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) — 官方對 Agent 架構設計取捨的第一手說明。
+
 ## 商業整合
 
 - [Stripe 官方文件](https://docs.stripe.com/) — 支付、訂閱、Webhook 的完整流程。
