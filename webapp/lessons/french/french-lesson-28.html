@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 28 — 第 28 課：法語基本冠詞與名詞性別初探</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 28</span>
+    <h1 class="lesson-title">第 28 課：法語基本冠詞與名詞性別初探</h1>
+    <p class="lesson-subtitle">掌握 le, la, les, un, une 的用法，輕鬆開啟名詞搭配練習</p>
+  </div>
+
+  <!-- Section 1: 課程導論 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 課程導論</div>
+    <p>歡迎進入第 28 課！在學過基本語序與形容詞位置後，我們現在要正式認識法語名詞的「性別」概念，以及搭配使用的<strong>不定冠詞</strong>（un, une）與<strong>定冠詞</strong>（le, la, les）。掌握冠詞不僅能幫助你正確表達名詞，更是後續學習動詞變位與句子結構的關鍵基礎。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>法語冠詞在遇到元音或無聲 h 開頭的名詞時，會發生<strong>省音</strong>（elision）現象，這是流暢發音的重點。請注意以下拼寫變化與實際讀音：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">le / la</div>
+        <div class="pron-ipa">發音為清晰的 /lə/ 與 /la/，口型微圓轉扁平</div>
+        <div class="pron-example"><em>le livre</em>（這本書）<button class="speak-btn" onclick='speakFrench("le livre")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">l' (省音)</div>
+        <div class="pron-ipa">遇到元音或無聲 h 開頭字時，e 省略並加撇號，發音連讀為 /l/</div>
+        <div class="pron-example"><em>l'amie</em>（女性朋友）<button class="speak-btn" onclick='speakFrench("l&#39;amie")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">un / une</div>
+        <div class="pron-ipa">un 發 /œ̃/（鼻化），une 發 /yn/（圓唇前元音）</div>
+        <div class="pron-example"><em>un chat / une table</em>（一隻貓 / 一張桌子）<button class="speak-btn" onclick='speakFrench("un chat")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">les</div>
+        <div class="pron-ipa">複數定冠詞發 /le/，尾音 s 通常不發，僅作複數標記</div>
+        <div class="pron-example"><em>les enfants</em>（孩子們）<button class="speak-btn" onclick='speakFrench("les enfants")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟著錄音反覆朗讀以下單字與短語，特別注意冠詞與名詞首字母的連讀與省音現象。保持語速平穩，讓每個音節自然銜接。</p>
+    <div class="follow-box">
+      <h4>請跟著錄音反覆朗讀以下單字與短語，特別注意冠詞與名詞首字母的連讀與省音現象。保持語速平穩，讓每個音節自然銜接。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">un ami</span>
+          <span class="ipa">/œ̃.n‿a.mi/</span>
+          <span class="meaning">—— 一位男性朋友</span>
+          <button class="speak-btn" onclick='speakFrench("un ami")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">une école</span>
+          <span class="ipa">/yn.‿e.kɔl/</span>
+          <span class="meaning">—— 一所學校</span>
+          <button class="speak-btn" onclick='speakFrench("une \u00e9cole")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">le héros</span>
+          <span class="ipa">/lə e.ʁo/</span>
+          <span class="meaning">—— 英雄</span>
+          <button class="speak-btn" onclick='speakFrench("le h\u00e9ros")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">les amis</span>
+          <span class="ipa">/le.za.mi/</span>
+          <span class="meaning">—— 朋友们</span>
+          <button class="speak-btn" onclick='speakFrench("les amis")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發 un 時舌尖抵下齒，軟腭降下讓氣流從鼻腔流出；發 une 時嘴唇收圓向前突出，想像吹口哨的口型。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>法語名詞性別沒有絕對規律，但可透過詞尾特徵初步判斷。以下列出常見規則與例外提示，幫助你快速建立語感：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">-e 結尾</div>
+        <div class="pron-ipa">多數為陰性，但部分常用詞為陽性</div>
+        <div class="pron-example">la ville / le professeur<button class="speak-btn" onclick='speakFrench("la ville")' aria-label="播放發音">🔊</button><br>職業名詞常依說話者性別變化</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-tion, -sion 結尾</div>
+        <div class="pron-ipa">幾乎全為陰性</div>
+        <div class="pron-example">la nation, la décision<button class="speak-btn" onclick='speakFrench("la nation, la d\u00e9cision")' aria-label="播放發音">🔊</button><br>可作為快速判斷依據</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-ment 結尾</div>
+        <div class="pron-ipa">多數為陰性，源自拉丁語中性</div>
+        <div class="pron-example">le gouvernement (例外)<button class="speak-btn" onclick='speakFrench("le gouvernement (\u4f8b\u5916)")' aria-label="播放發音">🔊</button><br>注意常見例外詞需單獨記憶</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 請選出正確填入空格的冠詞：「___ apple est rouge.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Le</li>
+          <li onclick="checkAnswer(this, false)">B. La</li>
+          <li onclick="checkAnswer(this, true)">C. L'</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ apple 以母音開頭，定冠詞 le/la 需省音為 l'，故選 C。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">找出家中 5 件物品的法語名稱，並標註其性別與對應冠詞（le/la/un/une/l'）</li>
+        <li style="padding: 0.5rem 0;">朗讀本課跟練清單 3 遍，錄製自己的發音並對比原音修正省音連讀</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 28 · 第 28 課：法語基本冠詞與名詞性別初探 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語指示形容詞與所有格代詞基礎</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

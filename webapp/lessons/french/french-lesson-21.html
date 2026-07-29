@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 21 — 第 21 課：法語基本現在式——第一群動詞（-er）變位與連讀實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 21</span>
+    <h1 class="lesson-title">第 21 課：法語基本現在式——第一群動詞（-er）變位與連讀實戰</h1>
+    <p class="lesson-subtitle">掌握日常最常用動詞的現在時態，並熟練主稱代名詞的無聲尾音與聯誦規則</p>
+  </div>
+
+  <!-- Section 📘: 課程導論 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📘</span> 課程導論</div>
+    <p>在熟練基礎發音與數字後，我們正式進入法語動詞世界。法語動詞依詞尾分為三大群，本課專注於最常見的第一群 <strong>-er</strong> 動詞。學習現在式變位時，請特別留意詞尾無聲輔音在口語中的「隱形」特性，以及主稱代名詞與動詞之間的聯誦規律。</p>
+  </div>
+
+  <!-- Section 🔤: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔤</span> 發音對照表</div>
+    <p>第一群動詞現在式詞尾發音規則。注意：-e, -es, -ent 通常發無聲 /ə/ 或不發音，-ons 發 /ɔ̃/，-ez 發 /e/。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">-e / -es</div>
+        <div class="pron-ipa">發音接近輕微的 /ə/ 或完全無聲，視後續單字是否聯誦而定</div>
+        <div class="pron-example"><em>parl-e</em>（說（我/你/他））<button class="speak-btn" onclick='speakFrench("parl-e")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-ons</div>
+        <div class="pron-ipa">發鼻化半開元音 /ɔ̃/，嘴型圓潤張開</div>
+        <div class="pron-example"><em>parl-ons</em>（說（我們））<button class="speak-btn" onclick='speakFrench("parl-ons")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-ez</div>
+        <div class="pron-ipa">發閉口前元音 /e/，嘴角向兩側拉開</div>
+        <div class="pron-example"><em>parl-ez</em>（說（你們/您））<button class="speak-btn" onclick='speakFrench("parl-ez")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-ent</div>
+        <div class="pron-ipa">完全無聲，不發音，僅靠語調與上下文判斷第三人稱複數</div>
+        <div class="pron-example"><em>parl-ent</em>（說（他們））<button class="speak-btn" onclick='speakFrench("parl-ent")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟隨以下常用 -er 動詞進行口語練習，注意主稱代名詞與動詞間的聯誦與流暢度。</p>
+    <div class="follow-box">
+      <h4>請跟隨以下常用 -er 動詞進行口語練習，注意主稱代名詞與動詞間的聯誦與流暢度。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">je parle</span>
+          <span class="ipa">/ʒə paʁl/</span>
+          <span class="meaning">—— 我說</span>
+          <button class="speak-btn" onclick='speakFrench("je parle")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">nous parlons</span>
+          <span class="ipa">/nu paʁ.lɔ̃/</span>
+          <span class="meaning">—— 我們說</span>
+          <button class="speak-btn" onclick='speakFrench("nous parlons")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">vous écoutez</span>
+          <span class="ipa">/vu ze.ku.te/</span>
+          <span class="meaning">—— 您聽／你們聽</span>
+          <button class="speak-btn" onclick='speakFrench("vous \u00e9coutez")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">elles aiment</span>
+          <span class="ipa">/ɛl zɛm/</span>
+          <span class="meaning">—— 她們喜歡</span>
+          <button class="speak-btn" onclick='speakFrench("elles aiment")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發音小技巧：遇到 -e/-es/-ent 結尾時，喉嚨保持放鬆，不要刻意擠出元音，讓氣流自然帶過即可。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>對比不同主稱代名詞下，動詞詞尾的發音差異與聯誦規則。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">je / tu / il</div>
+        <div class="pron-ipa">詞尾通常無聲，語氣輕快</div>
+        <div class="pron-example">je finis<button class="speak-btn" onclick='speakFrench("je finis")' aria-label="播放發音">🔊</button><br>口語中 je 的 /ə/ 常省略為 /ʒə/ 或直接連讀</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">nous</div>
+        <div class="pron-ipa">詞尾 -ons 必發 /ɔ̃/，不可省略</div>
+        <div class="pron-example">nous finissons<button class="speak-btn" onclick='speakFrench("nous finissons")' aria-label="播放發音">🔊</button><br>即使前面是元音結尾，也不產生聯誦</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">vous</div>
+        <div class="pron-ipa">詞尾 -ez 發 /e/，若接元音開頭動詞需聯誦 /z/</div>
+        <div class="pron-example">vous écoutez<button class="speak-btn" onclick='speakFrench("vous \u00e9coutez")' aria-label="播放發音">🔊</button><br>聯誦時注意 /z/ 的濁音特質</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ils / elles</div>
+        <div class="pron-ipa">詞尾 -ent 絕對無聲，依賴語境判斷複數</div>
+        <div class="pron-example">ils finissent<button class="speak-btn" onclick='speakFrench("ils finissent")' aria-label="播放發音">🔊</button><br>第三人稱複數變位與第三人稱單數發音相同</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在法語口語中，動詞詞尾 '-ent'（如 ils parlent）的正確發音方式為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 發清晰的 /t/ 音</li>
+          <li onclick="checkAnswer(this, false)">B. 發輕微的 /ə/ 元音</li>
+          <li onclick="checkAnswer(this, true)">C. 完全不發音，僅保留動詞詞幹音</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ C. 第三人稱複數詞尾 -ent 在現代法語中為無聲尾音，不發音。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 請問下列哪一句正確運用了 vous 與元音開頭動詞的聯誦規則？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. vous écoutez → /vu e.ku.te/</li>
+          <li onclick="checkAnswer(this, true)">B. vous écoutez → /vu ze.ku.te/</li>
+          <li onclick="checkAnswer(this, false)">C. vous écoutez → /vu we.ku.te/</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. vous 的 s 在聯誦時發濁音 /z/，因此為 /vu ze.ku.te/。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">錄製一段 30 秒的自我介紹，包含三個使用第一群動詞現在式的句子（如：Je m'appelle..., J'habite..., Je parle...）</li>
+        <li style="padding: 0.5rem 0;">朗讀第 20 課的數字 1-10，並嘗試搭配動詞練習（如：Je viens à deux heures）</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 21 · 第 21 課：法語基本現在式——第一群動詞（-er）變位與連讀實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語否定句結構 ne...pas 與雙重否定發音技巧</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

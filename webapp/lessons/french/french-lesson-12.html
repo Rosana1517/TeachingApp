@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 12 — 第 12 課：法語半開元音 /a/ 的開口度控制</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 12</span>
+    <h1 class="lesson-title">第 12 課：法語半開元音 /a/ 的開口度控制</h1>
+    <p class="lesson-subtitle">從閉口到張口，掌握法語最核心的元音發音與語調起伏</p>
+  </div>
+
+  <!-- Section 1: 元音家族的最後一塊拼圖 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 元音家族的最後一塊拼圖</div>
+    <p>在前幾課中，我們精細打磨了閉口元音（如 /i/, /u/）和圓唇元音（如 /y/, /u/）。現在，讓我們轉向法語中最開放、最具表現力的元音——<strong>/a/</strong>。雖然在現代巴黎法語中，傳統拉丁語的 'a' 發音已趨於單一化，但準確掌握其<strong>口腔開合度</strong>與<strong>舌頭位置</strong>，對於區分相近音（如與日語或德語的 'a' 對比）以及讓語音聽起來更地道至關重要。本課將聚焦於標準法語 /a/ 的發音機制。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>請注意，法語的 /a/ 通常比英語 'father' 中的 /ɑː/ 舌位更靠前，比日語 'あ' 更靠後且開口度略大。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">/a/</div>
+        <div class="pron-ipa">舌頭平放於口腔底部，舌尖抵住下齒背。雙唇自然張開，呈扁平狀，下巴垂直向下打開。</div>
+        <div class="pron-example"><em>patte</em>（爪子）<button class="speak-btn" onclick='speakFrench("patte")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/a/ + 鼻化 (an/en)</div>
+        <div class="pron-ipa">發音位置與 /a/ 相同，但軟齶下降，讓氣流同時從口腔和鼻腔流出。注意這與純口元音 /a/ 的區別。</div>
+        <div class="pron-example"><em>vent</em>（風）<button class="speak-btn" onclick='speakFrench("vent")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/a/ vs /ɑ/</div>
+        <div class="pron-ipa">現代標準法語中兩者常合併，但在部分口音或詩歌中，/ɑ/ 舌根後縮，開口更大。本課以標準 /a/ 為主。</div>
+        <div class="pron-example"><em>pas / patte</em>（腳/步態）<button class="speak-btn" onclick='speakFrench("pas")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下單字，感受下巴放鬆下垂的感覺，不要夾緊腮幫子。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下單字，感受下巴放鬆下垂的感覺，不要夾緊腮幫子。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">là</span>
+          <span class="ipa">/la/</span>
+          <span class="meaning">—— 那裡</span>
+          <button class="speak-btn" onclick='speakFrench("l\u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">pain</span>
+          <span class="ipa">/pɛ̃/</span>
+          <span class="meaning">—— 麵包</span>
+          <button class="speak-btn" onclick='speakFrench("pain")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">chat</span>
+          <span class="ipa">/ʃa/</span>
+          <span class="meaning">—— 貓</span>
+          <button class="speak-btn" onclick='speakFrench("chat")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">bas</span>
+          <span class="ipa">/ba/</span>
+          <span class="meaning">—— 下方</span>
+          <button class="speak-btn" onclick='speakFrench("bas")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">marcher</span>
+          <span class="ipa">/maʁ.ʃe/</span>
+          <span class="meaning">—— 行走</span>
+          <button class="speak-btn" onclick='speakFrench("marcher")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：想像你在看牙醫時張嘴說 '啊——'，但嘴角要向兩側微微拉伸，保持扁平，不要像發英文 'ah' 那樣圓唇。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>許多學習者容易將法語 /a/ 發得過於圓潤或舌位過於靠後，導致聽起來像德語或帶有外語腔。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">/a/ (法語)</div>
+        <div class="pron-ipa">舌前部低，雙唇扁平，開口度中等偏大。</div>
+        <div class="pron-example">barbe<button class="speak-btn" onclick='speakFrench("barbe")' aria-label="播放發音">🔊</button><br>避免將嘴唇向前嘟起。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/ɑ/ (德語/英語感)</div>
+        <div class="pron-ipa">舌根後縮，雙唇可能微圓，開口度較大。</div>
+        <div class="pron-example">Bart (德)<button class="speak-btn" onclick='speakFrench("Bart (\u5fb7)")' aria-label="播放發音">🔊</button><br>法語中除非刻意強調或特定方言，否則少用此舌位。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/e/ vs /a/</div>
+        <div class="pron-ipa">/e/ 是半閉元音，下巴幾乎不動；/a/ 是開元音，下巴明顯下沉。</div>
+        <div class="pron-example">mer vs mar<button class="speak-btn" onclick='speakFrench("mer vs mar")' aria-label="播放發音">🔊</button><br>透過鏡子觀察下巴動作，確保差異明顯。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 發法語單字 'chat' (/ʃa/) 時，下列哪項描述最準確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 雙唇圓起，舌頭後縮</li>
+          <li onclick="checkAnswer(this, true)">B. 下巴垂直打開，雙唇扁平，舌尖抵下齒</li>
+          <li onclick="checkAnswer(this, false)">C. 嘴巴張得極大並發出喉嚨音</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 法語 /a/ 的特徵是舌位靠前、下巴打開、雙唇保持扁平自然，不圓唇。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪個單字的元音發音與其他三個不同？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. patte</li>
+          <li onclick="checkAnswer(this, false)">B. chat</li>
+          <li onclick="checkAnswer(this, true)">C. pain</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 'pain' 是鼻化元音 /ɛ̃/，而其他三個都是口元音 /a/。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">對著鏡子練習 'la', 'le', 'la', 'là'，確保發音時嘴角沒有不必要的圓唇動作。</li>
+        <li style="padding: 0.5rem 0;">錄製自己朗讀 'Je marche vers la porte'（我走向門），檢查語音是否流暢且 /a/ 音清晰。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 12 · 第 12 課：法語半開元音 /a/ 的開口度控制 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 13 課：法語基本疑問句結構與升降調</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 01 — 緩衝句</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 01 課</span>
+    <h1 class="lesson-title">緩衝句</h1>
+    <p class="lesson-subtitle">在反射性答應之前，先為自己拿回三秒鐘</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼答應得那麼快</div>
+    <p>被要求的當下，你身體裡先出現的是不舒服 —— 緊、悶、心跳快。而「答應」能讓這股不舒服<strong>立刻</strong>消失。問題就在這個「立刻」：短期的解脫感會回頭強化剛才那個行為，心理學稱為<strong>負增強</strong>，它讓反射下次來得更快、更自動。你不是不夠堅強，你是被訓練過的。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 迴避會自己長大</div>
+    <p>研究指出，迴避雖然帶來暫時緩解，長期卻會<strong>放大</strong>痛苦、鞏固「這件事很危險」的信念，並讓行為變得僵化。換句話說，你越常秒答應，下次開口拒絕就越難。要斷掉它不必一步跳到拒絕 —— 只要讓解脫感<strong>延後抵達</strong>就夠了。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 技能：緩衝句</div>
+    <p>緩衝句是一句<strong>事先準備好、不需要當場想</strong>的話，作用是把「回應」和「決定」拆開。公式：<strong>我需要確認的事 ＋ 明確的回覆時間</strong>。兩個零件缺一不可 —— 少了時間聽起來像敷衍，少了理由聽起來像抗拒。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">同事臨時塞工作</span>
+          <span class="line">我看一下手上的進度，一小時後回你。</span>
+        </li>
+        <li>
+          <span class="situation">朋友約你參加活動</span>
+          <span class="line">我查一下那天的安排，今晚給你答覆。</span>
+        </li>
+        <li>
+          <span class="situation">主管加派任務</span>
+          <span class="line">我確認一下現有排程，下午跟你回報。</span>
+        </li>
+        <li>
+          <span class="situation">推銷或募款</span>
+          <span class="line">我不當場決定，需要的話我再聯絡你。</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 注意這四句都沒有拒絕任何事。這是刻意的 —— 這一課的目標不是拒絕，是讓你重新拿到決定權。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 三個必須避開的寫法</div>
+    <p>以下三種是初學者最常見的失敗，它們看起來像緩衝，其實已經把主動權交出去了：</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">應該可以吧？</td><td>已經答應了，只是加了問號</td></tr>
+        <tr><td class="bad">我再看看喔</td><td>沒有時間點，對方會持續追你</td></tr>
+        <tr><td class="bad">不好意思我這個人比較…</td><td>開始解釋自己，主動權就交出去了</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 會發生什麼</div>
+    <p>你講完那句話的當下，那股不舒服<strong>不會消失</strong>，甚至會更明顯一點。這不是失敗 —— 這正是原本被「秒答應」偷走的東西。它通常在幾分鐘內就會退掉。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 你反射性答應之後，短時間內的焦慮通常會怎麼變化？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 短期焦慮下降</li>
+          <li onclick="checkAnswer(this, false)">B. 短期焦慮上升</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">A。答應會讓不適立刻解除，這份解脫感回頭強化了反射。麻煩的正是它短期有效 —— 有效才會被學起來。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下面哪一句是合格的緩衝句？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 我看一下行程，一小時後回覆你</li>
+          <li onclick="checkAnswer(this, false)">B. 應該沒問題，我再盡量安排看看</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">A。它同時具備「要確認的事」和「明確時間」。B 已經實質答應了，只是把壓力延後 —— 那是討好，不是緩衝。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">3. 緩衝句的主要目的是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 爭取決定的時間</li>
+          <li onclick="checkAnswer(this, false)">B. 委婉地表達拒絕</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">A。緩衝句刻意不含任何拒絕。它處理的是「反射」，不是「答案」。把兩者混在一起是初學時最常見的失敗。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>挑一句上面的緩衝句，改成你自己會講的語氣，寫下來</li>
+        <li>對著空氣唸五次，唸到不用想就能出口為止</li>
+        <li>找一個「低風險」場合用掉它 —— 家人問晚餐吃什麼、同事問要不要訂飲料都可以。第一次刻意挑不重要的場合</li>
+        <li>用完記一行：當時身體什麼感覺？對方的反應是什麼？</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 01 課 · 2026-07-21</p>
+    <p class="next">下一課：說不的三個層次</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>

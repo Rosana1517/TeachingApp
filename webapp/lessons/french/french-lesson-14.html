@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 14 — 第 14 課：法語半元音與滑音的流暢過渡</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 14</span>
+    <h1 class="lesson-title">第 14 課：法語半元音與滑音的流暢過渡</h1>
+    <p class="lesson-subtitle">掌握 /j/, /w/, /ɥ/ 的唇舌協同動作，讓發音不再斷裂</p>
+  </div>
+
+  <!-- Section 1: 半元音的概念與分類 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 半元音的概念與分類</div>
+    <p>在前幾課中，我們已經精進了元音與輔音的獨立發音。本課將介紹<strong>半元音（semi-voyelles）</strong>，它們在聽感上接近元音，但在發音機制上屬於輔音，主要起到連接兩個元音或引導元音的作用。法語中有三個主要的半元音：<strong>/j/</strong>（類似英文 y）、<strong>/w/</strong>（圓唇滑音）和 <strong>/ɥ/</strong>（扁唇滑音）。掌握它們能讓你的法語聽起來更連貫、更自然。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下是三個核心半元音的發音要點與範例單字。注意觀察嘴型從半元音過渡到後續元音時的變化。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">/j/</div>
+        <div class="pron-ipa">舌前部抬向硬顎，嘴唇展開呈微笑狀，類似發 'i' 的起始位置但氣流更強。拼寫常為 ill, y, i+元音。</div>
+        <div class="pron-example"><em>ville</em>（城市）<button class="speak-btn" onclick='speakFrench("ville")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/w/</div>
+        <div class="pron-ipa">嘴唇圓撮突出，舌後部抬起，類似發 'ou' 的起始位置。拼寫常為 ou+元音, gu。</div>
+        <div class="pron-example"><em>oui</em>（是）<button class="speak-btn" onclick='speakFrench("oui")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/ɥ/</div>
+        <div class="pron-ipa">嘴唇圓撮但比 /w/ 更扁平緊縮，舌位同 /j/。這是法語特有的音，拼寫常為 u+元音。</div>
+        <div class="pron-example"><em>huit</em>（八）<button class="speak-btn" onclick='speakFrench("huit")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下單字，注意感受舌頭與嘴唇在發半元音瞬間的快速切換。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下單字，注意感受舌頭與嘴唇在發半元音瞬間的快速切換。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">yeux</span>
+          <span class="ipa">/jø/</span>
+          <span class="meaning">—— 眼睛</span>
+          <button class="speak-btn" onclick='speakFrench("yeux")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">noix</span>
+          <span class="ipa">/nwa/</span>
+          <span class="meaning">—— 核桃；核桃色</span>
+          <button class="speak-btn" onclick='speakFrench("noix")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">huile</span>
+          <span class="ipa">/ɥil/</span>
+          <span class="meaning">—— 油</span>
+          <button class="speak-btn" onclick='speakFrench("huile")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">broyer</span>
+          <span class="ipa">/bʁwaje/</span>
+          <span class="meaning">—— 搗碎</span>
+          <button class="speak-btn" onclick='speakFrench("broyer")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發 /ɥ/ 時，想像你先準備發 'u'，然後迅速將嘴角向兩側拉緊，但不要完全展開成 'i'。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>許多學習者容易混淆半元音與其對應的元音，或者在拼寫相似的單字中發錯音。請仔細區分以下對比。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">/j/ vs /i/</div>
+        <div class="pron-ipa">/j/ 是滑音，速度快，作為介音；/i/ 是穩定元音，持續發聲。</div>
+        <div class="pron-example">lier /lije/ (連結) vs lit /li/ (床)<button class="speak-btn" onclick='speakFrench("lier")' aria-label="播放發音">🔊</button><br>注意 'ill' 在詞尾通常發 /j/</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/w/ vs /u/</div>
+        <div class="pron-ipa">/w/ 是唇齒摩擦感的滑音，/u/ 是純粹的圓唇元音。</div>
+        <div class="pron-example">roi /ʁwa/ (國王) vs roux /ʁu/ (紅髮的)<button class="speak-btn" onclick='speakFrench("roi")' aria-label="播放發音">🔊</button><br>'ou' 在元音前發 /w/，單獨發 /u/</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">/ɥ/ vs /u/</div>
+        <div class="pron-ipa">/ɥ/ 是扁圓唇，/u/ 是緊圓唇且舌後縮。</div>
+        <div class="pron-example">huit /ɥit/ (八) vs hutte /y(t)/ (小屋)<button class="speak-btn" onclick='speakFrench("huit")' aria-label="播放發音">🔊</button><br>'u' 在另一個元音前發 /ɥ/</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 單字 "huit"（八）中的第一個音素是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. /u/</li>
+          <li onclick="checkAnswer(this, false)">B. /y/</li>
+          <li onclick="checkAnswer(this, true)">C. /ɥ/</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 C。'huit' 以半元音 /ɥ/ 開頭，這是 'u' 位於元音 'i' 之前時的發音規則。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪個單字的發音包含半元音 /w/？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. nous</li>
+          <li onclick="checkAnswer(this, true)">B. voici</li>
+          <li onclick="checkAnswer(this, false)">C. vu</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。'voici' 中的 'oi' 發音為 /wa/，包含半元音 /w/。'nous' 發 /nu/，'vu' 發 /vy/。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀單字表中的四個範例單字各五遍，並錄音對比自己的 /ɥ/ 是否足夠扁平。</li>
+        <li style="padding: 0.5rem 0;">尋找包含 'ill' (如 fille), 'ou' + 元音 (如 eau), 和 'u' + 元音 (如 unique) 的法語句子各一句，並標記出其中的半元音。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 14 · 第 14 課：法語半元音與滑音的流暢過渡 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 15 課：基礎否定結構 ne...pas 與常見副詞</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

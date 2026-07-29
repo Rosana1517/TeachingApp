@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>設定 - TeachingApp</title>
+<meta name="theme-color" content="#edeff4">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top-bar">
+    <h1>設定</h1>
+    <button class="icon-btn" aria-label="返回" onclick="location.href='index.html'">←</button>
+  </header>
+
+  <div class="card">
+    <h2>每日提醒</h2>
+    <div class="settings-row">
+      <label for="notif-enabled">開啟提醒</label>
+      <label class="switch">
+        <input type="checkbox" id="notif-enabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <label for="notif-time">提醒時間</label>
+      <input type="time" id="notif-time" value="20:00">
+    </div>
+    <p class="offline-note" id="notif-status" style="margin-top:12px"></p>
+    <button class="primary-btn" id="notif-permission-btn">允許瀏覽器通知</button>
+  </div>
+
+  <div class="card">
+    <h2>課程資料</h2>
+    <p style="font-size:0.85rem;color:var(--secondary);margin-bottom:12px">
+      課程內容會隨網站更新自動同步，並快取供離線閱讀。
+    </p>
+    <button class="primary-btn" id="refresh-btn">重新整理課程快取</button>
+    <p class="offline-note" id="refresh-status"></p>
+  </div>
+
+  <div class="card">
+    <h2>關於</h2>
+    <p style="font-size:0.85rem;color:var(--secondary)">
+      TeachingApp PWA · 由原生 iOS App 轉換而來
+    </p>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <nav>
+    <a href="index.html"><span class="glyph">🏠</span>首頁</a>
+    <a class="active" href="settings.html"><span class="glyph">⚙️</span>設定</a>
+  </nav>
+</div>
+
+<script>
+const SETTINGS_KEY = "NotificationSettingsKey";
+
+function loadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || { isEnabled: false, reminderHour: 20, reminderMinute: 0 };
+  } catch {
+    return { isEnabled: false, reminderHour: 20, reminderMinute: 0 };
+  }
+}
+
+function saveSettings(settings) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+function init() {
+  const settings = loadSettings();
+  const enabledEl = document.getElementById("notif-enabled");
+  const timeEl = document.getElementById("notif-time");
+
+  enabledEl.checked = settings.isEnabled;
+  timeEl.value = `${pad(settings.reminderHour)}:${pad(settings.reminderMinute)}`;
+
+  const persist = () => {
+    const [h, m] = timeEl.value.split(":").map(Number);
+    saveSettings({ isEnabled: enabledEl.checked, reminderHour: h, reminderMinute: m });
+    updateStatus();
+  };
+
+  enabledEl.addEventListener("change", persist);
+  timeEl.addEventListener("change", persist);
+
+  document.getElementById("notif-permission-btn").addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      document.getElementById("notif-status").textContent = "此瀏覽器不支援通知，請改用「加入主畫面」後的獨立 App 模式。";
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    updateStatus(permission);
+  });
+
+  document.getElementById("refresh-btn").addEventListener("click", async () => {
+    const status = document.getElementById("refresh-status");
+    if ("serviceWorker" in navigator) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) {
+        reg.active?.postMessage({ type: "REFRESH_CACHE" });
+      }
+    }
+    status.textContent = "已重新整理，離線快取將於背景更新。";
+  });
+
+  updateStatus();
+}
+
+function updateStatus(explicitPermission) {
+  const status = document.getElementById("notif-status");
+  const permission = explicitPermission || (("Notification" in window) ? Notification.permission : "unsupported");
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+  if (permission === "granted") {
+    status.textContent = isStandalone
+      ? "通知權限已開啟。"
+      : "通知權限已開啟，但 iOS 只有在「加入主畫面」後的獨立模式才會顯示通知。";
+  } else if (permission === "denied") {
+    status.textContent = "通知已被封鎖，請至瀏覽器設定重新開啟。";
+  } else {
+    status.textContent = "尚未授權通知權限。";
+  }
+}
+
+init();
+</script>
+</body>
+</html>

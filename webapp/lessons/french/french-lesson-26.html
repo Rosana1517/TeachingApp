@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 26 — 第 26 課：法語基本語序與形容詞位置初探</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 26</span>
+    <h1 class="lesson-title">第 26 課：法語基本語序與形容詞位置初探</h1>
+    <p class="lesson-subtitle">掌握主詞＋動詞＋補語架構，輕鬆組建日常描述句</p>
+  </div>
+
+  <!-- Section 1: 語序基礎 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 語序基礎</div>
+    <p>法語的基本語序為<strong>主詞＋動詞＋補語</strong>（SVO）。與中文相似，但形容詞的位置規則較為特殊。一般情況下，形容詞放在名詞後方，僅少數常用形容詞（如 grand, petit, beau, vieux 等）置於名詞前。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>透過以下詞彙熟悉名詞與形容詞的連讀與語流節奏，注意法語強調最後一個發音重音。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">un livre</div>
+        <div class="pron-ipa">名詞前加不定冠詞，注意聯誦與語尾流暢度</div>
+        <div class="pron-example"><em>un livre rouge</em>（一本紅色的書）<button class="speak-btn" onclick='speakFrench("un livre rouge")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">une table</div>
+        <div class="pron-ipa">陰性名詞搭配 une，語尾 e 發輕微 /ə/ 音</div>
+        <div class="pron-example"><em>une table ronde</em>（一張圓桌）<button class="speak-btn" onclick='speakFrench("une table ronde")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">petit garçon</div>
+        <div class="pron-ipa">少數形容詞前置，注意連音規則與語調平穩</div>
+        <div class="pron-example"><em>un petit garçon</em>（一個小男孩）<button class="speak-btn" onclick='speakFrench("un petit gar\u00e7on")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下句子，練習「主詞＋動詞＋形容詞」的完整語流，並注意句末的語調平穩下降。</p>
+    <div class="follow-box">
+      <h4>請跟讀以下句子，練習「主詞＋動詞＋形容詞」的完整語流，並注意句末的語調平穩下降。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">La maison est grande.</span>
+          <span class="ipa">/la mɛ.zɔ̃ ɛ ɡʁɑ̃d/</span>
+          <span class="meaning">—— 這棟房子很大。</span>
+          <button class="speak-btn" onclick='speakFrench("La maison est grande.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Le chat est noir.</span>
+          <span class="ipa">/lə ʃa ɛ nwaʁ/</span>
+          <span class="meaning">—— 這隻貓是黑色的。</span>
+          <button class="speak-btn" onclick='speakFrench("Le chat est noir.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle porte une robe belle.</span>
+          <span class="ipa">/ɛl pɔʁt yn ʁɔb bɛl/</span>
+          <span class="meaning">—— 她穿著一件漂亮的裙子。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle porte une robe belle.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：讀句子時在動詞後微微停頓半秒，再讀出形容詞，語氣會更自然流暢。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>比較形容詞在名詞前與名詞後的語意差異，部分詞彙位置改變會導致意思完全不同。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ancien</div>
+        <div class="pron-ipa">置於名詞前指「古老的」，置於名詞後指「前任的」</div>
+        <div class="pron-example">un ancien roi / un roi ancien<button class="speak-btn" onclick='speakFrench("un ancien roi")' aria-label="播放發音">🔊</button><br>注意語意轉換，需特別記憶</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">grand</div>
+        <div class="pron-ipa">幾乎總置於名詞前，指「高大的」或「重要的」</div>
+        <div class="pron-example">un grand homme<button class="speak-btn" onclick='speakFrench("un grand homme")' aria-label="播放發音">🔊</button><br>固定前置用法</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">jeune</div>
+        <div class="pron-ipa">幾乎總置於名詞前，指「年輕的」</div>
+        <div class="pron-example">une jeune fille<button class="speak-btn" onclick='speakFrench("une jeune fille")' aria-label="播放發音">🔊</button><br>描述年齡特徵多前置</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一句符合法語基本語序與形容詞放置規則？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je suis un grand homme intelligent.</li>
+          <li onclick="checkAnswer(this, true)">B. C'est une belle et grande maison.</li>
+          <li onclick="checkAnswer(this, false)">C. Il a un petit chat noir grand.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。法語中多個形容詞並列時通常置於名詞前，且語序為「主詞＋動詞＋補語」，A 語序混亂，C 形容詞位置錯誤。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用「C'est + 形容詞 + 名詞」造句 3 句，描述你身邊的物品。</li>
+        <li style="padding: 0.5rem 0;">朗讀並錄音跟練內容，檢查形容詞是否放在名詞後方（例外詞除外）。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 26 · 第 26 課：法語基本語序與形容詞位置初探 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語直接受詞代詞（le, la, les）的基礎用法</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

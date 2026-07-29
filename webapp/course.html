@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>課程內容 - TeachingApp</title>
+<meta name="theme-color" content="#edeff4">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="detail-frame-wrap">
+  <div class="detail-top-bar">
+    <button class="icon-btn" style="width:36px;height:36px;font-size:1rem" aria-label="返回" onclick="location.href='index.html'">←</button>
+    <h2 id="course-title">課程內容</h2>
+    <button class="icon-btn" id="learned-btn" style="width:36px;height:36px;font-size:1rem" aria-label="標記完成">✓</button>
+  </div>
+  <iframe id="course-frame" title="課程內容"></iframe>
+</div>
+
+<script src="js/progress.js"></script>
+<script>
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+async function init() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+  if (!id) { location.href = "index.html"; return; }
+
+  const res = await fetch("courses.json", { cache: "no-store" });
+  const courses = await res.json();
+  const course = courses.find((c) => c.id === id);
+  if (!course) { location.href = "index.html"; return; }
+
+  document.getElementById("course-title").textContent = course.title;
+  document.getElementById("course-frame").src = course.path;
+
+  const btn = document.getElementById("learned-btn");
+  const refreshBtn = () => {
+    const done = Progress.isReadState(course.id);
+    btn.textContent = done ? "✓" : "○";
+    btn.style.color = done ? "var(--success)" : "var(--accent)";
+  };
+  refreshBtn();
+  btn.addEventListener("click", () => {
+    Progress.toggleLearned(course.id);
+    refreshBtn();
+  });
+}
+
+init();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+</body>
+</html>

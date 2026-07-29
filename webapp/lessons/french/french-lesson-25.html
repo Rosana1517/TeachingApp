@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 25 — 第 25 課：法語基本否定結構 ne...pas 與動詞連讀實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 25</span>
+    <h1 class="lesson-title">第 25 課：法語基本否定結構 ne...pas 與動詞連讀實戰</h1>
+    <p class="lesson-subtitle">掌握口語中最常見的否定包圍結構，讓你的法語表達更精準自然</p>
+  </div>
+
+  <!-- Section 1: 否定結構基礎 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 否定結構基礎</div>
+    <p>在法語中，否定句通常由 <strong>ne</strong> 與 <strong>pas</strong> 包圍動詞構成。學習如何將 ne 與 pas 融入已學的現在式動詞變位中，並掌握口語中 ne 的弱化與 pas 的重音位置。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>對比肯定句與否定句的語流差異，特別注意 e muet 在 ne 中的消失規則，以及 pas 作為語意重心的咬字力度。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ne</div>
+        <div class="pron-ipa">口語中常弱化或省略，元音接近 /ə/ 但極輕</div>
+        <div class="pron-example"><em>Je ne sais pas.</em>（我不知道。）<button class="speak-btn" onclick='speakFrench("Je ne sais pas.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">pas</div>
+        <div class="pron-ipa">發 /pa/，雙唇閉合後迅速爆發，重音落在這裡</div>
+        <div class="pron-example"><em>Je ne parle pas.</em>（我不說話。）<button class="speak-btn" onclick='speakFrench("Je ne parle pas.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ne...pas</div>
+        <div class="pron-ipa">形成語調低谷，pas 拖長並加重語氣</div>
+        <div class="pron-example"><em>Il n'est pas là.</em>（他不在這裡。）<button class="speak-btn" onclick='speakFrench("Il n&#39;est pas l\u00e0.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>跟著清單朗讀以下句子，注意動詞變位與否定詞的連讀節奏。</p>
+    <div class="follow-box">
+      <h4>跟著清單朗讀以下句子，注意動詞變位與否定詞的連讀節奏。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Je ne mange pas.</span>
+          <span class="ipa">/ʒə nə mɑ̃ pa/</span>
+          <span class="meaning">—— 我不吃。</span>
+          <button class="speak-btn" onclick='speakFrench("Je ne mange pas.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Tu ne finis pas.</span>
+          <span class="ipa">/ty nə fi ni pa/</span>
+          <span class="meaning">—— 你沒做完。</span>
+          <button class="speak-btn" onclick='speakFrench("Tu ne finis pas.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Nous ne sommes pas fatigués.</span>
+          <span class="ipa">/nu nə sɔm pɑ fa ti ɡe/</span>
+          <span class="meaning">—— 我們不累。</span>
+          <button class="speak-btn" onclick='speakFrench("Nous ne sommes pas fatigu\u00e9s.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ils ne font pas de bruit.</span>
+          <span class="ipa">/il nə fɔ̃ pɑ də bʁɥi/</span>
+          <span class="meaning">—— 他們不吵。</span>
+          <button class="speak-btn" onclick='speakFrench("Ils ne font pas de bruit.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：練習時可先單讀動詞，再加入 ne...pas，最後放慢速度確保 pas 的 /p/ 發音清晰。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>釐清常見誤區，特別是 ne 在元音開頭前的省音規則，以及 pas 與其他否定副詞（如 jamais, rien）的替換邏輯。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ne + 輔音開頭</div>
+        <div class="pron-ipa">保留完整 ne /nə/，與動詞分開發音</div>
+        <div class="pron-example">Je ne suis...<button class="speak-btn" onclick='speakFrench("Je ne suis...")' aria-label="播放發音">🔊</button><br>不要吞掉 e muet</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ne + 元音開頭</div>
+        <div class="pron-ipa">省略為 n' /n/，直接連讀動詞</div>
+        <div class="pron-example">Je n'ai pas...<button class="speak-btn" onclick='speakFrench("Je n&#39;ai pas...")' aria-label="播放發音">🔊</button><br>口語極常見，需熟練</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">pas vs jamais</div>
+        <div class="pron-ipa">pas 表「不」，jamais 表「從未」</div>
+        <div class="pron-example">Je ne viens jamais.<button class="speak-btn" onclick='speakFrench("Je ne viens jamais.")' aria-label="播放發音">🔊</button><br>結構相同，僅替換 pas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一句是正確的否定句結構？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je ne sais pas.</li>
+          <li onclick="checkAnswer(this, true)">B. Je sais ne pas.</li>
+          <li onclick="checkAnswer(this, false)">C. Pas je ne sais.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 法語否定結構為動詞前後包圍，正確順序為主詞 + ne + 動詞 + pas。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當動詞以元音開頭時（如 avoir），ne 該如何處理？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 改為 né</li>
+          <li onclick="checkAnswer(this, true)">B. 省略為 n'</li>
+          <li onclick="checkAnswer(this, false)">C. 保持 ne 不變</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 口語中 ne 遇到元音開頭的動詞會省音為 n'，例如 Je n'ai pas。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用 ne...pas 結構改寫第 24 課學過的 5 個肯定句。</li>
+        <li style="padding: 0.5rem 0;">錄製一段 30 秒的自我介紹，包含 3 個否定句（例如：我不做某事、我沒有某物）。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 25 · 第 25 課：法語基本否定結構 ne...pas 與動詞連讀實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 26 課：直接受詞代名詞（COD）的位置與連讀規則</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

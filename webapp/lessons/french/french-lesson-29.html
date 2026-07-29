@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 29 — 第 29 課：法語指示形容詞 ce / cet / cette / ces 的精準應用</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 29</span>
+    <h1 class="lesson-title">第 29 課：法語指示形容詞 ce / cet / cette / ces 的精準應用</h1>
+    <p class="lesson-subtitle">學會用「這／那」精準指稱事物，掌握性別與數目的搭配規則</p>
+  </div>
+
+  <!-- Section 📘: 課程導論 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📘</span> 課程導論</div>
+    <p>在學過基本冠詞與名詞性別後，我們將學習如何使用<strong>指示形容詞</strong>來具體指出人或事物的位置或特徵。法語的指示形容詞會根據名詞的<strong>性別</strong>（陽性／陰性）與<strong>數目</strong>（單數／複數）進行變化，共有四種形式：ce、cet、cette 與 ces。正確使用它們能讓你更精準地描述周圍環境。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下列出指示形容詞的關鍵發音規則，特別注意 <strong>cet</strong> 用於以母音或沉默 h 開頭的陽性單數名詞前，此處會發生聯誦。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ce</div>
+        <div class="pron-ipa">發音 /sə/，用於陽性單數輔音開頭名詞</div>
+        <div class="pron-example"><em>ce livre</em>（這本書）<button class="speak-btn" onclick='speakFrench("ce livre")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">cet</div>
+        <div class="pron-ipa">發音 /sɛt/，用於陽性單數母音或靜音 h 開頭名詞</div>
+        <div class="pron-example"><em>cet ami</em>（這位朋友）<button class="speak-btn" onclick='speakFrench("cet ami")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">cette</div>
+        <div class="pron-ipa">發音 /sɛt/，用於陰性單數名詞</div>
+        <div class="pron-example"><em>cette table</em>（這張桌子）<button class="speak-btn" onclick='speakFrench("cette table")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ces</div>
+        <div class="pron-ipa">發音 /sɛ/, 用於陽性或陰性複數名詞</div>
+        <div class="pron-example"><em>ces enfants</em>（這些孩子）<button class="speak-btn" onclick='speakFrench("ces enfants")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟著錄音逐字朗讀，注意 cet 與 cette 尾音 t 的發音差異，以及 ces 的流暢度。</p>
+    <div class="follow-box">
+      <h4>請跟著錄音逐字朗讀，注意 cet 與 cette 尾音 t 的發音差異，以及 ces 的流暢度。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">ce garçon</span>
+          <span class="ipa">/sə ɡaʁ.sɔ̃/</span>
+          <span class="meaning">—— 這個男孩</span>
+          <button class="speak-btn" onclick='speakFrench("ce gar\u00e7on")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">cet arbre</span>
+          <span class="ipa">/sɛt aʁbʁ/</span>
+          <span class="meaning">—— 這棵樹</span>
+          <button class="speak-btn" onclick='speakFrench("cet arbre")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">cette étoile</span>
+          <span class="ipa">/sɛt e.twal/</span>
+          <span class="meaning">—— 這顆星星</span>
+          <button class="speak-btn" onclick='speakFrench("cette \u00e9toile")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">ces idées</span>
+          <span class="ipa">/sɛ e.de/</span>
+          <span class="meaning">—— 這些想法</span>
+          <button class="speak-btn" onclick='speakFrench("ces id\u00e9es")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發音小技巧：cet 的 t 要輕微發音並與下一個母音連讀，而 cette 的 t 則完全無聲，僅作為拼字標記。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>指示形容詞的選擇嚴格依賴<strong>名詞本身的性別與開頭字母</strong>，而非所修飾的形容詞。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">ce + 陽性輔音</div>
+        <div class="pron-ipa">標準用法，c 發 /s/</div>
+        <div class="pron-example">ce chat<button class="speak-btn" onclick='speakFrench("ce chat")' aria-label="播放發音">🔊</button><br>不可用於母音開頭</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">cet + 陽性母音/h</div>
+        <div class="pron-ipa">為避免元音衝突，改用 cet 並聯誦</div>
+        <div class="pron-example">cet hôtel<button class="speak-btn" onclick='speakFrench("cet h\u00f4tel")' aria-label="播放發音">🔊</button><br>雖然是靜音 h，但視同母音開頭</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">cette + 陰性</div>
+        <div class="pron-ipa">所有陰性單數皆用此形式</div>
+        <div class="pron-example">cette heure<button class="speak-btn" onclick='speakFrench("cette heure")' aria-label="播放發音">🔊</button><br>尾音 t 不發音</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ces + 複數</div>
+        <div class="pron-ipa">不分性別，複數一律用 ces</div>
+        <div class="pron-example">ces hommes<button class="speak-btn" onclick='speakFrench("ces hommes")' aria-label="播放發音">🔊</button><br>發音僅為 /sɛ/，無 t 音</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 請問「___ école」應該填入哪個指示形容詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. ce</li>
+          <li onclick="checkAnswer(this, true)">B. cet</li>
+          <li onclick="checkAnswer(this, false)">C. cette</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案為 B。École 是陽性名詞且以母音開頭，因此必須使用 cet 以符合發音流暢度。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪一個詞組的拼寫是正確的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. ce amie</li>
+          <li onclick="checkAnswer(this, false)">B. cet amie</li>
+          <li onclick="checkAnswer(this, true)">C. cette amie</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案為 C。Amie 是陰性名詞，無論開頭為何，陰性單數一律使用 cette。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">找出家中 3 件陽性單數物品、3 件陰性單數物品與 2 件複數物品，並用指示形容詞造句。</li>
+        <li style="padding: 0.5rem 0;">朗讀跟練清單中的詞組各 5 遍，錄製自己的發音並對比原音修正 cet 的聯誦。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 29 · 第 29 課：法語指示形容詞 ce / cet / cette / ces 的精準應用 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 30 課：法語基本方位介系詞（à, de, en, dans, sur）與地點表達</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>

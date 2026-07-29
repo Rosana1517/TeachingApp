@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TeachingApp</title>
+<meta name="theme-color" content="#edeff4">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TeachingApp">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top-bar">
+    <h1>首頁</h1>
+    <button class="icon-btn" aria-label="設定" onclick="location.href='settings.html'">⚙️</button>
+  </header>
+
+  <div class="install-banner" id="install-banner">
+    <span>📲</span>
+    <span style="flex:1">將此頁加入主畫面，即可像 App 一樣離線使用。</span>
+    <button class="icon-btn" style="width:32px;height:32px;font-size:0.9rem" onclick="dismissInstallBanner()">✕</button>
+  </div>
+
+  <div class="card" id="today-section"></div>
+
+  <div class="section-heading">
+    <h3>未學習</h3>
+    <span class="count-pill" id="unread-count">0</span>
+  </div>
+
+  <div class="category-scroll" id="category-scroll"></div>
+
+  <div class="course-list" id="course-list"></div>
+</div>
+
+<div class="tab-bar">
+  <nav>
+    <a class="active" href="index.html"><span class="glyph">🏠</span>首頁</a>
+    <a href="settings.html"><span class="glyph">⚙️</span>設定</a>
+  </nav>
+</div>
+
+<script src="js/progress.js"></script>
+<script src="js/app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+}
+</script>
+</body>
+</html>
