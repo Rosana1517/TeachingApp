@@ -23,12 +23,44 @@ LESSONS = [
             {
                 "title": "JavaScript 的兩條世界線",
                 "icon": "1",
-                "content": "JavaScript 原本是一種「瀏覽器內嵌語言」——它只能在 Chrome、Safari 裡跑。直到 2009 年，Ryan Dahl 把 Google Chrome 的 <strong>V8 JavaScript 引擎</strong> 抽出來，包了一層 C++ 外殼，讓 JavaScript 能直接在作業系統上執行。這就是 <strong>Node.js</strong>。"
+                "content": "JavaScript 原本是一種「瀏覽器內嵌語言」——它只能活在 Chrome、Safari 這種瀏覽器裡，負責讓網頁動起來（點按鈕、跳出提示框、修改畫面）。直到 2009 年，工程師 Ryan Dahl 做了一件事：把 Google Chrome 裡負責執行 JavaScript 的 <strong>V8 引擎</strong> 整顆抽出來，外面包一層 C++ 外殼，讓它可以脫離瀏覽器、直接在作業系統上執行。這個「脫離瀏覽器的 JavaScript 執行環境」就是 <strong>Node.js</strong>。從那一刻起，JavaScript 不再只是「網頁裝飾語言」，而是能讀寫檔案、開伺服器、跑資料庫指令的正式後端語言。"
+            },
+            {
+                "title": "瀏覽器 JS vs Node.js：能力大不同",
+                "icon": "2",
+                "content": "同樣是 JavaScript 語法，能做的事情卻完全不同，關鍵在於「宿主環境」給了它什麼權限：",
+                "comparison": [
+                    {
+                        "side": "left",
+                        "label": "瀏覽器裡的 JavaScript",
+                        "code": "document.querySelector('#btn')\n  .addEventListener('click', () => {\n    alert('哈囉！')\n  })\n\n// 出於安全考量，不能直接讀寫\n// 使用者電腦的檔案系統"
+                    },
+                    {
+                        "side": "right",
+                        "label": "Node.js 裡的 JavaScript",
+                        "code": "const fs = require('fs')\nfs.readFileSync('./data.json')\n\nconst http = require('http')\nhttp.createServer((req, res) => {\n  res.end('Hello from server')\n}).listen(3000)"
+                    }
+                ]
             },
             {
                 "title": "AI Agent 調用 Node.js 的完整流程",
-                "icon": "2",
-                "content": "當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它實際上經歷了以下步驟："
+                "icon": "3",
+                "content": "當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它背後其實是在你的終端機裡，一步步執行 Node.js 相關指令，而不是憑空生出一個網站：",
+                "terminal_block": "<span class=\"prompt\">$</span> <span class=\"cmd\">npx create-next-app@latest my-app</span>\n<span class=\"output\">✔ Would you like to use TypeScript? … Yes\n✔ Would you like to use Tailwind CSS? … Yes\nCreating a new Next.js app in /Users/you/my-app...</span>\n\n<span class=\"comment\"># AI 接著會安裝登入功能需要的套件</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">npm install better-auth</span>\n\n<span class=\"comment\"># 最後啟動開發伺服器——這一步才是「跑起來給你看」的關鍵</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev</span>\n<span class=\"output\">▲ Next.js 14.2.3\n- Local:  http://localhost:3000\n✓ Ready in 1.2s</span>"
+            },
+            {
+                "title": "常見報錯與除錯",
+                "icon": "⚠️",
+                "content": "當 AI 執行指令卻回報「command not found: node」，代表這台電腦根本沒裝 Node.js，或是安裝了但沒有加進系統的 <code>PATH</code>。這時候可以請 AI 帶你安裝，或改用版本管理工具 <code>nvm</code>（Node Version Manager）——它能讓你在同一台電腦上，針對不同專案切換不同的 Node 版本，避免「這個專案要 Node 18，那個專案要 Node 20」互相打架。",
+                "terminal_block": "<span class=\"prompt\">$</span> <span class=\"cmd\">node -v</span>\n<span class=\"error\">command not found: node</span>\n\n<span class=\"comment\"># 用 nvm 安裝並切換到指定版本</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">nvm install 20</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">nvm use 20</span>\n<span class=\"output\">Now using node v20.11.0</span>"
+            },
+            {
+                "title": "深入解析：Event Loop 到底在忙什麼",
+                "icon": "🔬",
+                "deep_dive": {
+                    "summary": "為什麼 Node.js 只用一個執行緒，卻能同時處理成千上萬個請求？",
+                    "content": "Node.js 的 JavaScript 主執行緒其實只有一條，但它從不「傻等」。當程式呼叫像讀檔案、查資料庫、發送網路請求這類「慢動作」時，Node.js 會把這個任務丟給背後的 C++ 層（libuv）去非同步處理，自己立刻回頭繼續執行下一行程式碼。等到那個慢動作真的完成了，結果會被放進一個「回呼佇列（Callback Queue）」，由 <strong>Event Loop（事件循環）</strong> 在主執行緒閒下來的時候，一個一個把它們取出來執行。這就是為什麼你在終端機打 <code>setTimeout(() => console.log('2秒後'), 2000)</code>，程式不會被卡住 2 秒，而是會先往下跑，2 秒後才回頭印出結果——這種「非阻塞（non-blocking）」設計，正是 Node.js 能同時服務大量使用者、卻不需要開一大堆執行緒的秘密。"
+                }
             },
             {
                 "title": "小測驗",
@@ -41,7 +73,25 @@ LESSONS = [
                             {"text": "B. 把 V8 引擎帶出瀏覽器的執行環境", "correct": True},
                             {"text": "C. 瀏覽器內建的 JavaScript 引擎", "correct": False}
                         ],
-                        "answer": "正確答案：B。Node.js 是 Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行。"
+                        "answer": "正確答案：B。Node.js 是 Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行，因此能讀寫檔案、開伺服器。"
+                    },
+                    {
+                        "question": "為什麼瀏覽器裡的 JavaScript 不能直接讀寫使用者電腦的檔案？",
+                        "options": [
+                            {"text": "A. 因為瀏覽器沒有安裝 Node.js", "correct": False},
+                            {"text": "B. 因為瀏覽器基於安全考量限制了這項權限", "correct": True},
+                            {"text": "C. 因為 JavaScript 語法不支援檔案操作", "correct": False}
+                        ],
+                        "answer": "正確答案：B。瀏覽器是一個「沙盒」環境，出於安全考量刻意限制網頁程式碼存取本機檔案系統，Node.js 則是在受信任的伺服器/開發環境執行，所以擁有完整權限。"
+                    },
+                    {
+                        "question": "Node.js 的 Event Loop 讓程式具備什麼特性？",
+                        "options": [
+                            {"text": "A. 阻塞式（Blocking），一次只能做一件事並等待完成", "correct": False},
+                            {"text": "B. 非阻塞式（Non-blocking），慢任務丟出去後可以繼續做別的事", "correct": True},
+                            {"text": "C. 多執行緒（Multi-threading），每個請求開一個新執行緒", "correct": False}
+                        ],
+                        "answer": "正確答案：B。Node.js 用單一主執行緒搭配 Event Loop，把耗時任務交給背後處理，自己不被卡住，因此能非阻塞地同時應付大量請求。"
                     }
                 ]
             },
@@ -49,9 +99,11 @@ LESSONS = [
                 "title": "今日任務",
                 "icon": "🚀",
                 "tasks": [
-                    "打開終端機，依序執行 node -v、npm -v、npx -v",
-                    "確認三個命令都有輸出版本號",
-                    "進階挑戰：執行 node -e \"console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);\"，體驗 Event Loop"
+                    "打開終端機，依序執行 node -v、npm -v、npx -v，確認三個命令都有輸出版本號",
+                    "執行 node -e \"console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);\"，觀察兩行文字出現的時間差，體驗 Event Loop",
+                    "請 AI Agent（Claude Code/Cursor）幫你建立一個最小的 Next.js 專案，觀察它在終端機依序執行了哪些指令",
+                    "刻意輸入一個錯誤指令（例如 nod -v），截圖記錄下錯誤訊息，並嘗試看懂它在說什麼",
+                    "進階挑戰：查詢並安裝 nvm，練習切換兩個不同的 Node.js 版本"
                 ]
             }
         ]
@@ -66,17 +118,44 @@ LESSONS = [
             {
                 "title": "什麼是 Localhost？",
                 "icon": "1",
-                "content": "<strong>Localhost</strong> 其實就是你的電腦自己（IP 是 127.0.0.1）。你的電腦就像一棟公寓，裡面有 65,535 個「房間」（這就是 <strong>Port / 連接埠</strong>）。"
+                "content": "<strong>Localhost</strong> 其實就是你自己這台電腦，它有一個固定的網路位址 <code>127.0.0.1</code>，意思是「回頭指向自己」。當你在瀏覽器打開 <code>http://localhost:3000</code>，你並沒有連到遠方的伺服器，而是連到自己電腦裡正在跑的那個開發伺服器。你可以把整台電腦想像成一棟公寓大樓，裡面有 65,536 個「房間」，這就是 <strong>Port（連接埠）</strong>——每個正在執行的網路服務，都必須先「登記」一個房號，外界才能敲對門找到它。"
+            },
+            {
+                "title": "常見服務的預設房號",
+                "icon": "2",
+                "content": "不同的開發工具，出廠時都有各自習慣使用的預設 Port，先認識這些數字，之後看到報錯訊息就不會慌：",
+                "comparison": [
+                    {
+                        "side": "left",
+                        "label": "前端開發常見 Port",
+                        "code": "3000  → React / Next.js\n5173  → Vite (Vue/React)\n8080  → Vue CLI / 通用 Web Server\n4200  → Angular"
+                    },
+                    {
+                        "side": "right",
+                        "label": "後端／資料庫常見 Port",
+                        "code": "5432  → PostgreSQL\n3306  → MySQL\n6379  → Redis\n27017 → MongoDB"
+                    }
+                ]
             },
             {
                 "title": "為什麼多個任務會打架？",
                 "icon": "⚡",
-                "content": "當你同時開兩個 Vibe 專案，它們都想擠進 <code>3000</code> 號房，就會噴出 <code>EADDRINUSE</code> 錯誤。"
+                "content": "作業系統有個規則：同一個 Port，同一時間只能被一個程式「獨佔」。當你已經開著一個 Vibe 專案佔用 <code>3000</code> 號房，這時又啟動第二個專案、AI Agent 也試著把它塞進同一間房，系統就會直接拒絕，並丟出以下錯誤：",
+                "terminal_block": "<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev</span>\n<span class=\"error\">Error: listen EADDRINUSE: address already in use :::3000</span>\n<span class=\"comment\"># EADDRINUSE = Error Address Already In Use（地址已被使用）</span>"
             },
             {
-                "title": "如何避免 Port 衝突？",
+                "title": "深入解析：作業系統怎麼決定誰能用哪個 Port",
+                "icon": "🔬",
+                "deep_dive": {
+                    "summary": "為什麼 Port 不能像資料夾一樣被兩個程式同時打開？",
+                    "content": "每個網路服務啟動時，都要向作業系統執行一個叫做 <code>bind()</code> 的動作，向系統登記「我要用這個 IP + Port 組合來接收資料」。作業系統的網路層會維護一張表，記錄目前每個 Port 被哪個程式（Process ID）佔用；一旦有第二個程式想 bind 同一組 IP + Port，系統為了避免「兩個程式收到同一筆資料卻不知道該給誰」的混亂，會直接回傳錯誤拒絕這次請求，而不是讓兩個程式共享。這也是為什麼「換一個 Port」永遠是最快的解法——因為每個房間本來就只租給一位房客。"
+                }
+            },
+            {
+                "title": "如何避免與排除 Port 衝突？",
                 "icon": "3",
-                "content": "學會「換房」技巧：<code>npm run dev -- -p 3008</code>，讓不同專案住在不同的房間，就能同時完美運行！"
+                "content": "最直覺的解法是「換房」：手動指定一個沒人用的 Port 啟動服務。如果你想知道是誰佔用了那個房間，也可以直接查出佔用的程式並關掉它：",
+                "terminal_block": "<span class=\"comment\"># 方法一：換一個 Port 啟動，兩個專案就不會打架</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev -- -p 3008</span>\n\n<span class=\"comment\"># 方法二（macOS / Linux）：查出誰佔用了 3000，再結束它</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">lsof -i :3000</span>\n<span class=\"output\">COMMAND   PID   USER   ...\nnode    12345  you    ...</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">kill -9 12345</span>\n\n<span class=\"comment\"># 方法二（Windows）：一樣先查 PID 再強制結束</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">netstat -ano | findstr :3000</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">taskkill /PID 12345 /F</span>"
             },
             {
                 "title": "小測驗",
@@ -90,6 +169,24 @@ LESSONS = [
                             {"text": "C. Node.js 版本太舊", "correct": False}
                         ],
                         "answer": "正確答案：B。EADDRINUSE = Address already in use，代表你要使用的連接埠已經被另一個程式佔用了。"
+                    },
+                    {
+                        "question": "http://localhost:3000 這個網址，實際上連到的是哪裡？",
+                        "options": [
+                            {"text": "A. 遠端的雲端伺服器", "correct": False},
+                            {"text": "B. 你自己這台電腦（127.0.0.1）", "correct": True},
+                            {"text": "C. 你的路由器", "correct": False}
+                        ],
+                        "answer": "正確答案：B。localhost 對應的 IP 是 127.0.0.1，意思是「回頭指向自己」，所以連到的是本機正在執行的服務。"
+                    },
+                    {
+                        "question": "在 macOS/Linux 上，要查出誰佔用了 3000 這個 Port，該用哪個指令？",
+                        "options": [
+                            {"text": "A. lsof -i :3000", "correct": True},
+                            {"text": "B. npm install port", "correct": False},
+                            {"text": "C. git status", "correct": False}
+                        ],
+                        "answer": "正確答案：A。lsof -i :3000 會列出目前佔用該 Port 的程式與 PID，方便你進一步用 kill 結束它。"
                     }
                 ]
             },
@@ -97,9 +194,11 @@ LESSONS = [
                 "title": "今日任務",
                 "icon": "🚀",
                 "tasks": [
-                    "啟動一個 Next.js 專案到 port 3000",
-                    "再啟動另一個專案到 port 3008",
-                    "確認兩個專案可以同時運行而不打架"
+                    "啟動一個 Next.js 專案到預設的 port 3000",
+                    "在不關閉第一個專案的情況下，再啟動另一個專案，刻意觸發一次 EADDRINUSE 錯誤並截圖",
+                    "改用 npm run dev -- -p 3008 啟動第二個專案，確認兩者能同時運行而不打架",
+                    "練習用 lsof -i（或 Windows 的 netstat -ano）查出目前佔用 3000 的程式 PID",
+                    "進階挑戰：手動 kill 掉其中一個服務的行程，觀察瀏覽器再次整理頁面時發生什麼事"
                 ]
             }
         ]
@@ -241,13 +340,30 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
     {
       "title": "小節標題",
       "icon": "數字或 emoji",
-      "content": "說明文字，可用 <strong> 和 <code> 標籤強調重點"
+      "content": "完整、有實質內容的說明文字（建議 150~300 字），可用 <strong> 和 <code> 標籤強調重點，禁止用「...如下：」這種話卻沒接下文的半截句子"
+    },
+    {
+      "title": "對照小節（可選）",
+      "icon": "2",
+      "content": "一句引導文字",
+      "comparison": [
+        {"side": "left", "label": "情境 A 的標籤", "code": "純文字或程式碼，可用 \\n 換行"},
+        {"side": "right", "label": "情境 B 的標籤", "code": "純文字或程式碼，可用 \\n 換行"}
+      ]
+    },
+    {
+      "title": "帶指令範例的小節",
+      "icon": "3",
+      "content": "說明文字",
+      "terminal_block": "終端機指令與輸出範例，用 <span class=\\"prompt\\">$</span> <span class=\\"cmd\\">指令</span> 標示指令，<span class=\\"output\\">...</span> 標示正常輸出，<span class=\\"error\\">...</span> 標示錯誤訊息，<span class=\\"comment\\"># 註解</span> 標示註解，多行用 \\n 換行"
     },
     {
       "title": "深入解析",
       "icon": "🔬",
-      "content": "說明文字",
-      "terminal_block": "一段程式碼或命令列輸出範例"
+      "deep_dive": {
+        "summary": "一句吸引人往下讀的提問式標題",
+        "content": "至少 150 字的深入原理說明，解釋「為什麼」而不只是「是什麼」"
+      }
     },
     {
       "title": "小測驗",
@@ -260,7 +376,7 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
             {"text": "B. 選項", "correct": true},
             {"text": "C. 選項", "correct": false}
           ],
-          "answer": "正確答案說明"
+          "answer": "正確答案說明，需解釋為什麼對/為什麼其他選項錯"
         }
       ]
     },
@@ -272,8 +388,12 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
   ]
 }
 
-每個 section 只需要包含它需要的欄位。"sections" 至少要有 4 個小節，建議包含「小測驗」與「今日任務」。
-內容要聚焦於「AI Agent 是如何調用這個技術的」以及「當 Vibe 破裂時該如何診斷」。
+硬性要求（不符合就視為不合格）：
+1. "sections" 至少要有 6 個小節，且必須包含至少一個 "terminal_block"（實際指令／輸出範例）與至少一個 "deep_dive"（原理深挖），"comparison" 視主題需要選用。
+2. 一般 "content" 每則至少 120 字、"deep_dive.content" 至少 150 字，禁止寫成一句話就結束的空洞段落，更禁止「以下步驟：」「如下：」這類話講到一半沒有接下文。
+3. "quiz" 至少要有 2 題，每題 3 個選項，"answer" 要解釋原因，不能只寫「正確答案：B」。
+4. "今日任務" 至少要有 4 項，其中至少 1 項要請學習者實際操作 AI Agent（Claude Code/Cursor 等）並觀察它的行為，而不是只有手動操作。
+5. 內容要聚焦於「這個概念在 Vibe Coding 中的角色」「AI Agent 是如何調用/運用它的」「當 Vibe 破裂時該如何診斷」，並提供具體、可執行的指令或程式碼範例，不要只有抽象描述。
 """
 
 
@@ -518,6 +638,15 @@ def generate_html(lesson):
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
 
+        if 'deep_dive' in section:
+            dd = section['deep_dive']
+            html_parts.append('    <details class="deep-dive">')
+            html_parts.append(f'      <summary>{dd.get("summary", "深入解析")}</summary>')
+            html_parts.append('      <div class="deep-dive-content">')
+            html_parts.append(f'        <p>{dd.get("content", "")}</p>')
+            html_parts.append('      </div>')
+            html_parts.append('    </details>')
+
         if 'quiz' in section:
             html_parts.append('    <div class="quiz-box">')
             html_parts.append('      <h4>請先回答，再點擊「查看答案」</h4>')
@@ -683,6 +812,7 @@ def get_full_css():
     font-size: 0.85rem;
     line-height: 1.8;
     overflow-x: auto;
+    white-space: pre-wrap;
     margin-bottom: 1rem;
   }
   .terminal-block .prompt { color: #a6e3a1; }

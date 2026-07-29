@@ -80,6 +80,7 @@
     font-size: 0.85rem;
     line-height: 1.8;
     overflow-x: auto;
+    white-space: pre-wrap;
     margin-bottom: 1rem;
   }
   .terminal-block .prompt { color: #a6e3a1; }
@@ -269,13 +270,82 @@
   <!-- Section: JavaScript 的兩條世界線 -->
   <div class="section">
     <div class="section-title"><span class="icon">1</span> JavaScript 的兩條世界線</div>
-    <p>JavaScript 原本是一種「瀏覽器內嵌語言」——它只能在 Chrome、Safari 裡跑。直到 2009 年，Ryan Dahl 把 Google Chrome 的 <strong>V8 JavaScript 引擎</strong> 抽出來，包了一層 C++ 外殼，讓 JavaScript 能直接在作業系統上執行。這就是 <strong>Node.js</strong>。</p>
+    <p>JavaScript 原本是一種「瀏覽器內嵌語言」——它只能活在 Chrome、Safari 這種瀏覽器裡，負責讓網頁動起來（點按鈕、跳出提示框、修改畫面）。直到 2009 年，工程師 Ryan Dahl 做了一件事：把 Google Chrome 裡負責執行 JavaScript 的 <strong>V8 引擎</strong> 整顆抽出來，外面包一層 C++ 外殼，讓它可以脫離瀏覽器、直接在作業系統上執行。這個「脫離瀏覽器的 JavaScript 執行環境」就是 <strong>Node.js</strong>。從那一刻起，JavaScript 不再只是「網頁裝飾語言」，而是能讀寫檔案、開伺服器、跑資料庫指令的正式後端語言。</p>
+  </div>
+
+  <!-- Section: 瀏覽器 JS vs Node.js：能力大不同 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 瀏覽器 JS vs Node.js：能力大不同</div>
+    <p>同樣是 JavaScript 語法，能做的事情卻完全不同，關鍵在於「宿主環境」給了它什麼權限：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">瀏覽器裡的 JavaScript</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">document.querySelector('#btn')
+  .addEventListener('click', () => {
+    alert('哈囉！')
+  })
+
+// 出於安全考量，不能直接讀寫
+// 使用者電腦的檔案系統</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">Node.js 裡的 JavaScript</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">const fs = require('fs')
+fs.readFileSync('./data.json')
+
+const http = require('http')
+http.createServer((req, res) => {
+  res.end('Hello from server')
+}).listen(3000)</div>
+      </div>
+    </div>
   </div>
 
   <!-- Section: AI Agent 調用 Node.js 的完整流程 -->
   <div class="section">
-    <div class="section-title"><span class="icon">2</span> AI Agent 調用 Node.js 的完整流程</div>
-    <p>當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它實際上經歷了以下步驟：</p>
+    <div class="section-title"><span class="icon">3</span> AI Agent 調用 Node.js 的完整流程</div>
+    <p>當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它背後其實是在你的終端機裡，一步步執行 Node.js 相關指令，而不是憑空生出一個網站：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npx create-next-app@latest my-app</span>
+<span class="output">✔ Would you like to use TypeScript? … Yes
+✔ Would you like to use Tailwind CSS? … Yes
+Creating a new Next.js app in /Users/you/my-app...</span>
+
+<span class="comment"># AI 接著會安裝登入功能需要的套件</span>
+<span class="prompt">$</span> <span class="cmd">npm install better-auth</span>
+
+<span class="comment"># 最後啟動開發伺服器——這一步才是「跑起來給你看」的關鍵</span>
+<span class="prompt">$</span> <span class="cmd">npm run dev</span>
+<span class="output">▲ Next.js 14.2.3
+- Local:  http://localhost:3000
+✓ Ready in 1.2s</span>
+    </div>
+  </div>
+
+  <!-- Section: 常見報錯與除錯 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚠️</span> 常見報錯與除錯</div>
+    <p>當 AI 執行指令卻回報「command not found: node」，代表這台電腦根本沒裝 Node.js，或是安裝了但沒有加進系統的 <code>PATH</code>。這時候可以請 AI 帶你安裝，或改用版本管理工具 <code>nvm</code>（Node Version Manager）——它能讓你在同一台電腦上，針對不同專案切換不同的 Node 版本，避免「這個專案要 Node 18，那個專案要 Node 20」互相打架。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">node -v</span>
+<span class="error">command not found: node</span>
+
+<span class="comment"># 用 nvm 安裝並切換到指定版本</span>
+<span class="prompt">$</span> <span class="cmd">nvm install 20</span>
+<span class="prompt">$</span> <span class="cmd">nvm use 20</span>
+<span class="output">Now using node v20.11.0</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：Event Loop 到底在忙什麼 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：Event Loop 到底在忙什麼</div>
+    <details class="deep-dive">
+      <summary>為什麼 Node.js 只用一個執行緒，卻能同時處理成千上萬個請求？</summary>
+      <div class="deep-dive-content">
+        <p>Node.js 的 JavaScript 主執行緒其實只有一條，但它從不「傻等」。當程式呼叫像讀檔案、查資料庫、發送網路請求這類「慢動作」時，Node.js 會把這個任務丟給背後的 C++ 層（libuv）去非同步處理，自己立刻回頭繼續執行下一行程式碼。等到那個慢動作真的完成了，結果會被放進一個「回呼佇列（Callback Queue）」，由 <strong>Event Loop（事件循環）</strong> 在主執行緒閒下來的時候，一個一個把它們取出來執行。這就是為什麼你在終端機打 <code>setTimeout(() => console.log('2秒後'), 2000)</code>，程式不會被卡住 2 秒，而是會先往下跑，2 秒後才回頭印出結果——這種「非阻塞（non-blocking）」設計，正是 Node.js 能同時服務大量使用者、卻不需要開一大堆執行緒的秘密。</p>
+      </div>
+    </details>
   </div>
 
   <!-- Section: 小測驗 -->
@@ -292,7 +362,29 @@
           <li onclick="checkAnswer(this, false)">C. 瀏覽器內建的 JavaScript 引擎</li>
         </ul>
         <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
-        <div class="answer">✅ 正確答案：B。Node.js 是 Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行。</div>
+        <div class="answer">✅ 正確答案：B。Node.js 是 Ryan Dahl 在 2009 年把 Chrome 的 V8 引擎抽出來，讓 JS 能在作業系統上直接執行，因此能讀寫檔案、開伺服器。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 為什麼瀏覽器裡的 JavaScript 不能直接讀寫使用者電腦的檔案？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 因為瀏覽器沒有安裝 Node.js</li>
+          <li onclick="checkAnswer(this, true)">B. 因為瀏覽器基於安全考量限制了這項權限</li>
+          <li onclick="checkAnswer(this, false)">C. 因為 JavaScript 語法不支援檔案操作</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案：B。瀏覽器是一個「沙盒」環境，出於安全考量刻意限制網頁程式碼存取本機檔案系統，Node.js 則是在受信任的伺服器/開發環境執行，所以擁有完整權限。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. Node.js 的 Event Loop 讓程式具備什麼特性？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 阻塞式（Blocking），一次只能做一件事並等待完成</li>
+          <li onclick="checkAnswer(this, true)">B. 非阻塞式（Non-blocking），慢任務丟出去後可以繼續做別的事</li>
+          <li onclick="checkAnswer(this, false)">C. 多執行緒（Multi-threading），每個請求開一個新執行緒</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案：B。Node.js 用單一主執行緒搭配 Event Loop，把耗時任務交給背後處理，自己不被卡住，因此能非阻塞地同時應付大量請求。</div>
       </div>
     </div>
   </div>
@@ -303,9 +395,11 @@
     <div class="follow-box">
       <h4>請依序完成以下練習</h4>
       <ol style="padding-left: 1.5rem;">
-        <li style="padding: 0.5rem 0;">打開終端機，依序執行 node -v、npm -v、npx -v</li>
-        <li style="padding: 0.5rem 0;">確認三個命令都有輸出版本號</li>
-        <li style="padding: 0.5rem 0;">進階挑戰：執行 node -e "console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);"，體驗 Event Loop</li>
+        <li style="padding: 0.5rem 0;">打開終端機，依序執行 node -v、npm -v、npx -v，確認三個命令都有輸出版本號</li>
+        <li style="padding: 0.5rem 0;">執行 node -e "console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);"，觀察兩行文字出現的時間差，體驗 Event Loop</li>
+        <li style="padding: 0.5rem 0;">請 AI Agent（Claude Code/Cursor）幫你建立一個最小的 Next.js 專案，觀察它在終端機依序執行了哪些指令</li>
+        <li style="padding: 0.5rem 0;">刻意輸入一個錯誤指令（例如 nod -v），截圖記錄下錯誤訊息，並嘗試看懂它在說什麼</li>
+        <li style="padding: 0.5rem 0;">進階挑戰：查詢並安裝 nvm，練習切換兩個不同的 Node.js 版本</li>
       </ol>
     </div>
   </div>
