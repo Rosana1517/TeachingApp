@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 03 — Git/GitHub 協作</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 1: The Core</span>
+    <h1 class="lesson-title">Git/GitHub 協作</h1>
+    <p class="lesson-subtitle">從本地檔案到雲端分支，掌握 Vibe Coding 的核心同步流程</p>
+  </div>
+
+  <!-- Section: Vibe Coding 中的 Git 角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1️⃣</span> Vibe Coding 中的 Git 角色</div>
+    <p><strong>Git 在 Vibe Coding 中扮演的是「版本同步的橋樑」</strong>。它不只是用來記錄代碼變更，更是 AI Agent 與開發者之間的信任共識機制。當 AI 自動修復錯誤、生成新功能時，git commit 代表一次有明確意圖的變更；而 push 到 GitHub 則是將這個人工智慧的決策正式登記入雲端歷史。若沒有 Git，AI 的每一次修改都將是孤島式的，無法被追蹤、回滾或協作，Vibe 因此失去一致性與可預測性。</p>
+  </div>
+
+  <!-- Section: AI Agent 如何調用 Git -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2️⃣</span> AI Agent 如何調用 Git</div>
+    <p>在 Vibe Coding 環境中，AI Agent（如 Claude Code 或 Cursor）會自動偵測檔案變更並觸發 git add 與 git commit。它根據上下文理解哪些是有意義的修改，例如修正 Bug 或新增元件，並以如 <code>feat: 添加使用者登入組件</code> 的格式撰寫 commit message。若 AI 發現錯誤，它會先回退到上個穩定狀態（透過 git reset 或 checkout），再重新生成程式碼。這種「寫 → 檢查 → 提交 → Push」的自動流程，使 Vibe 能持續保持在一個一致且可驗證的狀態。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">傳統手動開發</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">開發者手動寫碼 → 手動 git add/commit/push → 若出錯需手動回溯</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">Vibe Coding AI 自動化</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">AI 自動偵測變更 → 自動 git add/commit/Push → 失敗時自動回滾并重試</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例的小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3️⃣</span> 帶指令範例的小節</div>
+    <p>以下展示在 Vibe Coding 情境下，AI Agent 如何執行完整的 Git 流程並處理常見問題。學習者可觀察 AI 如何自動判斷是否需要建立新 branch、如何避免衝突、以及在遇到 permission error 時如何提議修正。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">git status</span>
+<span class="output">On branch main
+nothing to commit, working tree clean</span>
+
+<span class="prompt">$</span> <span class="cmd">echo "const hello = 'Hello World';" > src/hello.js</span>
+
+<span class="prompt">$</span> <span class="cmd">git add src/hello.js</span>
+
+<span class="prompt">$</span> <span class="cmd">git commit -m "feat: 新增 hello.js 測試檔案"</span>
+<span class="output">[main 1a2b3c4] feat: 新增 hello.js 測試檔案
+ 1 file changed, 1 insertion(+)
+ create mode 100644 src/hello.js</span>
+
+<span class="prompt">$</span> <span class="cmd">git push origin main</span>
+<span class="error">! [rejected] main -> main (non-fast forward)</span>
+<span class="comment"># AI 提示：遠端有新提交，建議先 git pull --rebase</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析</div>
+    <details class="deep-dive">
+      <summary>為什麼 Vibe Coding 要求 AI 必須嚴格遵守 git commit 語義，否則會導致 Vibe 破裂？</summary>
+      <div class="deep-dive-content">
+        <p><strong>Vibe 的核心在於「可預測性」與「一致性」，而 git commit 的語義是這種一致性的基石</strong>。若 AI 隨意填寫 commit message 如 <code>fix bug</code> 而非 <code>fix: 修正使用者驗證空指針異常</code>，後續的代碼審查、自動回滾、CI/CD 流程都可能失效。更重要的是，當 Vibe 破裂（例如 AI 誤改關鍵檔案），開發者需要透過 git log 快速定位哪次提交導致問題。若 commit 缺乏意義，診斷時間將大幅增加，甚至導致錯誤無法還原。此外，AI 在執行 <code>git rebase</code> 或 <code>merge</code> 時，若 commit message 不清晰，也無法正確判斷哪些變更需要保留或跳過，最終造成衝突堆疊。因此，Git 不僅是工具，更是 AI 行為的可驗證記錄協議。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Vibe Coding 中，AI Agent 自動產生 git commit 時，最推薦的語義格式是哪一種？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. "update"</li>
+          <li onclick="checkAnswer(this, true)">B. "feat: 新增使用者登入頁面"</li>
+          <li onclick="checkAnswer(this, false)">C. "fixed something"</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確。Semantic Commits 能清楚區分功能新增（feat）、修復（fix）、修飾（refactor）等類型，讓其他開發者或 AI 快速理解變更性質，並支援自動化工具（如 Semantic Release）依此決定版本號與 Changelog。選項 A 和 C 缺乏語義資訊，無法用於自動化流程或衝突分析。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 AI 執行 git push 時收到 non-fast forward 錯誤，最佳處理方式是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 強迫 push：git push --force</li>
+          <li onclick="checkAnswer(this, true)">B. 先 git pull --rebase 再重新提交</li>
+          <li onclick="checkAnswer(this, false)">C. 忽略錯誤，繼續操作</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確。non-fast forward 表示遠端已有新提交，強制 push（A）會覆蓋他人修改，導致資料遺失或不一致；忽略錯誤（C）會使本地與遠端脫節，Vibe 無法維持同步。正確的作法是先將遠端變更整合進本地（--rebase），再推送，確保歷史線性且完整，符合 Vibe Coding 的協作原則。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 AI Agent（如 Cursor 或 Claude Code）創建一個新專案目錄，並初始化 git repo</li>
+        <li style="padding: 0.5rem 0;">請 AI 自動新增一個 README.md 檔案，並執行 git add . 與 git commit -m 'init: 新增專案說明文件'</li>
+        <li style="padding: 0.5rem 0;">觀察 AI 是否自動推斷正確的 branch name 與 commit 語義，若未遵循 Semantic Commits 語則請要求它修正</li>
+        <li style="padding: 0.5rem 0;">嘗試遠端已存在同名 repo 的情況，模擬 git push 失敗，並請 AI 主動提出 git pull --rebase 的解決方案後再執行推送</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 03 · Git/GitHub 協作</p>
+    <p style="margin-top: 0.3rem;">下一課預告：GitHub 寶庫挖掘</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
