@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 04 — GitHub 寶庫挖掘</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 1: The Core</span>
+    <h1 class="lesson-title">GitHub 寶庫挖掘</h1>
+    <p class="lesson-subtitle">精準搜索 Snippet 並讓 AI Agent 智能整合進你的專案</p>
+  </div>
+
+  <!-- Section: Vibe Coding 中的寶庫挖掘角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> Vibe Coding 中的寶庫挖掘角色</div>
+    <p><strong>在 Vibe Coding 中，GitHub 是開發者的延伸大腦</strong>。AI Agent 不需要從頭製造輪子，而是透過搜尋開源組件（Snippet）快速構建功能。例如要實現一個文件上傳功能時，可以直接搜尋 <code>express-fileupload</code>，將代碼片段提取至專案內。此流程的優勢在於降低重複造輪子的成本，同時確保使用的是經過社群驗證的穩定方案。當 Vibe 破裂（如整合錯誤）時，關鍵檢查 AI 是否正確讀取了原始程式碼的語法結構、是否有未處理的依賴問題，或 AI 是否在複製過程中誤刪了關鍵行。</p>
+  </div>
+
+  <!-- Section: 對照小節：模糊搜索 vs 精準 Snippet 提取 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照小節：模糊搜索 vs 精準 Snippet 提取</div>
+    <p>以下展示兩種策略的效果差異</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">模糊搜索（低效率）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">user: 幫我寫一個文件上傳的 Node.js 功能
+
+AI Agent：直接生成一段沒有測試的代碼，可能缺少錯誤處理、內容長度限制等安全機制，導致後續需大量人工修補。</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">精準 Snippet 提取（高效率）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">user: 在 GitHub 搜尋 express-fileupload 的最小使用範例，提取 server.js 中的核心代碼並告訴我要安裝什麼套件
+
+AI Agent：回傳帶有完整依賴指令與簡單舉例的代碼片段，可直接貼入專案並快速運行，減少錯誤機率。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例的小節：搜索與提取開源 Snippet -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 帶指令範例的小節：搜索與提取開源 Snippet</div>
+    <p>以下演示如何使用 GitHub 高級搜尋 + AI Agent 提取有效代碼片段</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">gh repo view adrianba/express-fileupload --json name,description,readme</span>
+<span class="output">Repo: adrianba/express-fileupload</span>
+<span class="output">Description: Middleware for parsing multipart/form-data in Express</span>
+<span class="comment"># 使用 gh CLI 快速取得組件描述與連結</span>
+
+<span class="prompt">$</span> <span class="cmd">code-extractor "github.com/adrianba/express-fileupload example.js"</span>
+<span class="output">// 成功提取 server.js 中的核心路由與 middleware 設定</span>
+<span class="output">const upload = require('express-fileupload');
+app.use(upload());</span>
+<span class="output">app.post('/upload', (req, res) => { ... });</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼精準 Snippet 提取能減少 Vibe 破裂？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼精準 Snippet 提取能減少 Vibe 破裂？</div>
+    <details class="deep-dive">
+      <summary>為什麼『直接貼上』比『重新寫一次』更穩定？</summary>
+      <div class="deep-dive-content">
+        <p>在 Vibe Coding 情境下，AI Agent 的角色不是創造者，而是『翻譯者』與『整合者』。當我們要求 AI 在 GitHub 上搜尋 Open Source Snippet 並將其放入我們的專案時，實際上是在利用人類社群已經調優過的邏輯。這比讓 AI 從零開始生成更可靠，因為開源組件通常經過多人審查、版本管理、錯誤處理設計完整。若 AI 隨意生成代碼，常會出現缺少錯誤邊界、未設置內容大小限制、忽略安全標頭等問題，進而引發 Vibe 破裂。精準 Snippet 提取能讓 AI 專注於調整路徑、依賴安裝、路由綁定等『整合層面』的職責，而非『生成層面』，大幅降低出錯機率。此外，開源組件的回溯性（history、issue、PR）也讓問題診斷更透明——當報錯出現時，可以迅速比對原專案行為是否一致，快速定位是 AI 修改過的部分，還是原始組件本身的限制。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗：理解 Snippet 整合策略 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗：理解 Snippet 整合策略</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在使用 AI Agent 整合 GitHub 開源 Snippet 時，下列哪種做法最能減少 Vibe 破裂風險？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 讓 AI 完全根據需求自行寫出代碼，不參考任何現有專案</li>
+          <li onclick="checkAnswer(this, true)">B. 在 GitHub 搜尋相關組件，提取最小可用範例，再由 AI 調整路徑與依賴</li>
+          <li onclick="checkAnswer(this, false)">C. 直接複製整個 GitHub 專案到本地，再修改部分程式碼</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確，因為它利用了社群已驗證的穩定代碼，同時讓 AI 負責調整與整合，降低從頭生成的風險。選項 A 讓 AI 承擔過多創作壓力，容易產生未考慮錯誤處理或安全邊界的代碼。選項 C 則過於龐雜，容易引入不必要的組件或衝突，增加維護難度。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 AI Agent 在整合 Snippet 後出現錯誤，下列哪項最優先應檢查？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. AI 是否在複製過程中刪減了中間的註解</li>
+          <li onclick="checkAnswer(this, true)">B. 所提取的 Snippet 是否完整包含所有必要依賴與配置</li>
+          <li onclick="checkAnswer(this, false)">C. 專案的 Package.json 是否使用了最新版本</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 為最優先檢查項目，因為 Snippet 若缺少依賴或未正確引入配置，會直接導致執行失敗甚至程式崩潰。選項 A 的註解雖重要但不影響執行。選項 C 雖然值得檢查，但若 Snippet 本身不完整，即使版本最新也無法運作，因此應先確認完整性再談版本相容性。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務：實戰整合與觀察 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務：實戰整合與觀察</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">Task 1：在你的 Node.js 專案目錄中，使用 GitHub CLI（gh）搜尋一個文件上傳組件（例如：express-fileupload），並取得其 README 與核心程式碼連結</li>
+        <li style="padding: 0.5rem 0;">Task 2：讓 AI Agent（如 Claude Code 或 Cursor）根據你提供的連結，提取一個可執行的 server.js 範例，並說明需要安裝哪些套件</li>
+        <li style="padding: 0.5rem 0;">Task 3：將 AI 提供的 Snippet 貼入你的專案，並執行一次，觀察是否出現任何錯誤或警告。記錄錯誤訊息並分析原因</li>
+        <li style="padding: 0.5rem 0;">Task 4：若 AI 的 Snippet 有缺失（如缺少錯誤處理），請手動補充完整，並讓 AI 解釋它原本的 Snippet 少了什麼，以及為什麼該補充是必要的</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 04 · GitHub 寶庫挖掘</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Package Management（NPM/Bun）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
