@@ -627,7 +627,10 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     try:
         lesson = json.loads(json_text)
     except json.JSONDecodeError as error:
-        print(f"無法解析 LLM 回應的 JSON：{error}；前 500 字：{json_text[:500]}", flush=True)
+        start = max(0, error.pos - 150)
+        end = min(len(json_text), error.pos + 150)
+        print(f"無法解析 LLM 回應的 JSON：{error}", flush=True)
+        print(f"錯誤位置前後文（char {start}~{end}）：{json_text[start:end]!r}", flush=True)
         return None
 
     # 品質驗證：sections 太少代表 LLM 只生成了部分內容，拒絕接受
