@@ -548,5 +548,15 @@
     "path": "lessons/vibe/vibe-lesson-05.html",
     "number": 5,
     "generatedDate": null
+  },
+  {
+    "id": "vibe-lesson-06",
+    "title": "Vibe Lesson 06",
+    "category": "Vibe",
+    "categorySlug": "vibe",
+    "fileName": "vibe-lesson-06.html",
+    "path": "lessons/vibe/vibe-lesson-06.html",
+    "number": 6,
+    "generatedDate": null
   }
 ]
