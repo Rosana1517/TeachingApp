@@ -390,6 +390,16 @@
     "generatedDate": null
   },
   {
+    "id": "french-lesson-40",
+    "title": "French Lesson 40",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-40.html",
+    "path": "lessons/french/french-lesson-40.html",
+    "number": 40,
+    "generatedDate": null
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
@@ -507,6 +517,16 @@
     "fileName": "vibe-lesson-02.html",
     "path": "lessons/vibe/vibe-lesson-02.html",
     "number": 2,
+    "generatedDate": null
+  },
+  {
+    "id": "vibe-lesson-03",
+    "title": "Vibe Lesson 03",
+    "category": "Vibe",
+    "categorySlug": "vibe",
+    "fileName": "vibe-lesson-03.html",
+    "path": "lessons/vibe/vibe-lesson-03.html",
+    "number": 3,
     "generatedDate": null
   }
 ]

@@ -1,9 +1,11 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  workflow_run:
-    workflows: ["Update PWA Course Index"]
-    types: [completed]
+  # Manual fallback / for direct edits to webapp/ pushed from a local machine
+  # (pushes using a real user's git credentials do trigger this; the inline
+  # deploy step in each generate-*.yml workflow handles the normal daily
+  # lesson-update path, since GITHUB_TOKEN-authored pushes don't retrigger
+  # push-based workflows).
   workflow_dispatch:
   push:
     branches: [main]
@@ -14,11 +16,8 @@ permissions:
 
 jobs:
   deploy:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     runs-on: ubuntu-latest
-    environment:
-      name: Cloudflare Pages
-      url: https://${{ secrets.CLOUDFLARE_PROJECT_NAME }}.pages.dev
 
     steps:
       - name: Checkout repository
@@ -28,7 +27,8 @@ jobs:
         run: npm install -g wrangler
 
       - name: Deploy to Cloudflare Pages
-        run: wrangler pages deploy webapp
+        working-directory: webapp
+        run: wrangler pages deploy . --project-name=teachingapp --branch=main --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

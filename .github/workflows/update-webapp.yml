@@ -1,18 +1,13 @@
 name: Update PWA Course Index
 
 on:
-  # Fires after any lesson-generation workflow finishes, so the PWA's course
-  # list/lesson copies stay in sync without a separate manual step. workflow_run
-  # is used instead of `on: push` because pushes made with the default
-  # GITHUB_TOKEN (as the generator workflows do) don't trigger push-based
-  # workflows — only workflow_run reliably observes them.
-  workflow_run:
-    workflows:
-      - "Generate Daily French Lessons"
-      - "Generate Mind Growth Lessons"
-      - "Generate Vibe Coding Lessons"
-    types:
-      - completed
+  # Manual fallback only. This used to also trigger via `workflow_run` on the
+  # three lesson-generator workflows completing, but that never fired in
+  # practice (0 runs observed over several days despite the watched workflows
+  # completing successfully), leaving the deployed PWA silently stale. The
+  # reliable fix was to inline this same regenerate+commit logic directly at
+  # the end of each generate-*.yml workflow instead. Kept here for manual
+  # re-sync if the index ever drifts (e.g. after editing lesson files by hand).
   workflow_dispatch:
 
 permissions:
@@ -20,14 +15,12 @@ permissions:
 
 jobs:
   update-webapp:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
           persist-credentials: false
 
       - name: Set up Python
@@ -44,7 +37,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add webapp/courses.json webapp/lessons
           git diff --cached --quiet || git commit -m "Update PWA course index: $(date +%Y-%m-%d)"
-          git pull --rebase https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.event.workflow_run.head_branch || github.ref_name }}
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.event.workflow_run.head_branch || github.ref_name }}
+          git pull --rebase https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.ref_name }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

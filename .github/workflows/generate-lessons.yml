@@ -76,3 +76,34 @@ jobs:
           fi
 
           echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/$TAG_NAME"
+
+      # Runs inline (rather than via a separate workflow_run-triggered workflow)
+      # because workflow_run never fired for these lesson-generator runs in
+      # practice, silently leaving the PWA's course list stale.
+      - name: Update PWA course index
+        working-directory: .
+        run: python scripts/generate_courses_index.py
+
+      - name: Commit PWA course index if changed
+        working-directory: .
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add webapp/courses.json webapp/lessons
+          git diff --cached --quiet || git commit -m "Update PWA course index: $(date +%Y-%m-%d)"
+          git pull --rebase https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ github.ref }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Only runs once Cloudflare secrets are configured (see DEPLOY_GITHUB_SECRETS.md);
+      # skips quietly otherwise so lesson generation never fails because of it.
+      - name: Deploy PWA to Cloudflare Pages
+        if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        working-directory: webapp
+        run: |
+          npm install -g wrangler
+          wrangler pages deploy . --project-name=teachingapp --branch=main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
