@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const CACHE_NAME = `teachingapp-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -15,14 +15,15 @@ const APP_SHELL = [
 ];
 
 async function cacheAll(cache, urls) {
-  // cache.add() defaults to a normal fetch, which can be satisfied from the
-  // browser's HTTP cache — so a precache during install could silently pin
-  // stale bytes even after bumping CACHE_VERSION. Force each one to hit the
-  // network.
   await Promise.all(
     urls.map((url) =>
       fetch(url, { cache: "reload" })
-        .then((res) => cache.put(url, res))
+        .then((res) => {
+          // iOS Safari throws "has redirections" if a redirected response is
+          // stored in the cache and then served by the SW. Only cache clean,
+          // non-redirected 200 responses.
+          if (res.ok && !res.redirected) return cache.put(url, res);
+        })
         .catch((err) => console.warn("SW cache miss:", url, err))
     )
   );
@@ -75,7 +76,7 @@ self.addEventListener("fetch", (event) => {
 
       const networkFetch = fetch(request)
         .then((response) => {
-          if (response.ok) cache.put(request, response.clone());
+          if (response.ok && !response.redirected) cache.put(request, response.clone());
           return response;
         })
         .catch(() => null);
