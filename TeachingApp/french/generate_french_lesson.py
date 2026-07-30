@@ -779,7 +779,7 @@ def generate_lesson_via_llm(next_id, previous_topics):
     json_text = re.sub(r'\bTrue\b', 'true', json_text)
     json_text = re.sub(r'\bFalse\b', 'false', json_text)
     json_text = re.sub(r'\bNone\b', 'null', json_text)
-    json_text = re.sub(r':(\s*)「', r':\1"', json_text)
+    json_text = re.sub(r'([:\[,]\s*)「', r'\1"', json_text)
     json_text = re.sub(r'」(\s*[,}\]])', r'"\1', json_text)
     json_text = re.sub(r'\\n(\s*")', r'\n\1', json_text)
     json_text = re.sub(r',\s*([}\]])', r'\1', json_text)

@@ -625,7 +625,8 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     json_text = re.sub(r'\bTrue\b', 'true', json_text)
     json_text = re.sub(r'\bFalse\b', 'false', json_text)
     json_text = re.sub(r'\bNone\b', 'null', json_text)
-    json_text = re.sub(r':(\s*)「', r':\1"', json_text)
+    # 全形引號可能出現在 key/value（: 後面）或陣列元素開頭（[ 或 , 後面）
+    json_text = re.sub(r'([:\[,]\s*)「', r'\1"', json_text)
     json_text = re.sub(r'」(\s*[,}\]])', r'"\1', json_text)
     # LLM 偶爾會在字串「外面」（key/value 之間的結構層級）插入字面上的 \n（反斜線+n 兩個字元，
     # 不是真正換行），例如 "summary":"...",\n  "content": ...，導致解析直接失敗
