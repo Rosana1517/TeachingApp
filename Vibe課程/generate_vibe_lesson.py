@@ -460,22 +460,67 @@ def build_fallback_lesson(next_id, outline_item):
         return lesson
 
     next_item = get_outline_item(next_id + 1)
+    title = outline_item["title"]
+    core = outline_item["core"]
+    logic = outline_item["logic"]
+    task = outline_item["task"]
+
     return {
         "id": next_id,
-        "title": outline_item["title"],
-        "subtitle": outline_item["core"],
+        "title": title,
+        "subtitle": core,
         "phase": outline_item["phase"],
         "next_topic": next_item["title"] if next_item else "",
         "sections": [
             {
-                "title": outline_item["title"],
+                "title": f"什麼是{title}？",
                 "icon": "1",
-                "content": f"{outline_item['core']}。{outline_item['logic']}"
+                "content": core
+            },
+            {
+                "title": "為什麼 Vibe Coding 開發者需要懂這個",
+                "icon": "2",
+                "content": logic
+            },
+            {
+                "title": "核心概念",
+                "icon": "3",
+                "content": (
+                    f"在 Vibe Coding 的工作流程中，{title}是不可或缺的一環。"
+                    f"理解「{core}」，能讓你在 AI 協作開發時更有效率地溝通需求與除錯。"
+                )
+            },
+            {
+                "title": "常見問題",
+                "icon": "⚠️",
+                "content": (
+                    f"初學者在接觸{title}時，常常忽略「{logic}」這個核心邏輯。"
+                    "建議在實作今日任務時，特別留意這個面向，並請 AI 逐步解釋每個步驟的原因。"
+                )
+            },
+            {
+                "title": "小測驗",
+                "icon": "✏️",
+                "quiz": [
+                    {
+                        "question": f"關於「{title}」，下列哪項描述最接近其核心用途？",
+                        "options": [
+                            {"text": f"A. {core}", "correct": True},
+                            {"text": "B. 這是前端框架才需要的專有知識", "correct": False},
+                            {"text": "C. 只有後端工程師需要了解", "correct": False}
+                        ],
+                        "answer": f"正確答案：A。{title}的核心在於{core}。"
+                    }
+                ]
             },
             {
                 "title": "今日任務",
                 "icon": "🚀",
-                "tasks": [outline_item["task"]]
+                "tasks": [
+                    task,
+                    f"閱讀 AI 對「{title}」的完整解釋，記下對你最有用的 3 個知識點",
+                    "請 AI 舉一個在真實 Vibe Coding 專案中應用這個概念的實際範例"
+                ]
             }
         ]
     }
@@ -1011,12 +1056,15 @@ def main():
     if next_id <= len(LESSONS):
         lesson = LESSONS[next_id - 1]
     else:
-        lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
+        lesson = None
+        for attempt in range(1, 3):
+            lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
+            if lesson is not None:
+                print(f"已透過 LLM API 生成第 {next_id:02d} 課內容（第 {attempt} 次嘗試）")
+                break
+            print(f"第 {attempt} 次 LLM 生成失敗，{'重試中...' if attempt < 2 else '改用備用課程內容'}")
         if lesson is None:
-            print("LLM 生成失敗，改用備用課程內容")
             lesson = build_fallback_lesson(next_id, outline_item)
-        else:
-            print(f"已透過 LLM API 生成第 {next_id:02d} 課內容")
 
     # 生成 HTML
     html_content = generate_html(lesson)
