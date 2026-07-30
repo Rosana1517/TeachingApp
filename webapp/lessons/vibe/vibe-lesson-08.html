@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 08 — UI 組件與設計（shadcn/ui）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: The Shell</span>
+    <h1 class="lesson-title">UI 組件與設計（shadcn/ui）</h1>
+    <p class="lesson-subtitle">零配置打造極簡高品質使用者介面</p>
+  </div>
+
+  <!-- Section: Vibe Coding 中的 shadcn/ui 核心角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> Vibe Coding 中的 shadcn/ui 核心角色</div>
+    <p>在 Vibe Coding 流程中，shadcn/ui 扮演<strong>視覺層加速器</strong>的關鍵角色。其複製貼上的本質讓 AI Agent 能直接輸出可運作的 UI 代碼，避免傳統組件庫可能產生的樣式衝突或冗餘依賴。當 AI 需要快速搭建註冊頁面時，它會透過 <code>npx shadcn-ui@latest</code> 自動分析項目配置，確保 Tailwind CSS 樣式與 Next.js 路由完美對齊。這種設計讓開發者不必耗時調整主題色階，便能獲得符合設計系統的標準組件，大幅縮短原型驗證時間。</p>
+  </div>
+
+  <!-- Section: shadcn/ui 的組裝邏輯與 Vibe 保持機制 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> shadcn/ui 的組裝邏輯與 Vibe 保持機制</div>
+    <p>AI 在調用 shadcn/ui 時實際執行的操作是<strong>生成並整合原始碼</strong>而非安裝套件。當出現 Vibe 破裂（例如按鈕樣式失效），通常源於兩個關鍵點：一是本地主題配置文件（theme.json）與當前 Tailwind 配置不一致，二是組件複製後缺少必要的 import 路徑修正。診斷方法應先執行 <code>npx tailwindcss -i input.css -o output.css --watch</code> 確認樣式是否編譯，再檢查組件的 className 是否被 Tailwind 規則排斥。此處 AI 會自動修復常見錯誤，例如將 <code>class="btn btn-primary"</code> 轉為符合 shadcn 規範的 <code>class="bg-blue-500 text-white px-4 py-2 rounded"</code></p>
+  </div>
+
+  <!-- Section: 範例：快速搭建註冊頁面 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> 範例：快速搭建註冊頁面</div>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npx shadcn-ui@latest add card</span>
+<span class="output">Added card component to components/card.tsx</span>
+
+<span class="prompt">$</span> <span class="cmd">npx shadcn-ui@latest add input</span>
+<span class="output">Added input component to components/input.tsx</span>
+
+<span class="comment"># 編輯 app/register/page.tsx</span>
+<span class="prompt">$</span> <span class="cmd">code .</span>
+<span class="output">[ 開啟文件並拖曳組合組件 ]</span>
+    </div>
+  </div>
+
+  <!-- Section: AI 調用 shadcn/ui 的差異分析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI 調用 shadcn/ui 的差異分析</div>
+    <p>比較傳統庫與 shadcn/ui 的工作流差異：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">傳統組件庫做法</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">npm install antd
+import { Button } from 'antd';
+<Button type="primary">提交</Button>
+# 問題：可能引入 10MB+ 依賴樣式，且主題修改需通過配置物件</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">shadcn/ui 做法</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">npx shadcn-ui@latest add button
+import { Button } from '@/components/button';
+<Button>提交</Button>
+# 優勢：直接貼上可編輯代碼，Tailwind 樣式可逐字調整，無額外依賴</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 深度原理：為何 AI 偏好 shadcn/ui？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深度原理：為何 AI 偏好 shadcn/ui？</div>
+    <details class="deep-dive">
+      <summary>AI 為何鐘情於 shadcn/ui 的可貼性架構？</summary>
+      <div class="deep-dive-content">
+        <p>AI Agent 對 shadcn/ui 的偏愛本質源於<strong>可預測性與可控性</strong>。在 Vibe Coding 循環中，AI 需要快速迭代用戶介面，而 shadcn/ui 提供的原始碼級組件讓 AI 能精準理解每個樣式來源。當 Tailwind 配置變更時，AI 可直接調整 className 值而非查找配置檔。更重要的是，shadcn/ui 的無依賴特性消除了版本衝突風險——當 AI 生成代碼時，它確信這些組件能在任何支援 Tailwind 的環境中運行。這種確定性使得 AI 在處理複雜表單佈局時，能通過組合 basic component 快速構建高級元件，而無需擔心隱藏的樣式優先級衝突或遺漏的 JS 依賴。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 進階故障診斷：Vibe 破裂處理策略 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> 進階故障診斷：Vibe 破裂處理策略</div>
+    <p>當註冊頁面出現 <strong>樣式噴發或組件不渲染</strong> 時，應採用三步診斷法：首先確認 tailwind.config.ts 是否包含 shadcn 的設計令牌，接著檢查 Components 目錄下的組件是否有正確的 import 路徑，最後使用 Chrome DevTools 的元素 inspector 確認 className 是否被覆蓋。AI Agent 在此場景下會主動執行 <code>npx postcss-cli</code> 檢查樣式編譯狀態，並根據 Tailwind 的 jit 模式提示是否需手動觸發 recompilation。常見錯誤包括忘記在 layout.tsx 載入全局 CSS 檔案，或是組件使用了未定義的 Tailwind 變數如 <code>--radius</code>。</p>
+  </div>
+
+  <!-- Section: 測驗檢驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 測驗檢驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當 shadcn/ui 組件在 Next.js 中顯示空白，最可能的原因是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 未執行 npm install</li>
+          <li onclick="checkAnswer(this, true)">B. tailwind.config.ts 未配置 shadcn 主題變數</li>
+          <li onclick="checkAnswer(this, false)">C. Node.js 版本太低</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。shadcn/ui 依賴 Tailwind 的主題配置（如顏色、圓角變數）才能正確渲染樣式。若 tailwind.config.ts 未導入 shadcn 的設計令牌，組件將無法應用預設樣式。A 選項錯誤因為 shadcn/ui 不需要安裝套件，C 選項與樣式渲染無直接關聯。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. AI 在使用 shadcn/ui 時如何優化 UI 迭代速度？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 自動替換所有第三方庫</li>
+          <li onclick="checkAnswer(this, true)">B. 通過貼上可編輯組件實現快速調整</li>
+          <li onclick="checkAnswer(this, false)">C. 禁用 Tailwind JIT 模式</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。shadcn/ui 的核心優勢在於提供可直接修改的組件原始碼，讓 AI 能精準調整樣式而無需深入庫源碼。A 選項不符合 shadcn/ui 的設計理念，C 選項實際會降低開發效率，因 JIT 模式能加速樣式生成。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日實踐任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日實踐任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 shadcn/ui 的 <code>add</code> 命令建立註冊頁面所需的 card、input、button 和 label 組件</li>
+        <li style="padding: 0.5rem 0;">將組件組合到 app/register/page.tsx 中，確保 Tailwind 樣式符合主題配置</li>
+        <li style="padding: 0.5rem 0;">啟動 Claude Code 並要求它生成一個包含驗證訊息的完整註冊表單，觀察 AI 如何處理錯誤狀態</li>
+        <li style="padding: 0.5rem 0;">刻意修改 tailwind.config.ts 中一個主題變數（如圓角值），然後強制重新啟動開發服務，觀察 Vibe 是否破裂及 AI 能否自動恢復</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 08 · UI 組件與設計（shadcn/ui）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：資源自動化（Icons/Images）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
