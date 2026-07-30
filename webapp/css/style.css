@@ -30,6 +30,10 @@ html, body {
   color: var(--primary);
   font-family: -apple-system, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Belt-and-suspenders alongside the viewport meta's user-scalable=no:
+     without this, a quick double-tap on a button/card reads as the
+     browser's double-tap-to-zoom gesture instead of two clicks. */
+  touch-action: manipulation;
 }
 
 body {
@@ -181,9 +185,14 @@ header.top-bar h1 {
   gap: 14px;
   background: var(--bg);
   border-radius: 16px;
-  box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+  /* A single lightweight shadow instead of the double neumorphic shadow —
+     with 50+ of these on screen, two blurred shadows each was heavy enough
+     to make scrolling and re-renders (toggling learned, switching category)
+     visibly stutter on mobile. */
+  box-shadow: 0 2px 6px var(--shadow-dark);
   padding: 14px 16px;
   cursor: pointer;
+  contain: content;
 }
 
 .course-card .info { flex: 1; min-width: 0; }
