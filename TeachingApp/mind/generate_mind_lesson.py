@@ -397,8 +397,11 @@ def generate_lesson_via_llm(next_id, previous_topics):
         print(f"無法解析 LLM 回應的 JSON：{error}")
         return None
 
-    if not lesson.get("title") or not lesson.get("sections"):
-        print("LLM 回傳的 JSON 缺少必要欄位")
+    sections = lesson.get("sections", [])
+    has_quiz = any("quiz" in s for s in sections)
+    has_tasks = any("tasks" in s for s in sections)
+    if not lesson.get("title") or len(sections) < 4 or not has_quiz or not has_tasks:
+        print(f"LLM 回傳的課程內容不完整（title={bool(lesson.get('title'))}, sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受")
         return None
 
     lesson["id"] = next_id

@@ -575,6 +575,14 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
         print(f"無法解析 LLM 回應的 JSON：{error}")
         return None
 
+    # 品質驗證：sections 太少代表 LLM 只生成了部分內容，拒絕接受
+    sections = lesson.get("sections", [])
+    has_quiz = any("quiz" in s for s in sections)
+    has_tasks = any("tasks" in s for s in sections)
+    if len(sections) < 4 or not has_quiz or not has_tasks:
+        print(f"LLM 回傳的課程內容不完整（sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受")
+        return None
+
     lesson["id"] = next_id
     if outline_item is not None:
         # 大綱範圍內的課程：標題與階段強制對齊大綱，避免 LLM 偏題
