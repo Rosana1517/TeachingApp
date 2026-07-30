@@ -40,7 +40,7 @@ jobs:
           echo "Files in directory:"
           ls -la
           echo "Running Python script..."
-          python generate_vibe_lesson.py
+          python -u generate_vibe_lesson.py
           echo "Python script completed successfully"
         env:
           LLM_API_URL: ${{ secrets.LLM_API_URL }}

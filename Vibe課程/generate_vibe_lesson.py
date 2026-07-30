@@ -581,6 +581,7 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     body = json.dumps({
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": 4096,
     }).encode("utf-8")
 
     request = urllib.request.Request(
@@ -609,15 +610,17 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
         print(f"無法從回應中取出內容：{error}；原始回應：{result}")
         return None
 
+    print(f"LLM 回應長度：{len(text)} 字元；前 300 字：{text[:300]}", flush=True)
+
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if not match:
-        print("LLM 回應裡找不到 JSON 物件")
+        print("LLM 回應裡找不到 JSON 物件", flush=True)
         return None
 
     try:
         lesson = json.loads(match.group(0))
     except json.JSONDecodeError as error:
-        print(f"無法解析 LLM 回應的 JSON：{error}")
+        print(f"無法解析 LLM 回應的 JSON：{error}；前 500 字：{text[:500]}", flush=True)
         return None
 
     # 品質驗證：sections 太少代表 LLM 只生成了部分內容，拒絕接受
@@ -625,7 +628,8 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     has_quiz = any("quiz" in s for s in sections)
     has_tasks = any("tasks" in s for s in sections)
     if len(sections) < 4 or not has_quiz or not has_tasks:
-        print(f"LLM 回傳的課程內容不完整（sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受")
+        print(f"LLM 回傳的課程內容不完整（sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受", flush=True)
+        print(f"Section keys: {[list(s.keys()) for s in sections]}", flush=True)
         return None
 
     lesson["id"] = next_id

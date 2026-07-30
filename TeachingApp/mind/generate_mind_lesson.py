@@ -358,6 +358,7 @@ def generate_lesson_via_llm(next_id, previous_topics):
     body = json.dumps({
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": 4096,
     }).encode("utf-8")
 
     request = urllib.request.Request(

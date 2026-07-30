@@ -35,7 +35,7 @@ jobs:
           echo "Files in directory:"
           ls -la
           echo "Running Python script..."
-          python generate_mind_lesson.py
+          python -u generate_mind_lesson.py
           echo "Python script completed successfully"
         env:
           LLM_API_URL: ${{ secrets.LLM_API_URL }}
