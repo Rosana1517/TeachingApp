@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 05 — Package Management（NPM/Bun）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 1: The Core</span>
+    <h1 class="lesson-title">Package Management（NPM/Bun）</h1>
+    <p class="lesson-subtitle">掌握 Vibe Coding 中的核心工具，讓 AI Agent 精準管理專案依賴與版本一致性</p>
+  </div>
+
+  <!-- Section: 依賴管理在 Vibe Coding 中的角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📦</span> 依賴管理在 Vibe Coding 中的角色</div>
+    <p><code>package.json</code> 是 Vibe Coding 中 AI Agent 理解你專案「要裝什麼東西」的起點，而 <code>package-lock.json</code> 則是它確保每次執行都能還原相同環境的承諾書。當 AI 調用 NPM 或 Bun 安裝一個套件時，它會先查閱 <code>package.json</code> 來決定要不要新增或更新依賴，接著再依照 <code>package-lock.json</code> 的鎖定版本去拉取對應的 tarball。若沒有 <code>package-lock.json</code>，AI 就可能在不同環境下拉出不同版本的套件，導致行為不一致甚至報錯——這就是 Vibe 破裂的常見原因之一。</p>
+  </div>
+
+  <!-- Section: 對照小節：依賴衝突的兩種處理方式 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照小節：依賴衝突的兩種處理方式</div>
+    <p>當 AI 發現兩個套件需要不同版本的同個依賴時，它該如何選擇？以下是兩種典型情境的對比：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">情境 A：AI 自動修復（有 lock file）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">$ npm install lodash@4.17.0
+>
+> 系統偵測到 <code>package-lock.json</code> 鎖定為 v4.17.0
+> 因此直接沿用該版本，避免版本跳變
+>
+>vibe stable ✅</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">情境 B：AI 重新解析無鎖（無 lock file 或被清除）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">$ rm package-lock.json
+$ npm install lodash@latest
+>
+> AI 重新計算所有依賴樹，可能推導出最新版本
+> 但若某套件不兼容新版，可能導致 runtime error
+>
+>vibe broken ⚠️</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例的小節：觀察 AI 如何修改 lock file -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 帶指令範例的小節：觀察 AI 如何修改 lock file</div>
+    <p>讓我們示範當 AI 必須修正依賴衝突時，它如何觸發 <code>npm install</code> 並修改 <code>package-lock.json</code>。這個過程不是隨機發生的，而是基於解析後的依賴樹與已有 lock 文件的差異比對後決定的。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm install express</span>
+<span class="output">+ express@4.18.2 added 2 packages, and updated 6 packages in 3s</span>
+<span class="comment"># AI 檢測到 package.json 新增 express 依賴，自動更新 lock 文件版本映射</span>
+<span class="prompt">$</span> <span class="cmd">cat package-lock.json | grep -A2 "version":</span>
+<span class="output">  "version": "1.0.0",</span>
+<span class="output">  "lockfileVersion": 2,</span>
+<span class="output">  "requiresLock": true,</span>
+<span class="comment"># 確認 lock 文件版本已更新，包含新的 deps tree hash</span>
+<span class="error"># 若出現「ERESOLVE INDETERMINATE VERSION CONFLICT」，代表 AI 無法自動解決</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 package-lock.json 是 AI 的「記憶庫」？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 package-lock.json 是 AI 的「記憶庫」？</div>
+    <details class="deep-dive">
+      <summary>AI 如何透過 lock 文件實現跨環境一致性？背後的圖論與依賴解析邏輯是什麼？</summary>
+      <div class="deep-dive-content">
+        <p>AI Agent 在 Vibe Coding 中並非單純地呼叫 <code>npm install</code>，而是扮演一個依賴解析引擎的角色。當你要安裝某個套件時，AI 會從 <code>package.json</code> 讀取起始依賴樹，然後啟動深度優先搜尋（DFS）或 breadth-first search（BFS）來展開所有子依賴，同時記錄每個套件的版本範圍（如 ^1.2.0）。如果發現同一套件被多個路徑要求不同版本，AI 會嘗試「向上提升」（hoisting）或「向下壓制」以統一版本，此過程稱為 <strong>dependency resolution</strong>。<code>package-lock.json</code> 實際上就是一個序列化後的完整依賴樹快照，包含每個套件的 exact version、integrity checksum、以及 parent-child 邊界關係。當下次執行時，AI 会先比對當前 lock 文件與期望版本是否一致；若有差異，便重新解析並寫入新 lock。這種機制確保了即使在多台電腦或 CI 環境中，AI 的行為仍可預測且穩定。這就是為什麼當你刪除 lock 文件後，AI 可能會給你不同的套件版本——因為它的「記憶」被清空了，必須重新學習。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗：檢驗你的理解程度 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗：檢驗你的理解程度</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當你在 Vibe Coding 中看到 'ERESOLVE INDETERMINATE VERSION CONFLICT' 錯誤，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. npm 伺服器暫時不可用</li>
+          <li onclick="checkAnswer(this, true)">B. lock file 不存在或被損壞，導致 AI 無法比對版本一致性</li>
+          <li onclick="checkAnswer(this, false)">C. 你有未提交的 Git 變更</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。此錯誤代表 AI 在解析依賴樹時發現了無法和諧共存的版本衝突，且由於缺少有效的 lock 文件或 lock 檔與 package.json 不匹配，它無法自動決定該採用哪個版本。這正是 Vibe 破裂的徵兆之一。A 是網路問題，通常會顯示 timeout 或 connection refused；C 與依賴無關，Git 狀態不會影響 NPM 的解析邏輯。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪種操作會讓 AI 重新生成 package-lock.json？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 執行 `npm update`</li>
+          <li onclick="checkAnswer(this, false)">B. 執行 `npm install --save-dev something`</li>
+          <li onclick="checkAnswer(this, false)">C. 修改 .gitignore 檔案</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 A。<code>npm update</code> 會讓 AI 根據 package.json 中的 semver 規則重新解析所有可更新的依賴，並更新 lock 文件以反映最新的樹狀結構。雖然 B 也會寫入 lock 文件，但它只是「追加」一個新套件，不觸發全面重算；C 完全不涉及 NPM 流程。在 Vibe Coding 中，AI 更重視「一致性」而非「增量更新」，所以全面重算才是真正讓 AI 重新驗證整個依賴生態的動作。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務：從手動到 AI 協作的依賴實驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務：從手動到 AI 協作的依賴實驗</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">建立一個空目錄並初始化 <code>npm init -y</code>，觀察生成的 <code>package.json</code> 內容</li>
+        <li style="padding: 0.5rem 0;">使用 <code>npm install axios</code> 安裝一個套件，然後查看 <code>package-lock.json</code> 是否被創建新條目</li>
+        <li style="padding: 0.5rem 0;">刪除 <code>package-lock.json</code> 和 <code>node_modules</code> 資料夾，再次執行 <code>npm install axios</code>，比較兩次生成的 lock 文件是否相同</li>
+        <li style="padding: 0.5rem 0;">使用 AI Agent（如 Claude Code 或 Cursor）輸入指令：`install lodash and print its exact version in lock file`，觀察 AI 是否能準確回傳鎖定版本並解釋其來源</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 05 · Package Management（NPM/Bun）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：AI 原型工具（v0/Bolt）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
