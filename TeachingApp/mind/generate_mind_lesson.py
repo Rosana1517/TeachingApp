@@ -392,10 +392,16 @@ def generate_lesson_via_llm(next_id, previous_topics):
         print("LLM 回應裡找不到 JSON 物件")
         return None
 
+    json_text = match.group(0)
+    json_text = re.sub(r'\bTrue\b', 'true', json_text)
+    json_text = re.sub(r'\bFalse\b', 'false', json_text)
+    json_text = re.sub(r'\bNone\b', 'null', json_text)
+    json_text = re.sub(r',\s*([}\]])', r'\1', json_text)
+
     try:
-        lesson = json.loads(match.group(0))
+        lesson = json.loads(json_text)
     except json.JSONDecodeError as error:
-        print(f"無法解析 LLM 回應的 JSON：{error}")
+        print(f"無法解析 LLM 回應的 JSON：{error}；前 300 字：{json_text[:300]}", flush=True)
         return None
 
     sections = lesson.get("sections", [])

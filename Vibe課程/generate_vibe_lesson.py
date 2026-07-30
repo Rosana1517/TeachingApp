@@ -617,10 +617,17 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
         print("LLM 回應裡找不到 JSON 物件", flush=True)
         return None
 
+    json_text = match.group(0)
+    # LLM 常見 JSON 語法錯誤修復：Python 布林/None 值、尾逗號
+    json_text = re.sub(r'\bTrue\b', 'true', json_text)
+    json_text = re.sub(r'\bFalse\b', 'false', json_text)
+    json_text = re.sub(r'\bNone\b', 'null', json_text)
+    json_text = re.sub(r',\s*([}\]])', r'\1', json_text)
+
     try:
-        lesson = json.loads(match.group(0))
+        lesson = json.loads(json_text)
     except json.JSONDecodeError as error:
-        print(f"無法解析 LLM 回應的 JSON：{error}；前 500 字：{text[:500]}", flush=True)
+        print(f"無法解析 LLM 回應的 JSON：{error}；前 500 字：{json_text[:500]}", flush=True)
         return None
 
     # 品質驗證：sections 太少代表 LLM 只生成了部分內容，拒絕接受
