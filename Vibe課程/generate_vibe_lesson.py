@@ -389,6 +389,7 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
 }
 
 硬性要求（不符合就視為不合格）：
+0. 所有 JSON 字串值必須用標準英文雙引號 " 包住，絕對不可以用中文全形引號「」或『』取代 JSON 語法用的雙引號（這樣會讓 JSON 直接解析失敗）；「」只能出現在字串「內容裡面」當作中文標點，不能用來取代字串外層的 " 。
 1. "sections" 至少要有 6 個小節，且必須包含至少一個 "terminal_block"（實際指令／輸出範例）與至少一個 "deep_dive"（原理深挖），"comparison" 視主題需要選用。
 2. 一般 "content" 每則至少 120 字、"deep_dive.content" 至少 150 字，禁止寫成一句話就結束的空洞段落，更禁止「以下步驟：」「如下：」這類話講到一半沒有接下文。
 3. "quiz" 至少要有 2 題，每題 3 個選項，"answer" 要解釋原因，不能只寫「正確答案：B」。
@@ -618,10 +619,13 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
         return None
 
     json_text = match.group(0)
-    # LLM 常見 JSON 語法錯誤修復：Python 布林/None 值、尾逗號
+    # LLM 常見 JSON 語法錯誤修復：Python 布林/None 值、尾逗號、
+    # 用中文全形引號「」代替標準雙引號當作 JSON 字串值（例如 "next_topic":「...」,）
     json_text = re.sub(r'\bTrue\b', 'true', json_text)
     json_text = re.sub(r'\bFalse\b', 'false', json_text)
     json_text = re.sub(r'\bNone\b', 'null', json_text)
+    json_text = re.sub(r':(\s*)「', r':\1"', json_text)
+    json_text = re.sub(r'」(\s*[,}\]])', r'"\1', json_text)
     json_text = re.sub(r',\s*([}\]])', r'\1', json_text)
 
     try:

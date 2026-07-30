@@ -259,6 +259,8 @@ def get_previous_topics():
 
 LESSON_SCHEMA_INSTRUCTIONS = """\
 請只回傳一個合法的 JSON 物件（不要加任何說明文字、不要用 markdown code block），結構必須完全符合：
+（重要：所有 JSON 字串值必須用標準英文雙引號 " 包住，絕對不可以用中文全形引號「」或『』取代 JSON 語法用的雙引號，
+「」只能出現在字串內容裡面當作中文標點，不能用來取代字串外層的 "）
 
 {
   "title": "課程主標題（繁體中文，簡短有力，不超過 12 字）",
@@ -396,6 +398,8 @@ def generate_lesson_via_llm(next_id, previous_topics):
     json_text = re.sub(r'\bTrue\b', 'true', json_text)
     json_text = re.sub(r'\bFalse\b', 'false', json_text)
     json_text = re.sub(r'\bNone\b', 'null', json_text)
+    json_text = re.sub(r':(\s*)「', r':\1"', json_text)
+    json_text = re.sub(r'」(\s*[,}\]])', r'"\1', json_text)
     json_text = re.sub(r',\s*([}\]])', r'\1', json_text)
 
     try:
