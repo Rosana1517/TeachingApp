@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 09 — 資源自動化（Icons/Images）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: The Shell</span>
+    <h1 class="lesson-title">資源自動化（Icons/Images）</h1>
+    <p class="lesson-subtitle">Lucide 與 Unsplash API 如何讓 AI Agent 自動生成視覺化介面</p>
+  </div>
+
+  <!-- Section: Vibe Coding 中的資源角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎨</span> Vibe Coding 中的資源角色</div>
+    <p>在 Vibe Coding 流程中，<strong>圖標（Icons）</strong>與<strong>占位圖片（Placeholders）</strong>不僅是美化元素，更是 AI Agent 理解使用者意圖的輔助訊號。當使用者輸入「建立一個待辦事項清單」，AI 會自動選用 <code>Lucide</code> 的 <code>PlusIcon</code>、<code>CheckIcon</code> 來強化 UI 語彙；若涉及背景或情境感，則透過 <code>Unsplash API</code> 隨機拉取一張符合主題的高品質圖片作為氛圍襯托。這些自動化選擇讓開發速度大幅提升，同時減少設計決策負荷。關鍵在於 AI 必須能根據上下文「推斷」最適合的圖源，而非單純隨機插入。</p>
+  </div>
+
+  <!-- Section: AI Agent 的智能選擇邏輯 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🤖</span> AI Agent 的智能選擇邏輯</div>
+    <p>AI Agent 在使用 Lucide 時，會根據元件功能匹配圖標名稱（如 <code>SettingsIcon</code> 用於設定頁），並自動處理圖庫匯入路徑；對於 Unsplash API，則分析關鍵字（如「work」、「nature」、「city」）後，向端點 <code>https://source.unsplash.com/random/800x600?work</code> 發出請求，並回傳圖 URL 嵌入 <code>&lt;img src="..." /&gt;。</code> 此過程完全自動化，無需手動尋找圖片。但若關鍵字模糊或未指定，AI 可能選出不相關圖，造成「Vibe 破裂」——例如把「金融儀表板」配上一張貓的照片。此時需主動調整提示詞或固定圖片來源。</p>
+  </div>
+
+  <!-- Section: 對照小節：AI 智能 vs. 手動選擇 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照小節：AI 智能 vs. 手動選擇</div>
+    <p>當你在描述需求時，不同的表述方式會影響 AI 對資源的選擇精準度。以下是兩種情境的對比：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">情境 A（模糊提示）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">「幫我畫一個漂亮的工作畫面。」
+→ AI 可能隨機選一張辦公室圖 + 不相關圖標</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">情境 B（明確提示）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">幫我建立一個任務管理界面，使用 Lucide 的 <code>TimerIcon</code> 和 <code>User2Icon</code>，背景圖用 Unsplash 的 'focused work' 主題。」
+→ AI 精準匹配圖標與情境圖</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例的小節：自動整合圖標與圖片 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 帶指令範例的小節：自動整合圖標與圖片</div>
+    <p>以下示範如何在 Next.js 中使用 AI Agent 快速生成含圖標與動態圖片的卡片元件：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npx shadcn/ui@latest add card --tailwind</span>
+<span class="output">Card component added with Tailwind styles.</span>
+<span class="comment"># 編輯 components/task-card.tsx</span>
+<span class="import">import { PlusIcon } from 'lucide-react';</span>
+<span class="import">import Image from 'next/image';</span>
+
+export function TaskCard() {
+  return (
+    &lt;div className='p-4 border rounded-lg bg-white shadow-sm'&gt;
+      &lt;PlusIcon size={24} className='mb-2 text-primary' /&gt;
+      &lt;h3 className='font-semibold'&gt;新任務&lt;/h3&gt;
+      &lt;p className='text-sm text-muted'&gt;每日待辦&lt;/p&gt;
+      &lt;Image
+        src={'https://source.unsplash.com/random/300x200?focus'}
+        alt='工作氛圍'
+        width={300}
+        height={200}
+        className='mt-3 rounded'
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 AI 能自動選圖？機制背後的邏輯 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 AI 能自動選圖？機制背後的邏輯</div>
+    <details class="deep-dive">
+      <summary>AI 是如何知道該用哪張圖與哪個圖標的？其實它靠的是語義嵌合與預訓練模式識別。</summary>
+      <div class="deep-dive-content">
+        <p>在 Vibe Coding 環境中，AI Agent 並非真正『看見』使用者要什麼，而是透過自然語言處理（NLP）技術，將用戶的描述映射到其訓練數據中已定義的模式庫。例如，當提到「設定」或「選項」，AI 會觸發與 <code>SettingsIcon</code> 相關的權重；而像『remote work』、『coffeeshop』等關鍵字，則對應 Unsplash 中 tagged 為 those terms 的影像。這種映射來自於大模型在大量程式碼與界面案例上的觀察學習。此外，Lucide 提供的是 SVG 組件，可直接渲染在 React 中，無需額外圖檔載入，因此效率高且可樣式化。當使用者未明確指定時，AI 會基於『最佳實踐』『最常組合』進行預測性填充。這正是 Vibe Coding 的核心魅力：以 minimal input 獲得 maximal coherence。但一旦輸入含混，就會導致錯配的圖標或圖片，這時就需要人工介入修正提示詞或鎖定資源來源，維持 Vibe 穩定。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗：診斷你的資源選擇能力 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗：診斷你的資源選擇能力</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 若在 Next.js 中使用 Lucide 圖標時出現 'Cannot find module 'lucide-react'' 錯誤，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 沒有安裝 lucide-react 套件</li>
+          <li onclick="checkAnswer(this, false)">B. 圖標名字寫錯了</li>
+          <li onclick="checkAnswer(this, false)">C. Next.js 版本太舊</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 A。錯誤訊息指出找不到模組，表示套件未安裝。需執行 <code>npm install lucide-react</code> 或 <code>bun add lucide-react</code>。B 選項錯誤是因為即使名字寫錯，也會先成功導入模組再報錯；C 選項無關，因為只要安裝正確套件，新版或舊版 Next.js 皆可支援。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 Unsplash 回傳圖片顯示空白或頻繁失敗，最常見的問題是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 網路連線中斷</li>
+          <li onclick="checkAnswer(this, true)">B. 使用的 API 端點已過時或限制頻繁請求</li>
+          <li onclick="checkAnswer(this, false)">C. 图片格式不被 Next.js 支援</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。<code>source.unsplash.com</code> 服務已不再推薦使用，因會頻繁失敗或返回空圖，且無速率限制。建議改用 <code>unsplash.co</code> 或 <code>image.pollinations.ai</code> 等替代方案。A 雖可能但不常見，C 則錯誤，因為 Next.js 支援多種格式（JPEG/PNG/WebP）。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務：實作一個由 AI 動態調用的圖標與圖片系統 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務：實作一個由 AI 動態調用的圖標與圖片系統</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：初始化 Next.js 專案（或使用現有），安裝 <code>lucide-react</code> 並匯入一個 <code>SettingsIcon</code> 顯示在首頁。</li>
+        <li style="padding: 0.5rem 0;">任務二：在畫面中加入一個使用 <code>Image</code> 元件調用 <code>https://image.pollinations.ai/prompt/tech%20workspace?width=600&height=400</code> 的動態背景圖，確認載出正常。</li>
+        <li style="padding: 0.5rem 0;">任務三：使用 AI Agent（如 Claude Code 或 Cursor）提問：「幫我改造成一個每日任務卡片，包含加號圖標、標題、描述與隨機工作場景圖」，並觀察它是否自動選用正確圖標與圖片來源。</li>
+        <li style="padding: 0.5rem 0;">任務四：故意輸入模糊提示（例如：「幫我弄個酷的畫面」），觀察 AI 是否選錯圖標或圖片，並記錄『Vibe 破裂』現象，隨後修正提示詞看是否改善，撰寫一段簡短反思：語義清晰度如何影響資源自動化品質？</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 09 · 資源自動化（Icons/Images）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：AI Agents 對比</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
