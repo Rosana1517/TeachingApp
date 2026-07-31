@@ -449,6 +449,17 @@ _SECTION_TEXT_KEYS = {
 _QUIZ_KEYS = {'QUIZ_QUESTION', 'QUIZ_OPTION_A', 'QUIZ_OPTION_B', 'QUIZ_OPTION_C', 'QUIZ_CORRECT', 'QUIZ_ANSWER'}
 _KNOWN_KEYS = _TOP_LEVEL_KEYS | _SECTION_TEXT_KEYS | _QUIZ_KEYS | {'TASK'}
 
+# LLM 偶爾會把標記名稱打成看似合理的同義詞（例如 SUBLINE 而非 SUBTITLE）；
+# 這裡做一層寬容的別名對應，減少不必要的重試，但真正的正確性保障仍然是
+# generate_lesson_via_llm 裡「缺欄位就拒絕接受」的驗證，別名只是錦上添花。
+_KEY_ALIASES = {
+    'SUB_TITLE': 'SUBTITLE', 'SUBLINE': 'SUBTITLE', 'SUBHEADING': 'SUBTITLE',
+    'NEXT_LESSON': 'NEXT_TOPIC', 'NEXT': 'NEXT_TOPIC',
+    'ICON': 'SECTION_ICON', 'TITLE_SECTION': 'SECTION_TITLE',
+    'TERMINAL': 'TERMINAL_BLOCK', 'CODE': 'TERMINAL_BLOCK',
+    'DEEP_DIVE_TITLE': 'DEEP_DIVE_SUMMARY',
+}
+
 
 def _strip_code_fence(text):
     """去除 LLM 偶爾會加上的 ```...``` 包裹。"""
@@ -480,9 +491,10 @@ def _tokenize_lesson_text(text):
             events.append(('__SECTION__', None))
             continue
         m = _MARKER_LINE_RE.match(raw_line)
-        if m and m.group(1) in _KNOWN_KEYS:
+        matched_key = _KEY_ALIASES.get(m.group(1), m.group(1)) if m else None
+        if m and matched_key in _KNOWN_KEYS:
             flush()
-            cur_key, buf = m.group(1), [m.group(2)]
+            cur_key, buf = matched_key, [m.group(2)]
         elif cur_key is not None:
             buf.append(raw_line)
         # 標記出現前的雜訊行（例如 LLM 誤加的開場白）直接忽略
@@ -810,12 +822,19 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
         print(f"原始回應（前 500 字）：{text[:500]!r}", flush=True)
         return None
 
-    # 品質驗證：sections 太少代表 LLM 只生成了部分內容，拒絕接受
+    # 品質驗證：標題/副標題缺漏（例如 LLM 把標記名稱打錯，像是用 SUBLINE 而非
+    # SUBTITLE）或 sections 太少，代表這次輸出不完整，一律拒絕接受並重試，
+    # 而不是帶著缺欄位的 lesson 繼續往下跑到 generate_html 才爆炸。
     sections = lesson.get("sections", [])
     has_quiz = any("quiz" in s for s in sections)
     has_tasks = any("tasks" in s for s in sections)
-    if not lesson.get("title") or len(sections) < 4 or not has_quiz or not has_tasks:
-        print(f"LLM 回傳的課程內容不完整（title={bool(lesson.get('title'))}, sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受", flush=True)
+    if not lesson.get("title") or not lesson.get("subtitle") or len(sections) < 4 or not has_quiz or not has_tasks:
+        print(
+            f"LLM 回傳的課程內容不完整（title={bool(lesson.get('title'))}, "
+            f"subtitle={bool(lesson.get('subtitle'))}, sections={len(sections)}, "
+            f"quiz={has_quiz}, tasks={has_tasks}），拒絕接受",
+            flush=True,
+        )
         print(f"Section keys: {[list(s.keys()) for s in sections]}", flush=True)
         return None
 
@@ -842,7 +861,7 @@ def generate_html(lesson):
     html_parts.append('<head>')
     html_parts.append('<meta charset="UTF-8">')
     html_parts.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
-    html_parts.append(f'<title>Vibe Coding 課 {lesson_num} — {lesson["title"]}</title>')
+    html_parts.append(f'<title>Vibe Coding 課 {lesson_num} — {lesson.get("title", "")}</title>')
     html_parts.append(get_full_css())
     html_parts.append('</head>')
     html_parts.append('<body>')
@@ -853,8 +872,8 @@ def generate_html(lesson):
     html_parts.append('  <!-- Header -->')
     html_parts.append('  <div class="lesson-header">')
     html_parts.append(f'    <span class="lesson-number">{phase}</span>')
-    html_parts.append(f'    <h1 class="lesson-title">{lesson["title"]}</h1>')
-    html_parts.append(f'    <p class="lesson-subtitle">{lesson["subtitle"]}</p>')
+    html_parts.append(f'    <h1 class="lesson-title">{lesson.get("title", "")}</h1>')
+    html_parts.append(f'    <p class="lesson-subtitle">{lesson.get("subtitle", "")}</p>')
     html_parts.append('  </div>')
 
     # Generate sections
@@ -930,7 +949,7 @@ def generate_html(lesson):
     html_parts.append('')
     html_parts.append('  <!-- Footer -->')
     html_parts.append('  <div class="lesson-footer">')
-    html_parts.append(f'    <p>Vibe Coding Masterclass · Lesson {lesson_num} · {lesson["title"]}</p>')
+    html_parts.append(f'    <p>Vibe Coding Masterclass · Lesson {lesson_num} · {lesson.get("title", "")}</p>')
     html_parts.append(f'    <p style="margin-top: 0.3rem;">下一課預告：{lesson.get("next_topic", "")}</p>')
     html_parts.append('  </div>')
     html_parts.append('')
@@ -1250,7 +1269,14 @@ def main():
         lesson = None
         max_attempts = 3
         for attempt in range(1, max_attempts + 1):
-            lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
+            try:
+                lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
+            except Exception as error:
+                # 任何未預期的例外（解析器邊角案例、網路問題等）都不該讓整個
+                # GitHub Action 直接失敗；當成這次嘗試失敗，讓迴圈重試或最終落到
+                # fallback 內容，維持「今天一定要生出一堂課」的可用性。
+                print(f"第 {attempt} 次生成時發生未預期例外：{error!r}", flush=True)
+                lesson = None
             if lesson is not None:
                 print(f"已透過 LLM API 生成第 {next_id:02d} 課內容（第 {attempt} 次嘗試）")
                 break
@@ -1272,8 +1298,8 @@ def main():
         f.write(html_content)
 
     print(f"已成功生成課程: {filepath}")
-    print(f"   標題: {lesson['title']}")
-    print(f"   副標題: {lesson['subtitle']}")
+    print(f"   標題: {lesson.get('title', '')}")
+    print(f"   副標題: {lesson.get('subtitle', '')}")
     print(f"   檔案大小: {len(html_content)} bytes")
     print(f"   生成時間: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
