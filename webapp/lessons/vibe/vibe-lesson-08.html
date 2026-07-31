@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 08 — UI 組件與設計（shadcn/ui）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: The Shell</span>
+    <h1 class="lesson-title">UI 組件與設計（shadcn/ui）</h1>
+    <p class="lesson-subtitle">透過 AI 直接貼出完美 Tailwind CSS 代碼，快速打造一致的註冊頁面體驗</p>
+  </div>
+
+  <!-- Section: 課程核心概念與 AI 角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎯</span> 課程核心概念與 AI 角色</div>
+    <p>在 Vibe Coding 的流程中，UI 設計不再是需要設計師單獨完成的中斷步驟，而是與邏輯開發同步進行的持續迭代。對於 Independent Developer 來說，shadcn/ui 扮演了關鍵的橋樑角色：它提供了一種「複製並貼上即可使用」的現代化組件庫模式，而不是傳統需要大量配置和修改的 NPM 套件。這使得 AI Agent 能夠極其高效地介入——你只需描述想要的界面，AI Agent 就能直接吐出包含完整 Tailwind CSS 類別的 React 組件代碼，且完全符合你現有的專案設定（如色版、字型）。當 Vibe 破裂，例如出現樣式覆蓋或組件功能異常時，因為所有代碼都在本地可見，你可以直接檢查 Tailwind 的 `tailwind.config.ts` 設定或組件的 props 傳遞是否正確，這種可視化的優勢讓 Debugging 變得直觀且迅速。</p>
+  </div>
+
+  <!-- Section: shadcnui 與傳統 NPM 套件對比 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> shadcn/ui 與傳統 NPM 套件對比</div>
+    <p>為什麼在 Vibe Coding 的 AI 工作流中，開發者更傾向選擇 shadcn/ui 而非 Material UI 或 Ant Design？這在於開發體驗的本質不同。傳統套件像是黑盒，你依賴它們的版本發布和內部實現，一旦遇到樣式衝突或想要微調一行 CSS，往往需要尋找特定的 class name 或使用 `!important` 強制覆蓋，這非常容易導致 Vibe 破裂且難以修復。相反地，shadcn/ui 的原始碼就在你的項目文件夾裡（位於 `components/` 和 `lib/` 目錄下），每一個組件都是獨立的、可導出的 React 組件，完全由你自己掌控。AI Agent 喜歡這種模式，因為它能直接操作你的代碼文件，根據你的需求修改組件內部邏輯或 Tailwind 類別，而不必擔心版本不相容。當你需要一個自訂的輸入框，AI 可以直接在現有的 input 組件基礎上修改，而不是引入一個新的包。這種「擁有權」感讓迭代速度飛快，也讓故障排除變得更透明。</p>
+  </div>
+
+  <!-- Section: 初始化 shadcnui 環境範例 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 初始化 shadcn/ui 環境範例</div>
+    <p>在使用 shadcn/ui 之前，必須先將該技術棧整合到 Next.js 專案中。這個過程並非隱形，而是顯性的指令序列，你需要通過終端機初始化配置，讓 AI Agent 知道如何生成組件。正確的初始化步驟包括安裝 CLI 工具並配置你的基本檔案路徑。以下是常見的初始化流程與輸出示範，請注意觀察其中的錯誤處理與確認提示，這些都是在 Vibe Coding 過程中會經常遇到的交互點。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npx shadcn-ui@latest init</span>
+<span class="comment"># 詢問：What is your project&#x27;s type? (app | pages)</span>
+<span class="output">app</span>
+<span class="comment"># 詢問：What is the URL of your project? (http://localhost:3000)</span>
+<span class="output">http://localhost:3000</span>
+<span class="comment"># 詢問：Where would you like the components to be created? (components)</span>
+<span class="output">components</span>
+<span class="comment"># 詢問：What would you like to call the component namespace? (ui)</span>
+<span class="output">ui</span>
+<span class="comment"># 詢問：Would you like to use Tailwind CSS? (yes/true/y/Y)</span>
+<span class="output">yes</span>
+<span class="comment"># 詢問：Please provide the tailwind.css location (./src/styles/tailwind.css).</span>
+<span class="output">./src/globals.css</span>
+<span class="comment"># 詢問：Would you like to use a variable prefix for custom colours? (no/false/n/N)</span>
+<span class="output">no</span>
+<span class="comment"># ✅ Initialization completed. Your config has been written to .shadcn/config.json.</span>
+    </div>
+  </div>
+
+  <!-- Section: AI 如何生成與診斷註冊頁 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💡</span> AI 如何生成與診斷註冊頁</div>
+    <p>當你希望 AI Agent 幫助你搭建一個註冊頁面時，直接說出需求即可，例如：「幫我寫一個使用 shadcn/ui 的註冊表單，包含電子郵件、密碼、確認密碼欄位，並加上驗證錯誤訊息提示。」AI Agent 會回應完整的 `RegisterForm.tsx` 組件代碼，其中使用了 `Input`, `Button`, `Form`, `Label`, `FormField`, `FormMessage` 等標準組件。如果 Vibe 破裂，例如發現錯誤訊息沒有顯示出來，通常是因為沒有正確連接 `react-hook-form` 或者 `FormMessage` 被放置在了錯誤的位置（必須包在 `FormField` 內）。另一個常見問題是 Tailwind 樣式失效，這可能是因為你在組件中手動修改了 class name 但未在 `tailwind.config.ts` 的 `content` 路徑中加入新文件路徑，導致構圖時未被掃描到。這時應檢查 `next.config.mjs` 或 `tailwind.config.ts` 中的內容配置，確保包含了 `pages/**/*.{ts,tsx}` 或 `app/**/*.{ts,tsx}` 等路徑。</p>
+  </div>
+
+  <!-- Section: 深度解析：為什麼 AI 偏好 shadcnui -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深度解析：為什麼 AI 偏好 shadcn/ui？</div>
+    <details class="deep-dive">
+      <summary>為什麼 AI Agent 在編寫 UI 代碼時更鍾意 shadcn/ui 這種可編輯模式？</summary>
+      <div class="deep-dive-content">
+        <p>AI Agent 之所以特別青睞 shadcn/ui，背後有兩個核心的技術與架構原因。第一，它是「代碼優先」而非「API 優先」的設計哲學。傳統的 UI 套件透過 JavaScript 函式呼叫來渲染元件，對於 AI 來說，這意味著它必須準確理解套件的內部物件結構與 prop 定義，稍有偏差就可能產出無法運轉或樣式錯亂的程式碼。但 shadcn/ui 本質上是 Pure Component + Tailwind Class，AI 只需要套用文字模式去組合 Class Name 與 JSX 結構即可，這種生成方式更接近自然語言描繪的直覺，錯誤率大幅降低。第二，也是更重要的，是可維護性與可調適性。在 Vibe Coding 中，需求是快速變動的。當客戶說「把按鈕變成紅色且圓角更大」時，AI 不需要去查閱某個外部庫的文檔或考慮版本更新風險，它直接打開本地的 button.tsx 檔案，修改其中的 className 字串即可。這種「即改即得」的能力，使得 AI 能像人類開發者一樣進行細粒度操作，從而大大提升開發節奏與準確度。此外，由於所有組件都在 git 管理下，AI 生成的代碼也能被版本控制追蹤，協作無縫銜接。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 單元測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 單元測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 shadcn/ui 中，以下哪種情況最有可能導致 Form 驗證錯誤訊息 (FormMessage) 無法顯示？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">沒有安裝 zod 套件來定義驗證規則。</li>
+          <li onclick="checkAnswer(this, true)">FormMessage 組件沒有被包裹在 FormField 組件內部。</li>
+          <li onclick="checkAnswer(this, false)">沒有在 tailwind.config.ts 中註冊 components 路徑。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。shadcn/ui 的 Form 組件依賴於 react-hook-form 的上下文作用域，FormMessage 必須嵌套在其對應的 FormField 裡才能綁定特定的 field name 並獲取 error 狀態。若未包裹，即使 form 有錯誤也不會觸發顯示。A 選項错误，因為驗證規則雖重要但非顯示的必要條件；C 选项错误，因為 components 路徑影響的是組件掃描而非運行時行為。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當使用 AI Agent 生成 shadcn/ui 組件後，發現自定義的 Tailwind Color 未生效，最可能的原因是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">npm install 時安裝了錯誤版本的 tailwindcss。</li>
+          <li onclick="checkAnswer(this, true)">tailwind.config.ts 的 content 陣列未包含新增的組件文件路徑。</li>
+          <li onclick="checkAnswer(this, false)">AI Agent 沒有使用正確的組件導入語法。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。Tailwind 在構建時只會掃描 content 配置中指定的文件路徑內的 class name。如果你建立了新的組件文件卻沒將其路徑加入 content 陣列，那麼即使你在組件中使用了指定的自訂 color class，編譯器也會忽略它們，導致樣式失效。A 选项通常不會只影響單一套裝顏色；C 选项會導致報錯而非無效樣式。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：在你的 Next.js App Router 專案中，執行 `npx shadcn-ui init` 完成初始化配置，並確認 `.shadcn/config.json` 已正確產生。</li>
+        <li style="padding: 0.5rem 0;">任務二：使用 `npx shadcn-ui add button input form` 指令註冊三個基礎組件，然後觀察本地 `components/ui/` 目錄下是否成功生成對應的 TypeScript 檔案。</li>
+        <li style="padding: 0.5rem 0;">任務三：請你對 AI Agent（如 Cursor 或 Claude Code）下達指令：「請幫我建立一個註冊頁面，包含 Email、Password、Confirm Password 三個欄位，並使用 shadcn/ui 的 Form 元件進行串接，確保錯誤訊息正確顯示。」將生成的代碼複製到你的 `page.tsx` 中並測試提交功能。</li>
+        <li style="padding: 0.5rem 0;">任務四（Vibe Debugging）：故意將任務三中生成的某一個 `FormField` 的 `name` 屬性改為無效字元（例如 `""` 或不存在的 field name），觀察表單是否還能正常驗證。然後修復代碼，並記錄你如何通过檢查組件樹結構來發現問題。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 08 · UI 組件與設計（shadcn/ui）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：資源自動化（Icons/Images）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
