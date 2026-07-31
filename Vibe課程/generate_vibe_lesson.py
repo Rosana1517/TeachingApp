@@ -329,91 +329,260 @@ REFERENCE_BOOKS_NOTE = (
     "務必只借用觀念與結構作為靈感，用你自己的話以繁體中文原創撰寫，不得逐字翻譯或大段抄錄原書（原書為簡體中文）。"
 )
 
-LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要加任何說明文字、不要用 markdown code block），結構必須完全符合：
+# === 課程內容輸出格式 ===
+# 先前版本要求 LLM 直接輸出 JSON，但豐富後的課程內容大量包含 HTML/JSX 程式碼片段
+# （雙引號屬性）、程式碼註解、多行終端機輸出，LLM 在該用 \" 轉義的地方漏轉義的機率
+# 非常高，導致 JSON 解析持續失敗、只能落到內容單薄的 fallback。既然真正會壞掉的
+# 是「JSON 字串跳脫規則」，最徹底的修法不是繼續在 prompt 裡疊加轉義規則、
+# 再用一堆正規表示式事後修補（那是治標，前面已經證明會不斷冒出新的邊角案例），
+# 而是換一種完全不需要跳脫字元的純文字格式：以固定的 KEY: value 標記逐行分隔內容，
+# 內容本身（包含任何雙引號、HTML 標籤、程式碼）原封不動照抄，不需要任何跳脫。
+LESSON_TEXT_FORMAT_INSTRUCTIONS = """請「只」用下面這種純文字標記格式回覆，不要加任何開場白、結語，也不要用 markdown code block 包住整個回覆：
 
-{
-  "title": "課程主標題（繁體中文）",
-  "subtitle": "一句話副標題",
-  "phase": "所屬階段名稱（例如 Phase 1: The Core）",
-  "next_topic": "下一課預告的主題名稱",
-  "sections": [
-    {
-      "title": "小節標題",
-      "icon": "數字或 emoji",
-      "content": "完整、有實質內容的說明文字（建議 150~300 字），可用 <strong> 和 <code> 標籤強調重點，禁止用「...如下：」這種話卻沒接下文的半截句子"
-    },
-    {
-      "title": "對照小節（可選）",
-      "icon": "2",
-      "content": "一句引導文字",
-      "comparison": [
-        {"side": "left", "label": "情境 A 的標籤", "code": "純文字或程式碼，可用 \\n 換行"},
-        {"side": "right", "label": "情境 B 的標籤", "code": "純文字或程式碼，可用 \\n 換行"}
-      ]
-    },
-    {
-      "title": "帶指令範例的小節",
-      "icon": "3",
-      "content": "說明文字",
-      "terminal_block": "終端機指令與輸出範例，用 <span class=\\"prompt\\">$</span> <span class=\\"cmd\\">指令</span> 標示指令，<span class=\\"output\\">...</span> 標示正常輸出，<span class=\\"error\\">...</span> 標示錯誤訊息，<span class=\\"comment\\"># 註解</span> 標示註解，多行用 \\n 換行"
-    },
-    {
-      "title": "深入解析",
-      "icon": "🔬",
-      "deep_dive": {
-        "summary": "一句吸引人往下讀的提問式標題",
-        "content": "至少 150 字的深入原理說明，解釋「為什麼」而不只是「是什麼」"
-      }
-    },
-    {
-      "title": "小測驗",
-      "icon": "✏️",
-      "quiz": [
-        {
-          "question": "題目",
-          "options": [
-            {"text": "A. 選項", "correct": false},
-            {"text": "B. 選項", "correct": true},
-            {"text": "C. 選項", "correct": false}
-          ],
-          "answer": "正確答案說明，需解釋為什麼對/為什麼其他選項錯"
-        }
-      ]
-    },
-    {
-      "title": "今日任務",
-      "icon": "🚀",
-      "tasks": ["任務一", "任務二"]
-    }
-  ]
-}
+TITLE: 課程主標題（繁體中文）
+SUBTITLE: 一句話副標題
+PHASE: 所屬階段名稱（例如 Phase 1: The Core）
+NEXT_TOPIC: 下一課預告的主題名稱
+===SECTION===
+SECTION_TITLE: 小節標題
+SECTION_ICON: 數字或 emoji
+CONTENT:
+完整、有實質內容的說明文字（120 字以上），可以直接寫 <strong>、<code> 等 HTML 標籤，
+也可以直接寫雙引號、單引號、任何符號，不需要跳脫，這裡的每一行都會被原文保留。
+===SECTION===
+SECTION_TITLE: 對照小節（可選，視主題需要使用）
+SECTION_ICON: 2
+CONTENT:
+一句引導文字
+COMPARISON_LEFT_LABEL: 情境 A 的標籤
+COMPARISON_LEFT_CODE:
+純文字或程式碼，可以多行，一樣不需要跳脫任何符號
+COMPARISON_RIGHT_LABEL: 情境 B 的標籤
+COMPARISON_RIGHT_CODE:
+純文字或程式碼，可以多行
+===SECTION===
+SECTION_TITLE: 帶指令範例的小節
+SECTION_ICON: 3
+CONTENT:
+說明文字
+TERMINAL_BLOCK:
+終端機指令與輸出範例，用 <span class="prompt">$</span> <span class="cmd">指令</span> 標示指令，
+<span class="output">...</span> 標示正常輸出，<span class="error">...</span> 標示錯誤訊息，
+<span class="comment"># 註解</span> 標示註解。這裡可以直接寫雙引號，不需要跳脫。
+===SECTION===
+SECTION_TITLE: 深入解析
+SECTION_ICON: 🔬
+DEEP_DIVE_SUMMARY: 一句吸引人往下讀的提問式標題
+DEEP_DIVE_CONTENT:
+至少 150 字的深入原理說明，解釋「為什麼」而不只是「是什麼」
+===SECTION===
+SECTION_TITLE: 小測驗
+SECTION_ICON: ✏️
+QUIZ_QUESTION: 第一題題目
+QUIZ_OPTION_A: 選項 A 的內容
+QUIZ_OPTION_B: 選項 B 的內容
+QUIZ_OPTION_C: 選項 C 的內容
+QUIZ_CORRECT: B
+QUIZ_ANSWER: 解釋為什麼 B 對、其他選項為什麼錯
+QUIZ_QUESTION: 第二題題目（同一個小節內可以有多個 QUIZ_QUESTION 區塊）
+QUIZ_OPTION_A: ...
+QUIZ_OPTION_B: ...
+QUIZ_OPTION_C: ...
+QUIZ_CORRECT: A
+QUIZ_ANSWER: ...
+===SECTION===
+SECTION_TITLE: 今日任務
+SECTION_ICON: 🚀
+TASK: 任務一
+TASK: 任務二
+TASK: 任務三
+TASK: 任務四
+===END===
 
-硬性要求（不符合就視為不合格）：
-0. 所有 JSON 字串值必須用標準英文雙引號 " 包住，絕對不可以用中文全形引號「」或『』取代 JSON 語法用的雙引號（這樣會讓 JSON 直接解析失敗）；「」只能出現在字串「內容裡面」當作中文標點，不能用來取代字串外層的 " 。
-0b. 字串「內容裡面」如果需要引用一段話、程式碼片段或範例文字，絕對不可以用英文直引號 " 包住它（例如絕對不能寫成 <em>"幫我找一個..."</em>），因為這會提前結束 JSON 字串造成解析失敗。請改用中文「」或單引號 '...' 包住這類引用內容，或直接省略引號只用 <em> 標籤強調。
-1. "sections" 至少要有 6 個小節，且必須包含至少一個 "terminal_block"（實際指令／輸出範例）與至少一個 "deep_dive"（原理深挖），"comparison" 視主題需要選用。
-2. 一般 "content" 每則至少 120 字、"deep_dive.content" 至少 150 字，禁止寫成一句話就結束的空洞段落，更禁止「以下步驟：」「如下：」這類話講到一半沒有接下文。
-3. "quiz" 至少要有 2 題，每題 3 個選項，"answer" 要解釋原因，不能只寫「正確答案：B」。
-4. "今日任務" 至少要有 4 項，其中至少 1 項要請學習者實際操作 AI Agent（Claude Code/Cursor 等）並觀察它的行為，而不是只有手動操作。
+格式規則：
+- 每個標記都是「大寫英文_底線: 值」放在單獨一行；CONTENT/TERMINAL_BLOCK/DEEP_DIVE_CONTENT/COMPARISON_*_CODE 這幾個標記，值從下一行開始一路到下一個標記或 ===SECTION===/===END=== 為止，可以是多行。
+- 一定要用 ===SECTION=== 分隔每個小節，並在最後一個小節後面加上 ===END===。
+- 絕對不要把整段回覆包在 ```、「」或任何額外符號裡；也不要輸出這份格式說明本身。
+
+內容硬性要求（不符合就視為不合格）：
+1. 至少要有 6 個 ===SECTION===，且必須包含至少一個 TERMINAL_BLOCK（實際指令／輸出範例）與至少一個 DEEP_DIVE_SUMMARY/DEEP_DIVE_CONTENT（原理深挖），COMPARISON 視主題需要選用。
+2. 一般 CONTENT 每則至少 120 字、DEEP_DIVE_CONTENT 至少 150 字，禁止寫成一句話就結束的空洞段落，更禁止「以下步驟：」「如下：」這類話講到一半沒有接下文。
+3. 小測驗至少要有 2 題（2 個 QUIZ_QUESTION 區塊），每題 3 個選項，QUIZ_ANSWER 要解釋原因，不能只寫「正確答案：B」。
+4. 今日任務（TASK）至少要有 4 項，其中至少 1 項要請學習者實際操作 AI Agent（Claude Code/Cursor 等）並觀察它的行為，而不是只有手動操作。
 5. 內容要聚焦於「這個概念在 Vibe Coding 中的角色」「AI Agent 是如何調用/運用它的」「當 Vibe 破裂時該如何診斷」，並提供具體、可執行的指令或程式碼範例，不要只有抽象描述。
-6. 【禁止編造】所有指令、套件名稱、錯誤訊息、API 端點、GitHub repo 名稱都必須是真實存在、你有把握的資訊，不可以為了讓範例看起來具體而虛構不存在的錯誤代碼（例如編造一個聽起來很專業但實際上不存在的錯誤訊息）、虛構的 CLI 工具名稱、或猜測、編造 GitHub repo 的擁有者帳號。如果不確定某個指令的確切輸出格式，就用比較通用、你確定正確的範例（例如常見的 npm/git/docker 基本指令），或用文字描述其「大致行為」，而不要生出一段編造的假終端機輸出。寧可簡單但真實，也不要花俏但虛構。特別注意：不要編造具體的 GitHub repo 擁有者帳號、commit hash、版本號或 API 回應內容（例如「reactjs/react-hook-form」這類看似合理但實際擁有者錯誤的組合）；除非是 facebook/react、vercel/next.js、vuejs/vue 這類極度知名、你非常確定的 repo，否則請用「（你要示範的套件）官方 GitHub repo」這種泛稱描述，不要生造一個看起來具體但可能是錯的路徑。
+6. 【禁止編造】所有指令、套件名稱、錯誤訊息、API 端點、GitHub repo 名稱都必須是真實存在、你有把握的資訊，不可以為了讓範例看起來具體而虛構不存在的錯誤代碼、虛構的 CLI 工具名稱，或猜測、編造 GitHub repo 的擁有者帳號、commit hash、版本號。如果不確定某個指令的確切輸出格式，就用比較通用、你確定正確的範例（例如常見的 npm/git/docker 基本指令），或用文字描述其「大致行為」，而不要生出一段編造的假終端機輸出。除非是 facebook/react、vercel/next.js、vuejs/vue 這類極度知名、你非常確定的 repo，否則請用「（你要示範的套件）官方 GitHub repo」這種泛稱描述，不要生造一個看起來具體但可能是錯的路徑。寧可簡單但真實，也不要花俏但虛構。
 7. 【禁止空洞裝飾】不要用「vibe stable ✅ / vibe broken ⚠️」這類裝飾性但沒有實質資訊的標籤來包裝內容；每一段範例、每一句話都必須包含具體、可查證的技術事實，而不是聽起來專業但其實沒有講清楚任何事情的空話。
 """
 
 FEW_SHOT_EXAMPLE_NOTE = (
-    "以下是一段已通過審核、品質達標的課程「terminal_block」與「deep_dive」範例，"
-    "示範什麼叫做具體、真實、有實質內容（而不是抽象空話或編造的假輸出），請以同等真實度與資訊密度撰寫：\n"
-    "terminal_block 範例：\n"
-    "<span class=\\\"prompt\\\">$</span> <span class=\\\"cmd\\\">npm run dev</span>\\n"
-    "<span class=\\\"error\\\">Error: listen EADDRINUSE: address already in use :::3000</span>\\n"
-    "<span class=\\\"comment\\\"># EADDRINUSE = Error Address Already In Use（地址已被使用），這是 Node.js 內建的真實錯誤代碼</span>\n"
-    "deep_dive 範例：\n"
-    "{\"summary\": \"為什麼 Port 不能像資料夾一樣被兩個程式同時打開？\", "
-    "\"content\": \"每個網路服務啟動時，都要向作業系統執行一個叫做 bind() 的動作，向系統登記「我要用這個 IP + Port 組合來接收資料」。"
+    "以下是已通過審核、品質達標的範例片段，示範什麼叫做具體、真實、有實質內容"
+    "（而不是抽象空話或編造的假輸出），請以同等真實度與資訊密度撰寫：\n\n"
+    "TERMINAL_BLOCK:\n"
+    "<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev</span>\n"
+    "<span class=\"error\">Error: listen EADDRINUSE: address already in use :::3000</span>\n"
+    "<span class=\"comment\"># EADDRINUSE = Error Address Already In Use（地址已被使用），這是 Node.js 內建的真實錯誤代碼</span>\n\n"
+    "DEEP_DIVE_SUMMARY: 為什麼 Port 不能像資料夾一樣被兩個程式同時打開？\n"
+    "DEEP_DIVE_CONTENT:\n"
+    "每個網路服務啟動時，都要向作業系統執行一個叫做 bind() 的動作，向系統登記「我要用這個 IP + Port 組合來接收資料」。"
     "作業系統的網路層會維護一張表，記錄目前每個 Port 被哪個程式（Process ID）佔用；一旦有第二個程式想 bind 同一組 IP + Port，"
-    "系統為了避免兩個程式收到同一筆資料卻不知道該給誰的混亂，會直接回傳錯誤拒絕這次請求。\"}\n"
-    "注意範例中的 EADDRINUSE、bind() 都是真實存在的技術名詞，deep_dive 解釋的是「為什麼」而非重複「是什麼」。"
+    "系統為了避免兩個程式收到同一筆資料卻不知道該給誰的混亂，會直接回傳錯誤拒絕這次請求。\n\n"
+    "注意範例中的 EADDRINUSE、bind() 都是真實存在的技術名詞，DEEP_DIVE_CONTENT 解釋的是「為什麼」而非重複「是什麼」，"
+    "而且 TERMINAL_BLOCK 直接寫 <span class=\"cmd\">...</span> 這種帶雙引號的 HTML，完全不需要跳脫任何字元。"
 )
+
+
+# === 純文字標記格式解析器 ===
+# 用「找下一個已知標記」取代 JSON 逐字元跳脫，天生就不怕內容裡出現任何引號、
+# HTML 屬性、程式碼片段，從根本上避開了先前反覆出現的 JSON escaping 失敗模式。
+
+_SECTION_DELIM_RE = re.compile(r'^={2,}\s*SECTION\s*={2,}$', re.IGNORECASE)
+_END_DELIM_RE = re.compile(r'^={2,}\s*END\s*={2,}$', re.IGNORECASE)
+_MARKER_LINE_RE = re.compile(r'^([A-Z][A-Z_]*):[ \t]?(.*)$')
+
+_TOP_LEVEL_KEYS = {'TITLE', 'SUBTITLE', 'PHASE', 'NEXT_TOPIC'}
+_SECTION_TEXT_KEYS = {
+    'SECTION_TITLE', 'SECTION_ICON', 'CONTENT', 'TERMINAL_BLOCK',
+    'COMPARISON_LEFT_LABEL', 'COMPARISON_LEFT_CODE',
+    'COMPARISON_RIGHT_LABEL', 'COMPARISON_RIGHT_CODE',
+    'DEEP_DIVE_SUMMARY', 'DEEP_DIVE_CONTENT',
+}
+_QUIZ_KEYS = {'QUIZ_QUESTION', 'QUIZ_OPTION_A', 'QUIZ_OPTION_B', 'QUIZ_OPTION_C', 'QUIZ_CORRECT', 'QUIZ_ANSWER'}
+_KNOWN_KEYS = _TOP_LEVEL_KEYS | _SECTION_TEXT_KEYS | _QUIZ_KEYS | {'TASK'}
+
+
+def _strip_code_fence(text):
+    """去除 LLM 偶爾會加上的 ```...``` 包裹。"""
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r'^```[a-zA-Z]*\n?', '', text)
+        text = re.sub(r'```\s*$', '', text)
+    return text.strip()
+
+
+def _tokenize_lesson_text(text):
+    """把純文字格式切成 (KEY, value) 事件序列，SECTION 分隔符用 ('__SECTION__', None) 表示。"""
+    events = []
+    cur_key = None
+    buf = []
+
+    def flush():
+        if cur_key is not None:
+            events.append((cur_key, '\n'.join(buf).strip()))
+
+    for raw_line in text.replace('\r\n', '\n').split('\n'):
+        stripped = raw_line.strip()
+        if _END_DELIM_RE.match(stripped):
+            flush()
+            return events
+        if _SECTION_DELIM_RE.match(stripped):
+            flush()
+            cur_key, buf = None, []
+            events.append(('__SECTION__', None))
+            continue
+        m = _MARKER_LINE_RE.match(raw_line)
+        if m and m.group(1) in _KNOWN_KEYS:
+            flush()
+            cur_key, buf = m.group(1), [m.group(2)]
+        elif cur_key is not None:
+            buf.append(raw_line)
+        # 標記出現前的雜訊行（例如 LLM 誤加的開場白）直接忽略
+    flush()
+    return events
+
+
+def _structure_lesson_events(events):
+    """把 (KEY, value) 事件序列組成 generate_html() 期望的 lesson dict 結構。"""
+    lesson = {"sections": []}
+    raw_sections = []
+    cur = None
+
+    for key, value in events:
+        if key == '__SECTION__':
+            cur = {}
+            raw_sections.append(cur)
+            continue
+        if cur is None:
+            if key in _TOP_LEVEL_KEYS:
+                lesson[key.lower()] = value
+            continue
+        if key == 'QUIZ_QUESTION':
+            cur.setdefault('_quiz', []).append({'question': value, 'options': [], 'correct': '', 'answer': ''})
+        elif key in ('QUIZ_OPTION_A', 'QUIZ_OPTION_B', 'QUIZ_OPTION_C'):
+            quiz_list = cur.get('_quiz') or []
+            if quiz_list:
+                quiz_list[-1]['options'].append((key[-1], value))
+        elif key == 'QUIZ_CORRECT':
+            quiz_list = cur.get('_quiz') or []
+            if quiz_list:
+                quiz_list[-1]['correct'] = value.strip().upper()[:1]
+        elif key == 'QUIZ_ANSWER':
+            quiz_list = cur.get('_quiz') or []
+            if quiz_list:
+                quiz_list[-1]['answer'] = value
+        elif key == 'TASK':
+            cur.setdefault('_tasks', []).append(value)
+        elif key == 'SECTION_TITLE':
+            cur['title'] = value
+        elif key == 'SECTION_ICON':
+            cur['icon'] = value
+        elif key == 'CONTENT':
+            cur['content'] = value
+        elif key == 'TERMINAL_BLOCK':
+            cur['terminal_block'] = value
+        elif key in ('COMPARISON_LEFT_LABEL', 'COMPARISON_RIGHT_LABEL', 'COMPARISON_LEFT_CODE', 'COMPARISON_RIGHT_CODE'):
+            comp = cur.setdefault('_comparison', {'left': {}, 'right': {}})
+            side = 'left' if key.startswith('COMPARISON_LEFT') else 'right'
+            field = 'label' if key.endswith('LABEL') else 'code'
+            comp[side][field] = value
+        elif key in ('DEEP_DIVE_SUMMARY', 'DEEP_DIVE_CONTENT'):
+            dd = cur.setdefault('_deep_dive', {})
+            dd['summary' if key.endswith('SUMMARY') else 'content'] = value
+
+    for raw in raw_sections:
+        if not raw.get('title'):
+            continue
+        section = {"title": raw['title'], "icon": raw.get('icon') or '•'}
+        if raw.get('content'):
+            section['content'] = raw['content']
+        if raw.get('terminal_block'):
+            section['terminal_block'] = raw['terminal_block']
+        comp = raw.get('_comparison')
+        if comp:
+            items = []
+            for side in ('left', 'right'):
+                if comp[side].get('label') or comp[side].get('code'):
+                    items.append({"side": side, "label": comp[side].get('label', ''), "code": comp[side].get('code', '')})
+            if items:
+                section['comparison'] = items
+        dd = raw.get('_deep_dive')
+        if dd and (dd.get('summary') or dd.get('content')):
+            section['deep_dive'] = {"summary": dd.get('summary', ''), "content": dd.get('content', '')}
+        quiz_raw = raw.get('_quiz') or []
+        quiz_list = []
+        for q in quiz_raw:
+            if not q['question'] or len(q['options']) < 2:
+                continue
+            options = [{"text": opt_text, "correct": letter == q['correct']} for letter, opt_text in q['options']]
+            if not any(o['correct'] for o in options):
+                options[0]['correct'] = True  # 保底：避免 QUIZ_CORRECT 缺漏導致沒有任何正確答案
+            quiz_list.append({"question": q['question'], "options": options, "answer": q['answer']})
+        if quiz_list:
+            section['quiz'] = quiz_list
+        tasks = [t for t in raw.get('_tasks', []) if t]
+        if tasks:
+            section['tasks'] = tasks
+        lesson['sections'].append(section)
+
+    return lesson
+
+
+def parse_lesson_text(raw_text):
+    """把 LLM 回傳的純文字標記格式解析成 lesson dict；格式明顯不對時回傳 None。"""
+    text = _strip_code_fence(raw_text)
+    if 'TITLE:' not in text or '===SECTION===' not in text:
+        return None
+    events = _tokenize_lesson_text(text)
+    return _structure_lesson_events(events)
 
 
 def get_next_lesson_id():
@@ -560,7 +729,7 @@ def build_outline_prompt(next_id, outline_item, previous_topics):
         "- 這個技術/概念在 Vibe Coding 中的角色是什麼？\n"
         "- AI Agent 是如何調用或運用這個概念的？\n"
         "- 當 Vibe 破裂（報錯或行為異常）時，如何診斷和修復？\n\n"
-        + LESSON_SCHEMA_INSTRUCTIONS
+        + LESSON_TEXT_FORMAT_INSTRUCTIONS
         + "\n" + FEW_SHOT_EXAMPLE_NOTE
     )
 
@@ -578,13 +747,13 @@ def build_freeform_prompt(next_id, previous_topics):
         "- 這個技術在 Vibe Coding 中的角色是什麼？\n"
         "- AI Agent 是如何調用這個技術的？\n"
         "- 當 Vibe 破裂（報錯）時，如何診斷和修復？\n\n"
-        + LESSON_SCHEMA_INSTRUCTIONS
+        + LESSON_TEXT_FORMAT_INSTRUCTIONS
         + "\n" + FEW_SHOT_EXAMPLE_NOTE
     )
 
 
 def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
-    """呼叫第三方 OpenAI 相容 API 生成下一堂課的內容（JSON），失敗時回傳 None。"""
+    """呼叫第三方 OpenAI 相容 API 生成下一堂課的內容（純文字標記格式），失敗時回傳 None。"""
     api_url = os.environ.get("LLM_API_URL")
     api_key = os.environ.get("LLM_API_KEY")
     model = os.environ.get("LLM_MODEL")
@@ -635,40 +804,18 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
 
     print(f"LLM 回應長度：{len(text)} 字元；前 300 字：{text[:300]}", flush=True)
 
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if not match:
-        print("LLM 回應裡找不到 JSON 物件", flush=True)
-        return None
-
-    json_text = match.group(0)
-    # LLM 常見 JSON 語法錯誤修復：Python 布林/None 值、尾逗號、
-    # 用中文全形引號「」代替標準雙引號當作 JSON 字串值（例如 "next_topic":「...」,）
-    json_text = re.sub(r'\bTrue\b', 'true', json_text)
-    json_text = re.sub(r'\bFalse\b', 'false', json_text)
-    json_text = re.sub(r'\bNone\b', 'null', json_text)
-    # 全形引號可能出現在 key/value（: 後面）或陣列元素開頭（[ 或 , 後面）
-    json_text = re.sub(r'([:\[,]\s*)「', r'\1"', json_text)
-    json_text = re.sub(r'」(\s*[,}\]])', r'"\1', json_text)
-    # LLM 偶爾會在字串「外面」（key/value 之間的結構層級）插入字面上的 \n（反斜線+n 兩個字元，
-    # 不是真正換行），例如 "summary":"...",\n  "content": ...，導致解析直接失敗
-    json_text = re.sub(r'\\n(\s*")', r'\n\1', json_text)
-    json_text = re.sub(r',\s*([}\]])', r'\1', json_text)
-
-    try:
-        lesson = json.loads(json_text)
-    except json.JSONDecodeError as error:
-        start = max(0, error.pos - 150)
-        end = min(len(json_text), error.pos + 150)
-        print(f"無法解析 LLM 回應的 JSON：{error}", flush=True)
-        print(f"錯誤位置前後文（char {start}~{end}）：{json_text[start:end]!r}", flush=True)
+    lesson = parse_lesson_text(text)
+    if lesson is None:
+        print("LLM 回應不是預期的純文字標記格式（缺少 TITLE: 或 ===SECTION===）", flush=True)
+        print(f"原始回應（前 500 字）：{text[:500]!r}", flush=True)
         return None
 
     # 品質驗證：sections 太少代表 LLM 只生成了部分內容，拒絕接受
     sections = lesson.get("sections", [])
     has_quiz = any("quiz" in s for s in sections)
     has_tasks = any("tasks" in s for s in sections)
-    if len(sections) < 4 or not has_quiz or not has_tasks:
-        print(f"LLM 回傳的課程內容不完整（sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受", flush=True)
+    if not lesson.get("title") or len(sections) < 4 or not has_quiz or not has_tasks:
+        print(f"LLM 回傳的課程內容不完整（title={bool(lesson.get('title'))}, sections={len(sections)}, quiz={has_quiz}, tasks={has_tasks}），拒絕接受", flush=True)
         print(f"Section keys: {[list(s.keys()) for s in sections]}", flush=True)
         return None
 
