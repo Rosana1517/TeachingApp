@@ -280,9 +280,9 @@
     <div class="diagram-grid">
       <div class="diagram-card" style="text-align:left;">
         <span class="tag tag-blue">瀏覽器裡的 JavaScript</span>
-        <div class="terminal-block" style="margin-top:0.5rem;">document.querySelector('#btn')
-  .addEventListener('click', () => {
-    alert('哈囉！')
+        <div class="terminal-block" style="margin-top:0.5rem;">document.querySelector(&#x27;#btn&#x27;)
+  .addEventListener(&#x27;click&#x27;, () =&gt; {
+    alert(&#x27;哈囉！&#x27;)
   })
 
 // 出於安全考量，不能直接讀寫
@@ -290,12 +290,12 @@
       </div>
       <div class="diagram-card" style="text-align:left;">
         <span class="tag tag-green">Node.js 裡的 JavaScript</span>
-        <div class="terminal-block" style="margin-top:0.5rem;">const fs = require('fs')
-fs.readFileSync('./data.json')
+        <div class="terminal-block" style="margin-top:0.5rem;">const fs = require(&#x27;fs&#x27;)
+fs.readFileSync(&#x27;./data.json&#x27;)
 
-const http = require('http')
-http.createServer((req, res) => {
-  res.end('Hello from server')
+const http = require(&#x27;http&#x27;)
+http.createServer((req, res) =&gt; {
+  res.end(&#x27;Hello from server&#x27;)
 }).listen(3000)</div>
       </div>
     </div>
@@ -307,18 +307,18 @@ http.createServer((req, res) => {
     <p>當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它背後其實是在你的終端機裡，一步步執行 Node.js 相關指令，而不是憑空生出一個網站：</p>
     <div class="terminal-block">
 <span class="prompt">$</span> <span class="cmd">npx create-next-app@latest my-app</span>
-<span class="output">✔ Would you like to use TypeScript? … Yes
-✔ Would you like to use Tailwind CSS? … Yes
-Creating a new Next.js app in /Users/you/my-app...</span>
+<span class="output">✔ Would you like to use TypeScript? … Yes</span>
+<span class="output">✔ Would you like to use Tailwind CSS? … Yes</span>
+<span class="output">Creating a new Next.js app in /Users/you/my-app...</span>
 
 <span class="comment"># AI 接著會安裝登入功能需要的套件</span>
 <span class="prompt">$</span> <span class="cmd">npm install better-auth</span>
 
 <span class="comment"># 最後啟動開發伺服器——這一步才是「跑起來給你看」的關鍵</span>
 <span class="prompt">$</span> <span class="cmd">npm run dev</span>
-<span class="output">▲ Next.js 14.2.3
-- Local:  http://localhost:3000
-✓ Ready in 1.2s</span>
+<span class="output">▲ Next.js 14.2.3</span>
+<span class="output">- Local:  http://localhost:3000</span>
+<span class="output">✓ Ready in 1.2s</span>
     </div>
   </div>
 
@@ -343,7 +343,7 @@ Creating a new Next.js app in /Users/you/my-app...</span>
     <details class="deep-dive">
       <summary>為什麼 Node.js 只用一個執行緒，卻能同時處理成千上萬個請求？</summary>
       <div class="deep-dive-content">
-        <p>Node.js 的 JavaScript 主執行緒其實只有一條，但它從不「傻等」。當程式呼叫像讀檔案、查資料庫、發送網路請求這類「慢動作」時，Node.js 會把這個任務丟給背後的 C++ 層（libuv）去非同步處理，自己立刻回頭繼續執行下一行程式碼。等到那個慢動作真的完成了，結果會被放進一個「回呼佇列（Callback Queue）」，由 <strong>Event Loop（事件循環）</strong> 在主執行緒閒下來的時候，一個一個把它們取出來執行。這就是為什麼你在終端機打 <code>setTimeout(() => console.log('2秒後'), 2000)</code>，程式不會被卡住 2 秒，而是會先往下跑，2 秒後才回頭印出結果——這種「非阻塞（non-blocking）」設計，正是 Node.js 能同時服務大量使用者、卻不需要開一大堆執行緒的秘密。</p>
+        <p>Node.js 的 JavaScript 主執行緒其實只有一條，但它從不「傻等」。當程式呼叫像讀檔案、查資料庫、發送網路請求這類「慢動作」時，Node.js 會把這個任務丟給背後的 C++ 層（libuv）去非同步處理，自己立刻回頭繼續執行下一行程式碼。等到那個慢動作真的完成了，結果會被放進一個「回呼佇列（Callback Queue）」，由 <strong>Event Loop（事件循環）</strong> 在主執行緒閒下來的時候，一個一個把它們取出來執行。這就是為什麼你在終端機打 <code>setTimeout(() =&gt; console.log('2秒後'), 2000)</code>，程式不會被卡住 2 秒，而是會先往下跑，2 秒後才回頭印出結果——這種「非阻塞（non-blocking）」設計，正是 Node.js 能同時服務大量使用者、卻不需要開一大堆執行緒的秘密。</p>
       </div>
     </details>
   </div>
@@ -396,7 +396,7 @@ Creating a new Next.js app in /Users/you/my-app...</span>
       <h4>請依序完成以下練習</h4>
       <ol style="padding-left: 1.5rem;">
         <li style="padding: 0.5rem 0;">打開終端機，依序執行 node -v、npm -v、npx -v，確認三個命令都有輸出版本號</li>
-        <li style="padding: 0.5rem 0;">執行 node -e "console.log('Hello from Node.js'); setTimeout(() => console.log('2秒後'), 2000);"，觀察兩行文字出現的時間差，體驗 Event Loop</li>
+        <li style="padding: 0.5rem 0;">執行 node -e "console.log('Hello from Node.js'); setTimeout(() =&gt; console.log('2秒後'), 2000);"，觀察兩行文字出現的時間差，體驗 Event Loop</li>
         <li style="padding: 0.5rem 0;">請 AI Agent（Claude Code/Cursor）幫你建立一個最小的 Next.js 專案，觀察它在終端機依序執行了哪些指令</li>
         <li style="padding: 0.5rem 0;">刻意輸入一個錯誤指令（例如 nod -v），截圖記錄下錯誤訊息，並嘗試看懂它在說什麼</li>
         <li style="padding: 0.5rem 0;">進階挑戰：查詢並安裝 nvm，練習切換兩個不同的 Node.js 版本</li>

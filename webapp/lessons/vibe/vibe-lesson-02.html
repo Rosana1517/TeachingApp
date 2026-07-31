@@ -267,7 +267,7 @@
     <p class="lesson-subtitle">電腦公寓理論，解決 EADDRINUSE 打架衝突</p>
   </div>
 
-  <!-- Section: 什麼是 Localhost？ -->
+  <!-- Section: 什麼是 Localhost -->
   <div class="section">
     <div class="section-title"><span class="icon">1</span> 什麼是 Localhost？</div>
     <p><strong>Localhost</strong> 其實就是你自己這台電腦，它有一個固定的網路位址 <code>127.0.0.1</code>，意思是「回頭指向自己」。當你在瀏覽器打開 <code>http://localhost:3000</code>，你並沒有連到遠方的伺服器，而是連到自己電腦裡正在跑的那個開發伺服器。你可以把整台電腦想像成一棟公寓大樓，裡面有 65,536 個「房間」，這就是 <strong>Port（連接埠）</strong>——每個正在執行的網路服務，都必須先「登記」一個房號，外界才能敲對門找到它。</p>
@@ -295,7 +295,7 @@
     </div>
   </div>
 
-  <!-- Section: 為什麼多個任務會打架？ -->
+  <!-- Section: 為什麼多個任務會打架 -->
   <div class="section">
     <div class="section-title"><span class="icon">⚡</span> 為什麼多個任務會打架？</div>
     <p>作業系統有個規則：同一個 Port，同一時間只能被一個程式「獨佔」。當你已經開著一個 Vibe 專案佔用 <code>3000</code> 號房，這時又啟動第二個專案、AI Agent 也試著把它塞進同一間房，系統就會直接拒絕，並丟出以下錯誤：</p>
@@ -317,7 +317,7 @@
     </details>
   </div>
 
-  <!-- Section: 如何避免與排除 Port 衝突？ -->
+  <!-- Section: 如何避免與排除 Port 衝突 -->
   <div class="section">
     <div class="section-title"><span class="icon">3</span> 如何避免與排除 Port 衝突？</div>
     <p>最直覺的解法是「換房」：手動指定一個沒人用的 Port 啟動服務。如果你想知道是誰佔用了那個房間，也可以直接查出佔用的程式並關掉它：</p>
@@ -327,8 +327,8 @@
 
 <span class="comment"># 方法二（macOS / Linux）：查出誰佔用了 3000，再結束它</span>
 <span class="prompt">$</span> <span class="cmd">lsof -i :3000</span>
-<span class="output">COMMAND   PID   USER   ...
-node    12345  you    ...</span>
+<span class="output">COMMAND   PID   USER   ...</span>
+<span class="output">node    12345  you    ...</span>
 <span class="prompt">$</span> <span class="cmd">kill -9 12345</span>
 
 <span class="comment"># 方法二（Windows）：一樣先查 PID 再強制結束</span>

@@ -8,6 +8,7 @@
 import os
 import re
 import json
+import html as html_module
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -46,13 +47,13 @@ LESSONS = [
                 "title": "AI Agent 調用 Node.js 的完整流程",
                 "icon": "3",
                 "content": "當你對 Claude Code 說：「幫我建立一個 Next.js 專案，加入登入功能」，它背後其實是在你的終端機裡，一步步執行 Node.js 相關指令，而不是憑空生出一個網站：",
-                "terminal_block": "<span class=\"prompt\">$</span> <span class=\"cmd\">npx create-next-app@latest my-app</span>\n<span class=\"output\">✔ Would you like to use TypeScript? … Yes\n✔ Would you like to use Tailwind CSS? … Yes\nCreating a new Next.js app in /Users/you/my-app...</span>\n\n<span class=\"comment\"># AI 接著會安裝登入功能需要的套件</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">npm install better-auth</span>\n\n<span class=\"comment\"># 最後啟動開發伺服器——這一步才是「跑起來給你看」的關鍵</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev</span>\n<span class=\"output\">▲ Next.js 14.2.3\n- Local:  http://localhost:3000\n✓ Ready in 1.2s</span>"
+                "terminal_block": "$ npx create-next-app@latest my-app\n> ✔ Would you like to use TypeScript? … Yes\n> ✔ Would you like to use Tailwind CSS? … Yes\n> Creating a new Next.js app in /Users/you/my-app...\n\n# AI 接著會安裝登入功能需要的套件\n$ npm install better-auth\n\n# 最後啟動開發伺服器——這一步才是「跑起來給你看」的關鍵\n$ npm run dev\n> ▲ Next.js 14.2.3\n> - Local:  http://localhost:3000\n> ✓ Ready in 1.2s"
             },
             {
                 "title": "常見報錯與除錯",
                 "icon": "⚠️",
                 "content": "當 AI 執行指令卻回報「command not found: node」，代表這台電腦根本沒裝 Node.js，或是安裝了但沒有加進系統的 <code>PATH</code>。這時候可以請 AI 帶你安裝，或改用版本管理工具 <code>nvm</code>（Node Version Manager）——它能讓你在同一台電腦上，針對不同專案切換不同的 Node 版本，避免「這個專案要 Node 18，那個專案要 Node 20」互相打架。",
-                "terminal_block": "<span class=\"prompt\">$</span> <span class=\"cmd\">node -v</span>\n<span class=\"error\">command not found: node</span>\n\n<span class=\"comment\"># 用 nvm 安裝並切換到指定版本</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">nvm install 20</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">nvm use 20</span>\n<span class=\"output\">Now using node v20.11.0</span>"
+                "terminal_block": "$ node -v\n! command not found: node\n\n# 用 nvm 安裝並切換到指定版本\n$ nvm install 20\n$ nvm use 20\n> Now using node v20.11.0"
             },
             {
                 "title": "深入解析：Event Loop 到底在忙什麼",
@@ -141,7 +142,7 @@ LESSONS = [
                 "title": "為什麼多個任務會打架？",
                 "icon": "⚡",
                 "content": "作業系統有個規則：同一個 Port，同一時間只能被一個程式「獨佔」。當你已經開著一個 Vibe 專案佔用 <code>3000</code> 號房，這時又啟動第二個專案、AI Agent 也試著把它塞進同一間房，系統就會直接拒絕，並丟出以下錯誤：",
-                "terminal_block": "<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev</span>\n<span class=\"error\">Error: listen EADDRINUSE: address already in use :::3000</span>\n<span class=\"comment\"># EADDRINUSE = Error Address Already In Use（地址已被使用）</span>"
+                "terminal_block": "$ npm run dev\n! Error: listen EADDRINUSE: address already in use :::3000\n# EADDRINUSE = Error Address Already In Use（地址已被使用）"
             },
             {
                 "title": "深入解析：作業系統怎麼決定誰能用哪個 Port",
@@ -155,7 +156,7 @@ LESSONS = [
                 "title": "如何避免與排除 Port 衝突？",
                 "icon": "3",
                 "content": "最直覺的解法是「換房」：手動指定一個沒人用的 Port 啟動服務。如果你想知道是誰佔用了那個房間，也可以直接查出佔用的程式並關掉它：",
-                "terminal_block": "<span class=\"comment\"># 方法一：換一個 Port 啟動，兩個專案就不會打架</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev -- -p 3008</span>\n\n<span class=\"comment\"># 方法二（macOS / Linux）：查出誰佔用了 3000，再結束它</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">lsof -i :3000</span>\n<span class=\"output\">COMMAND   PID   USER   ...\nnode    12345  you    ...</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">kill -9 12345</span>\n\n<span class=\"comment\"># 方法二（Windows）：一樣先查 PID 再強制結束</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">netstat -ano | findstr :3000</span>\n<span class=\"prompt\">$</span> <span class=\"cmd\">taskkill /PID 12345 /F</span>"
+                "terminal_block": "# 方法一：換一個 Port 啟動，兩個專案就不會打架\n$ npm run dev -- -p 3008\n\n# 方法二（macOS / Linux）：查出誰佔用了 3000，再結束它\n$ lsof -i :3000\n> COMMAND   PID   USER   ...\n> node    12345  you    ...\n$ kill -9 12345\n\n# 方法二（Windows）：一樣先查 PID 再強制結束\n$ netstat -ano | findstr :3000\n$ taskkill /PID 12345 /F"
             },
             {
                 "title": "小測驗",
@@ -366,9 +367,12 @@ SECTION_ICON: 3
 CONTENT:
 說明文字
 TERMINAL_BLOCK:
-終端機指令與輸出範例，用 <span class="prompt">$</span> <span class="cmd">指令</span> 標示指令，
-<span class="output">...</span> 標示正常輸出，<span class="error">...</span> 標示錯誤訊息，
-<span class="comment"># 註解</span> 標示註解。這裡可以直接寫雙引號，不需要跳脫。
+終端機指令與輸出範例，每一行用開頭前綴標示類型，系統會自動幫你上色，不要自己寫 HTML/span：
+$ 開頭 = 指令本身（例如 "$ npm install"）
+> 開頭 = 正常輸出
+! 開頭 = 錯誤訊息
+# 開頭 = 註解
+沒有前綴的行就當作一般文字。這裡可以直接寫雙引號、任何符號，不需要跳脫。
 ===SECTION===
 SECTION_TITLE: 深入解析
 SECTION_ICON: 🔬
@@ -418,16 +422,17 @@ FEW_SHOT_EXAMPLE_NOTE = (
     "以下是已通過審核、品質達標的範例片段，示範什麼叫做具體、真實、有實質內容"
     "（而不是抽象空話或編造的假輸出），請以同等真實度與資訊密度撰寫：\n\n"
     "TERMINAL_BLOCK:\n"
-    "<span class=\"prompt\">$</span> <span class=\"cmd\">npm run dev</span>\n"
-    "<span class=\"error\">Error: listen EADDRINUSE: address already in use :::3000</span>\n"
-    "<span class=\"comment\"># EADDRINUSE = Error Address Already In Use（地址已被使用），這是 Node.js 內建的真實錯誤代碼</span>\n\n"
+    "$ npm run dev\n"
+    "! Error: listen EADDRINUSE: address already in use :::3000\n"
+    "# EADDRINUSE = Error Address Already In Use（地址已被使用），這是 Node.js 內建的真實錯誤代碼\n\n"
     "DEEP_DIVE_SUMMARY: 為什麼 Port 不能像資料夾一樣被兩個程式同時打開？\n"
     "DEEP_DIVE_CONTENT:\n"
     "每個網路服務啟動時，都要向作業系統執行一個叫做 bind() 的動作，向系統登記「我要用這個 IP + Port 組合來接收資料」。"
     "作業系統的網路層會維護一張表，記錄目前每個 Port 被哪個程式（Process ID）佔用；一旦有第二個程式想 bind 同一組 IP + Port，"
     "系統為了避免兩個程式收到同一筆資料卻不知道該給誰的混亂，會直接回傳錯誤拒絕這次請求。\n\n"
     "注意範例中的 EADDRINUSE、bind() 都是真實存在的技術名詞，DEEP_DIVE_CONTENT 解釋的是「為什麼」而非重複「是什麼」，"
-    "而且 TERMINAL_BLOCK 直接寫 <span class=\"cmd\">...</span> 這種帶雙引號的 HTML，完全不需要跳脫任何字元。"
+    "TERMINAL_BLOCK 只用 $/>/!/# 這幾個前綴標示每一行的類型，絕對不要自己寫 <span> 之類的 HTML 標籤——"
+    "系統會自動把這些前綴轉換成正確上色的畫面，你只要專心寫真實、正確的指令與輸出內容就好。"
 )
 
 
@@ -854,6 +859,51 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     return lesson
 
 
+# === 輸出時的 HTML 逃逸處理 ===
+# LLM 生成的教學內容常常會示範真正的 JSX/HTML 程式碼（例如 <button>、<div
+# className="...">）。這些內容如果原封不動塞進頁面，瀏覽器會把它們當成
+# 真正的 DOM 標籤解析、渲染出實體按鈕/容器，而不是顯示成看得見的程式碼文字
+# （L07 的教材裡就出現過 <button>...</button> 被瀏覽器直接吃掉、畫面上只剩
+# 裸露文字的狀況）。因此一般文字欄位一律逃逸，只保留固定幾個我們自己認可
+# 的行內標籤；終端機區塊則完全不接受 LLM 寫的 HTML，改用簡單的前綴語法
+# 由程式自己組出安全的 <span> 標記，從根本避免這個類別的渲染錯誤。
+
+_ALLOWED_INLINE_TAGS = ("strong", "code", "em", "b", "i")
+
+
+def _sanitize_inline_html(text):
+    """逃逸所有 HTML，只保留少數幾個白名單的行內標籤（不含屬性）。"""
+    if text is None:
+        return ""
+    escaped = html_module.escape(str(text), quote=False)
+    for tag in _ALLOWED_INLINE_TAGS:
+        escaped = re.sub(rf'&lt;{tag}&gt;', f'<{tag}>', escaped, flags=re.IGNORECASE)
+        escaped = re.sub(rf'&lt;/{tag}&gt;', f'</{tag}>', escaped, flags=re.IGNORECASE)
+    return escaped
+
+
+def _render_terminal_block(raw_text):
+    """把純文字終端機腳本（每行用 $/>/!/# 前綴標示類型）轉成安全的著色 HTML。
+    不接受、也不信任 LLM 直接寫入的 <span> 或其他標籤——每一行都會先逃逸，
+    再依前綴包上我們自己產生的 <span> class，杜絕任意 HTML 注入。"""
+    if not raw_text:
+        return ""
+    rendered = []
+    for line in raw_text.split('\n'):
+        if line.startswith('$ ') or line == '$':
+            rest = html_module.escape(line[2:] if len(line) > 1 else '')
+            rendered.append(f'<span class="prompt">$</span> <span class="cmd">{rest}</span>')
+        elif line.startswith('> '):
+            rendered.append(f'<span class="output">{html_module.escape(line[2:])}</span>')
+        elif line.startswith('! '):
+            rendered.append(f'<span class="error">{html_module.escape(line[2:])}</span>')
+        elif line.startswith('# '):
+            rendered.append(f'<span class="comment">{html_module.escape(line)}</span>')
+        else:
+            rendered.append(html_module.escape(line))
+    return '\n'.join(rendered)
+
+
 def generate_html(lesson):
     """生成精美的 HTML 課程頁面（自包含，無外部 CSS/JS 依賴）"""
     lesson_num = f"{lesson['id']:02d}"
@@ -866,7 +916,7 @@ def generate_html(lesson):
     html_parts.append('<head>')
     html_parts.append('<meta charset="UTF-8">')
     html_parts.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
-    html_parts.append(f'<title>Vibe Coding 課 {lesson_num} — {lesson.get("title", "")}</title>')
+    html_parts.append(f'<title>Vibe Coding 課 {lesson_num} — {_sanitize_inline_html(lesson.get("title", ""))}</title>')
     html_parts.append(get_full_css())
     html_parts.append('</head>')
     html_parts.append('<body>')
@@ -876,24 +926,26 @@ def generate_html(lesson):
     html_parts.append('')
     html_parts.append('  <!-- Header -->')
     html_parts.append('  <div class="lesson-header">')
-    html_parts.append(f'    <span class="lesson-number">{phase}</span>')
-    html_parts.append(f'    <h1 class="lesson-title">{lesson.get("title", "")}</h1>')
-    html_parts.append(f'    <p class="lesson-subtitle">{lesson.get("subtitle", "")}</p>')
+    html_parts.append(f'    <span class="lesson-number">{_sanitize_inline_html(phase)}</span>')
+    html_parts.append(f'    <h1 class="lesson-title">{_sanitize_inline_html(lesson.get("title", ""))}</h1>')
+    html_parts.append(f'    <p class="lesson-subtitle">{_sanitize_inline_html(lesson.get("subtitle", ""))}</p>')
     html_parts.append('  </div>')
 
     # Generate sections
     for section in lesson['sections']:
+        section_title = _sanitize_inline_html(section["title"])
+        comment_safe_title = re.sub(r'[^\w\s（）()：:、,.-]', '', section["title"])
         html_parts.append('')
-        html_parts.append(f'  <!-- Section: {section["title"]} -->')
+        html_parts.append(f'  <!-- Section: {comment_safe_title} -->')
         html_parts.append('  <div class="section">')
-        html_parts.append(f'    <div class="section-title"><span class="icon">{section["icon"]}</span> {section["title"]}</div>')
+        html_parts.append(f'    <div class="section-title"><span class="icon">{_sanitize_inline_html(section["icon"])}</span> {section_title}</div>')
 
         if 'content' in section:
-            html_parts.append(f'    <p>{section["content"]}</p>')
+            html_parts.append(f'    <p>{_sanitize_inline_html(section["content"])}</p>')
 
         if 'terminal_block' in section:
             html_parts.append('    <div class="terminal-block">')
-            html_parts.append(section['terminal_block'])
+            html_parts.append(_render_terminal_block(section['terminal_block']))
             html_parts.append('    </div>')
 
         if 'comparison' in section:
@@ -901,17 +953,17 @@ def generate_html(lesson):
             for item in section['comparison']:
                 tag_class = 'tag-blue' if item.get('side', '') == 'left' else 'tag-green'
                 html_parts.append(f'      <div class="diagram-card" style="text-align:left;">')
-                html_parts.append(f'        <span class="tag {tag_class}">{item["label"]}</span>')
-                html_parts.append(f'        <div class="terminal-block" style="margin-top:0.5rem;">{item["code"]}</div>')
+                html_parts.append(f'        <span class="tag {tag_class}">{_sanitize_inline_html(item["label"])}</span>')
+                html_parts.append(f'        <div class="terminal-block" style="margin-top:0.5rem;">{html_module.escape(item["code"])}</div>')
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
 
         if 'deep_dive' in section:
             dd = section['deep_dive']
             html_parts.append('    <details class="deep-dive">')
-            html_parts.append(f'      <summary>{dd.get("summary", "深入解析")}</summary>')
+            html_parts.append(f'      <summary>{_sanitize_inline_html(dd.get("summary", "深入解析"))}</summary>')
             html_parts.append('      <div class="deep-dive-content">')
-            html_parts.append(f'        <p>{dd.get("content", "")}</p>')
+            html_parts.append(f'        <p>{_sanitize_inline_html(dd.get("content", ""))}</p>')
             html_parts.append('      </div>')
             html_parts.append('    </details>')
 
@@ -921,14 +973,14 @@ def generate_html(lesson):
             for idx, quiz_item in enumerate(section['quiz'], 1):
                 html_parts.append('')
                 html_parts.append('      <div class="quiz-item">')
-                html_parts.append(f'        <div class="quiz-question">{idx}. {quiz_item["question"]}</div>')
+                html_parts.append(f'        <div class="quiz-question">{idx}. {_sanitize_inline_html(quiz_item["question"])}</div>')
                 html_parts.append('        <ul class="quiz-options">')
                 for opt in quiz_item['options']:
                     correct_attr = 'true' if opt['correct'] else 'false'
-                    html_parts.append(f'          <li onclick="checkAnswer(this, {correct_attr})">{opt["text"]}</li>')
+                    html_parts.append(f'          <li onclick="checkAnswer(this, {correct_attr})">{_sanitize_inline_html(opt["text"])}</li>')
                 html_parts.append('        </ul>')
                 html_parts.append('        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>')
-                html_parts.append(f'        <div class="answer">✅ {quiz_item["answer"]}</div>')
+                html_parts.append(f'        <div class="answer">✅ {_sanitize_inline_html(quiz_item["answer"])}</div>')
                 html_parts.append('      </div>')
             html_parts.append('    </div>')
 
@@ -937,7 +989,7 @@ def generate_html(lesson):
             html_parts.append(f'      <h4>請依序完成以下練習</h4>')
             html_parts.append('      <ol style="padding-left: 1.5rem;">')
             for task in section['tasks']:
-                html_parts.append(f'        <li style="padding: 0.5rem 0;">{task}</li>')
+                html_parts.append(f'        <li style="padding: 0.5rem 0;">{_sanitize_inline_html(task)}</li>')
             html_parts.append('      </ol>')
             html_parts.append('    </div>')
 
@@ -954,8 +1006,8 @@ def generate_html(lesson):
     html_parts.append('')
     html_parts.append('  <!-- Footer -->')
     html_parts.append('  <div class="lesson-footer">')
-    html_parts.append(f'    <p>Vibe Coding Masterclass · Lesson {lesson_num} · {lesson.get("title", "")}</p>')
-    html_parts.append(f'    <p style="margin-top: 0.3rem;">下一課預告：{lesson.get("next_topic", "")}</p>')
+    html_parts.append(f'    <p>Vibe Coding Masterclass · Lesson {lesson_num} · {_sanitize_inline_html(lesson.get("title", ""))}</p>')
+    html_parts.append(f'    <p style="margin-top: 0.3rem;">下一課預告：{_sanitize_inline_html(lesson.get("next_topic", ""))}</p>')
     html_parts.append('  </div>')
     html_parts.append('')
     html_parts.append('</div>')
