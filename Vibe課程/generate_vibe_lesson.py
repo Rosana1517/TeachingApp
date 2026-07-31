@@ -396,28 +396,44 @@ LESSON_SCHEMA_INSTRUCTIONS = """請只回傳一個合法的 JSON 物件（不要
 3. "quiz" 至少要有 2 題，每題 3 個選項，"answer" 要解釋原因，不能只寫「正確答案：B」。
 4. "今日任務" 至少要有 4 項，其中至少 1 項要請學習者實際操作 AI Agent（Claude Code/Cursor 等）並觀察它的行為，而不是只有手動操作。
 5. 內容要聚焦於「這個概念在 Vibe Coding 中的角色」「AI Agent 是如何調用/運用它的」「當 Vibe 破裂時該如何診斷」，並提供具體、可執行的指令或程式碼範例，不要只有抽象描述。
+6. 【禁止編造】所有指令、套件名稱、錯誤訊息、API 端點、GitHub repo 名稱都必須是真實存在、你有把握的資訊，不可以為了讓範例看起來具體而虛構不存在的錯誤代碼（例如編造一個聽起來很專業但實際上不存在的錯誤訊息）、虛構的 CLI 工具名稱、或猜測、編造 GitHub repo 的擁有者帳號。如果不確定某個指令的確切輸出格式，就用比較通用、你確定正確的範例（例如常見的 npm/git/docker 基本指令），或用文字描述其「大致行為」，而不要生出一段編造的假終端機輸出。寧可簡單但真實，也不要花俏但虛構。
+7. 【禁止空洞裝飾】不要用「vibe stable ✅ / vibe broken ⚠️」這類裝飾性但沒有實質資訊的標籤來包裝內容；每一段範例、每一句話都必須包含具體、可查證的技術事實，而不是聽起來專業但其實沒有講清楚任何事情的空話。
 """
+
+FEW_SHOT_EXAMPLE_NOTE = (
+    "以下是一段已通過審核、品質達標的課程「terminal_block」與「deep_dive」範例，"
+    "示範什麼叫做具體、真實、有實質內容（而不是抽象空話或編造的假輸出），請以同等真實度與資訊密度撰寫：\n"
+    "terminal_block 範例：\n"
+    "<span class=\\\"prompt\\\">$</span> <span class=\\\"cmd\\\">npm run dev</span>\\n"
+    "<span class=\\\"error\\\">Error: listen EADDRINUSE: address already in use :::3000</span>\\n"
+    "<span class=\\\"comment\\\"># EADDRINUSE = Error Address Already In Use（地址已被使用），這是 Node.js 內建的真實錯誤代碼</span>\n"
+    "deep_dive 範例：\n"
+    "{\"summary\": \"為什麼 Port 不能像資料夾一樣被兩個程式同時打開？\", "
+    "\"content\": \"每個網路服務啟動時，都要向作業系統執行一個叫做 bind() 的動作，向系統登記「我要用這個 IP + Port 組合來接收資料」。"
+    "作業系統的網路層會維護一張表，記錄目前每個 Port 被哪個程式（Process ID）佔用；一旦有第二個程式想 bind 同一組 IP + Port，"
+    "系統為了避免兩個程式收到同一筆資料卻不知道該給誰的混亂，會直接回傳錯誤拒絕這次請求。\"}\n"
+    "注意範例中的 EADDRINUSE、bind() 都是真實存在的技術名詞，deep_dive 解釋的是「為什麼」而非重複「是什麼」。"
+)
 
 
 def get_next_lesson_id():
-    """獲取下一個課程 ID；L01 已由手動優化的版本，自動跳過"""
+    """獲取下一個要生成的課程 ID：找出目前缺少的最小編號（會自動補上被刪除以便重新生成的課次），
+    而不是單純永遠往最大值 +1，這樣才能個別刪除品質不佳的課程並重新生成。"""
     search_dirs = [os.path.join('..', 'TeachingApp', 'vibe')]
-    existing_files = []
+    existing_ids = set()
     for d in search_dirs:
         if os.path.isdir(d):
-            existing_files.extend(f for f in os.listdir(d) if f.startswith('vibe-lesson-') and f.endswith('.html'))
-    if not existing_files:
-        return 1
+            for f in os.listdir(d):
+                if f.startswith('vibe-lesson-') and f.endswith('.html'):
+                    try:
+                        existing_ids.add(int(f.split('-')[2].split('.')[0]))
+                    except (IndexError, ValueError):
+                        pass
 
-    max_id = 0
-    for file in existing_files:
-        try:
-            lesson_id = int(file.split('-')[2].split('.')[0])
-            max_id = max(max_id, lesson_id)
-        except:
-            pass
-
-    return max(max_id + 1, 2)
+    next_id = 1
+    while next_id in existing_ids:
+        next_id += 1
+    return next_id
 
 
 def get_previous_topics():
@@ -545,6 +561,7 @@ def build_outline_prompt(next_id, outline_item, previous_topics):
         "- AI Agent 是如何調用或運用這個概念的？\n"
         "- 當 Vibe 破裂（報錯或行為異常）時，如何診斷和修復？\n\n"
         + LESSON_SCHEMA_INSTRUCTIONS
+        + "\n" + FEW_SHOT_EXAMPLE_NOTE
     )
 
 
@@ -562,6 +579,7 @@ def build_freeform_prompt(next_id, previous_topics):
         "- AI Agent 是如何調用這個技術的？\n"
         "- 當 Vibe 破裂（報錯）時，如何診斷和修復？\n\n"
         + LESSON_SCHEMA_INSTRUCTIONS
+        + "\n" + FEW_SHOT_EXAMPLE_NOTE
     )
 
 
@@ -583,7 +601,10 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
     body = json.dumps({
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 4096,
+        # 加深後的課程 schema（6+ 小節、多題小測驗、任務）常需要遠超過 4096 tokens 的
+        # 繁體中文輸出；太低的上限會讓 JSON 在結構中間被截斷、解析失敗，進而落到空洞的
+        # fallback 內容，這正是先前「內容空泛」的根本原因之一。
+        "max_tokens": 8192,
     }).encode("utf-8")
 
     request = urllib.request.Request(
@@ -1080,12 +1101,13 @@ def main():
         lesson = LESSONS[next_id - 1]
     else:
         lesson = None
-        for attempt in range(1, 3):
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
             lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
             if lesson is not None:
                 print(f"已透過 LLM API 生成第 {next_id:02d} 課內容（第 {attempt} 次嘗試）")
                 break
-            print(f"第 {attempt} 次 LLM 生成失敗，{'重試中...' if attempt < 2 else '改用備用課程內容'}")
+            print(f"第 {attempt} 次 LLM 生成失敗，{'重試中...' if attempt < max_attempts else '改用備用課程內容'}")
         if lesson is None:
             lesson = build_fallback_lesson(next_id, outline_item)
 
