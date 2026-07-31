@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 04 — GitHub 寶庫挖掘</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 1: The Core</span>
+    <h1 class="lesson-title">GitHub 寶庫挖掘</h1>
+    <p class="lesson-subtitle">在 Vibe Coding 中快速發現並整合開源片段</p>
+  </div>
+
+  <!-- Section: GitHub 搜索的 Vibe Coding 角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> GitHub 搜索的 Vibe Coding 角色</div>
+    <p>在 Vibe Coding 開發流程中，<strong>GitHub 不是代碼倉庫，而是 AI Agent 的即時知識庫</strong>。傳統開發者需要手動查找文件，而 Vibe 開發者直接透過 <code>in:file keywords</code> 語法篩選特定檔案內容，讓 AI Agent 能準確定位可複用的程式碼片段。當 Vibe 出現錯誤時，先搜尋原始開源專案的歷史提交記錄，比查閱官方文件更有效率——因為開源社群的實際使用情境更能反映真實錯誤觸發條件。此步驟的關鍵在於建立「錯誤-解決方案」的快速映射關係，減少 AI Agent 無效迭代時間。</p>
+  </div>
+
+  <!-- Section: 對照小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照小節</div>
+    <p>如何讓 AI Agent 理解你需要的是哪種實現方式？</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">低效搜索（Vibe 破裂風險高）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">search: react form validation</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">精準搜索（Vibe 穩定）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">file:ts in:react-hook-form validation pattern error handling</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例的小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 帶指令範例的小節</div>
+    <p>透過限定語言和檔案類型提高 AI Agent 的指令執行準確率，避免混合程式碼導致的整合失敗。當需要提取特定功能時，建議結合 <code>language:</code> 與 <code>path:</code> 篩選器縮小範圍。例如要尋找 React Formik 的提交處理邏輯，應指定為 <code>language:tsx path:formik submit handler</code>。這能讓 AI Agent 直接聚焦在目標語義單元，避免誤入無關的样式配置或工具函式庫。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">curl -s 'https://api.github.com/search/code?q=language:tsx+path:formik+submit+handler+in:file' | grep -E '"html_url"|"name"'</span>
+<span class="output">
+"html_url": "https://github.com/formik/formik/blob/v2.4.0/src/Field.tsx"
+  "name": "Field.tsx"
+"html_url": "https://github.com/reactjs/react-hook-form/blob/v7.45.1/src/useForm.ts"
+  "name": "useForm.ts"
+</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析</div>
+    <details class="deep-dive">
+      <summary>為什麼 GitHub API 的 Search v4 比全站搜索更適合 Vibe Coding？</summary>
+      <div class="deep-dive-content">
+        <p>GitHub Search API 的 v4 版本提供細粒度控制能力，使其成為 Vibe Coding 的核心工具。與全站搜索不同，API 允許透過 <code>f:path</code> 限制路徑、<code>f:language</code> 限定程式語言，甚至使用 <code>is:pull-request</code> 排除合併請求中的實驗性代碼。這種精確度對 AI Agent 至關重要——當 Agent 試圖從 10 萬條匹配結果中提取片段時，會因上下文噪音導致邏輯斷裂。透過 API 返回的 JSON 結構化資料（包含 <code>snippet</code> 字段），Agent 可直接抽取語法高亮的程式碼段落，而非處理無格式的網頁內容。更重要的是，API 的 <code>rate_limiting</code> 機制迫使開發者設計緩存策略，確保在 Vibe 不穩定的網路環境下仍能持續作業。這種設計思維正是 Vibe Coding 區別於傳統 IDE 操作的本質差異：將外部資源視為有狀態的服務，而非靜態檔案庫。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在使用 GitHub 搜索提取開源片段時，以下哪個查詢最能減少 AI Agent 的整合錯誤率？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. search: node express middleware</li>
+          <li onclick="checkAnswer(this, true)">B. language:typescript file:middleware path:/src/ express</li>
+          <li onclick="checkAnswer(this, false)">C. open source node.js express example code</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B，因為它同時限制了語言（typescript）、檔案類型（middleware）、路徑（/src/）和框架（express），使 AI Agent 能準確找到符合專案結構的程式碼片段。選項 A 缺乏上下文約束可能混入第三方中間件；選項 C 是非結構化搜索，會返回大量無關教學文章而非可整合的代碼。在 Vibe Coding 中，上下文清晰度直接決定 Agent 是否能順利執行重組操作。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 AI Agent 在整合 GitHub 片段時報錯「Module not found」，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 未安裝依賴包</li>
+          <li onclick="checkAnswer(this, true)">B. 搜索時未指定語言版本導致 API 返回舊版代碼</li>
+          <li onclick="checkAnswer(this, false)">C. GitHub 連網延遲</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。若搜索時未限定版本（如 version:4.x），API 可能返回舊版 API 介面（例如 Express 4.x 的 app.use 改用 5.x 的 router.use），導致 Agent 匯入路徑錯誤。這解釋了為何 Vibe 要求精確版本控制——AI Agent 依賴歷史提交的穩定性來保證可預測性。選項 A 是常見但非根本原因（Agent 應自動處理 dependency installation）；選項 C 不會造成 Module not Found 錯誤，僅影響搜尋速度。診斷此類問題需回溯原始代碼的 export 語法是否與當前專案 import 方式兼容。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 GitHub API 搜索 <code>language:tsx path:hooks</code>，找出 3 個最近更新的自訂 Hook 範例</li>
+        <li style="padding: 0.5rem 0;">在本地建立 temp 專案，用 <code>curl</code> 抓取其中一個 Hook 的完整原始碼並執行 lint 檢測</li>
+        <li style="padding: 0.5rem 0;">呼叫 AI Agent（如 Cursor）將抓取的 Hook 整合進你的主專案，觀察其是否自動處理 import 路徑</li>
+        <li style="padding: 0.5rem 0;">記錄 Agent 在整合過程中遇到的任何路徑或版本衝突，分析是否與搜索參數的精準度有關</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 04 · GitHub 寶庫挖掘</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Package Management（NPM/Bun）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
