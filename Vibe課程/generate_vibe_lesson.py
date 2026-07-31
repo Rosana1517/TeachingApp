@@ -836,6 +836,7 @@ def generate_lesson_via_llm(next_id, previous_topics, outline_item=None):
             flush=True,
         )
         print(f"Section keys: {[list(s.keys()) for s in sections]}", flush=True)
+        print(f"完整原始回應（用來診斷是否為輸出截斷）：\n{text}", flush=True)
         return None
 
     lesson["id"] = next_id
