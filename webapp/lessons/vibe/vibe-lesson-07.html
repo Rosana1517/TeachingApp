@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 07 — Next.js 全家桶</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: The Shell</span>
+    <h1 class="lesson-title">Next.js 全家桶</h1>
+    <p class="lesson-subtitle">掌握 AI 開發者在 Vibe Coding 時如何精準調用 Client/Server 渲染邏輯</p>
+  </div>
+
+  <!-- Section: Start Here - 認識 Next.js 的渲染分界 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> Start Here - 認識 Next.js 的渲染分界</div>
+    <p>在 Vibe Coding 的工作流中，Next.js 不只是框架，更是 AI Agent 需要理解的「執行環境語境」。App Router 與 `use client` 標記機制直接決定了哪些元件由瀏覽器（Client）渲染、哪些由 Node.js 服務器（Server）處理。AI Agent 在生成程式碼時，必須嚴格遵守邊界：服務器元件可以直接存取資料庫或環境變數，而用戶端元件才能操作 `window` 物件或使用 Event Listener。當出現「Vibe Broken」錯誤，例如 AI 在 Server Component 中意外引入了 React Hook 或直接引用 DOM 物件，通常就是因為沒加 `use client` 標記導致運行時環境錯置。理解這個機制，能有效減少 AI 生成的代碼在本地執行時的無法定位錯誤。</p>
+  </div>
+
+  <!-- Section: Client vs Server 環境差異分析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Client vs Server 環境差異分析</div>
+    <p>這一段我們將對比不同執行環境下的限制，幫助你在 Vibe Coding 中快速識別 AI Agent 是否需要調整元件屬性。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">Server Component (預設)</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// AI 默認生成的元件類型
+// 可直接讀取環境變數和 DB 連接串
+const apiKey = process.env.API_KEY; 
+
+// 不能使用 useState 或 useEffect
+function DataFetcher() { 
+  // ...
+}</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">Client Component (須標記)</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// 必須在第一行添加 &#x27;use client&#x27;
+&#x27;use client&#x27;;
+
+// 只能操作瀏覽器 API，無法直接存取服务端變數
+import { useState } from &#x27;react&#x27;;
+function InteractiveInput() {
+  const [input, setInput] = useState(&#x27;&#x27;);
+  // 這裡可以使用 DOM 相關的 Hooks
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Terminal Setup 初始化 Next.js 項目 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> Terminal Setup 初始化 Next.js 項目</div>
+    <p>我們使用最新的 Create Next App 工具來初始化一個範本專案，並觀察 AI Agent 在配置檔案中的表現。建議使用 TypeScript 來獲取更好的靜態類型檢查能力，這有助於在早期發現元件導入錯誤。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npx create-next-app@latest my-vibe-app --typescript --app --tailwind --eslint</span>
+<span class="comment"># 初始化流程開始，選擇 Default Options 以建立標準 App Router 結構</span>
+
+<span class="output">Creating a new Next.js app in /my-vibe-app.</span>
+
+<span class="error">注意：如果在過程中遇到 TypeScript 版本不兼容錯誤，請先執行 `npx install-checker` 或使用 `.nvmrc` 鎖定 Node 版本，避免 AI Agent 拉取過新的套件導致服務器啟動失敗。</span>
+    </div>
+  </div>
+
+  <!-- Section: Deep Dive - 為什麼 Vibe Coding 要嚴格區分 Client 與 Server -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> Deep Dive - 為什麼 Vibe Coding 要嚴格區分 Client 與 Server？</div>
+    <details class="deep-dive">
+      <summary>拆解 Next.js 在服務端與客戶端執行代碼時的權限底層邏輯</summary>
+      <div class="deep-dive-content">
+        <p>Next.js 的核心優化在於「分層渲染」。在傳統單頁應用中，所有 React 元件都在瀏覽器中執行，導致大量 JS 包體積膨脹且加載耗時。Next.js 透過 App Router 允許默認將元件部署到服務器（Server Component），這些元件在構建階段就被編譯為 HTML，不會發送 JavaScript 給瀏覽器，因此能更快呈現內容。然而，這也是 Vibe Coding 中最容易出錯的地方：AI Agent 若未經檢查便在 Server 元件中使用了 `useState` 或 `fetch`（除非有 `cached: false` 等特定選項），Node.js 環境會拋出運行時錯誤，因為這些 API 只在瀏覽器中可用。正確的做法是，只有需要互動（如按鈕點擊、表單輸入）的部分才加上 `'use client'` 標記，將其轉移到客戶端編譯；其餘靜態內容則保留於服務器，利用 Next.js 的服務器端特性自動減少 JS 傳輸量。這種分離不僅提升了性能，也讓 AI Agent 在生成代碼時必須遵循明確的安全邊界，防止敏感環境變數被意外暴露給用戶端。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 今日知識小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 今日知識小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Next.js App Router 中，如果你希望一個元件能夠使用 useState Hook 並且讀取瀏覽器的 localStorage 變數，你必須在這個元件檔案的最頂部添加哪一行代碼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">'use server';</li>
+          <li onclick="checkAnswer(this, true)">'use client';</li>
+          <li onclick="checkAnswer(this, false)">'next/client';</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。在 Next.js 的 App Router 體系中，默認的元件都是 Server Component，它們無法訪問瀏覽器特定的對象（如 window）或使用狀態管理 Hook（如 useState）。為了將元件切換為在瀏覽器中執行，必須在檔案頂部顯式標記 `'use client'`。選項 A `'use server'` 是用於將 Client Component 中的函數定義為服務器動作（Action），用於處理表单提交等場景，而非激活客户端功能；選項 C 是舊版 Next.js 或錯誤的導入路徑，在新版中不存在。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日實戰任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日實戰任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：初始化專案。在終端機執行命令建立一個具備 TypeScript 與 Tailwind CSS 支援的 Next.js App 目錄，並確認它能成功跑在 localhost:3000 上。</li>
+        <li style="padding: 0.5rem 0;">任務二：AI 協作測試。開啟你的 AI 編程助手（如 Cursor 或 Claude Code），要求它在專案的 `app/page.tsx` 中建立一個簡單的 React Hook 元件（例如使用 useState 計數器），觀察 AI 是否自動在檔案頂部加入了 `'use client'` 標記。如果沒有，請提示補上並觀察錯誤消失的過程。</li>
+        <li style="padding: 0.5rem 0;">任務三：診斷報錯。刻意在一個 Server Component 中插入 `useEffect` 回調函數且不加入 `'use client'` 標記，觀察控制台會出現什麼樣的運行時報錯（通常是 TypeError 或 Module not found 相關），記錄該錯誤訊息作為未來排錯的參考。</li>
+        <li style="padding: 0.5rem 0;">任務四：API Route 驗證。在 `app/api/hello/route.ts` 文件中撰寫一個 GET 請求處理函數，返回 JSON 資料 {'message': 'Hello from Server'}, 然後透過瀏覽器或 curl 命令驗證該端點是否能正確回應，確認 AI 生成的路由邏輯符合 Vibe Coding 的數據獲取規範。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 07 · Next.js 全家桶</p>
+    <p style="margin-top: 0.3rem;">下一課預告：UI 組件與設計（shadcn/ui）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
