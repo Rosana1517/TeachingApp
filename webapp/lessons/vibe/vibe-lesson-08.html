@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 08 — UI 組件與設計（shadcn/ui）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: The Shell</span>
+    <h1 class="lesson-title">UI 組件與設計（shadcn/ui）</h1>
+    <p class="lesson-subtitle">用 AI 快速產出可維護的 Next.js 註冊頁面，理解 shadcn 的「複製代碼」哲學</p>
+  </div>
+
+  <!-- Section: Vibe Coding 中的 shadcn/ui 角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎯</span> Vibe Coding 中的 shadcn/ui 角色</div>
+    <p>在 Vibe Coding 流程中，shadcn/ui 扮演的是「AI 可直接操作的可讀代碼庫」而非傳統套件庫的關鍵角色。當 AI Agent（如 Claude Code 或 Cursor）接到「建立一個包含 Email、Password 欄位且符合 Tailwind CSS 樣式的註冊按鈕」的需求時，它不會去安裝 npm 包，而是直接從 shadcn/ui 的官方 repo（github.com/shadcn/ui）複製對應組件的原始碼，貼入專案並進行微調。這種機制讓 Vibe 穩定性大幅提升——因為代碼是可見、可編輯、版本可追蹤的，不像第三方套件黑盒運行。更重要的是，當 Vibe 破裂時（例如按鈕樣式衝突），開發者能直接查看並修改代碼，而不是去查套件文件或丟一堆錯誤堆疊。shadcn 的設計本質就是為 AI 協作而生：提供完整、可編輯、無依賴的 React 組件，讓 AI 能像人類一樣「看懂並修改」代碼，實現真正的協同開發。</p>
+  </div>
+
+  <!-- Section: AI 如何調用 shadcn 組件 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🤖</span> AI 如何調用 shadcn 組件</div>
+    <p>AI Agent 在使用 shadcn/ui 時，會遵循一套標準化的調用邏輯：首先查詢官方組件定義文件（如 button.tsx），提取組件的使用方式與 prop 結構；然後根據需求（如「要一個帶 icon 的註冊按鈕」）組合現有組件並插入 Tailwind CSS class；最後將整合後的代碼貼入 Next.js 的 `app/page.tsx` 或 `components/` 目錄。例如，當使用者要求「新增一個 Email 輸入框，需有錯誤提示」，AI 會先找到 Input 組件，再套用 Validate 機制（通常搭配 Zod）處理表單驗證。這種方式不依賴外部套件生命週期或版本更新，也讓代碼在未來能被輕鬆人工審查。若 Vibe 破裂（如輸入框無法聚焦），AI 會自動回溯到該組件原始碼，檢查是否遗漏了 `focus-visible` 或 `aria-label` 等屬性，並透過修正代碼重新執行。這種「複製 - 調整 - 驗證」的循環，正是 shadcn 能成為 Vibe Coding 黃金標準的核心原因。</p>
+  </div>
+
+  <!-- Section: Vibe 破裂診斷策略 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚠️</span> Vibe 破裂診斷策略</div>
+    <p>當使用 shadcn/ui 後 Vibe 破裂（例如按鈕無反應、樣式異常、驗證未觸發），必須啟動三層診斷法：第一層是確認組件是否正確貼入目錄且命名正確（如 Button.tsx 是否在 components 下）；第二層是檢查 Tailwind CSS 配置是否包含必要 class（如 `bg-primary hover:bg-opacity-90` 是否在 tailwind.config.js 中被擴展）；第三層是驗證 prop 傳入是否符合組件定義（如 `variant="outline"` 是否存在）。若仍無法解決，可使用 Next.js 內建錯誤邊界或 `console.log()` 輸出組件渲染結果。常見的破裂原因包括：未正確安裝 `tailwindcss`、未設定 `@components` 別名、或使用過時的 JSX 語法（如 `<button className={}>` 少引號）。此時應檢查組件原始碼中的 import 路徑是否正確，並確認項目根目錄是否有 `tailwind.config.js` 且包含 `content` 陣列。這三個步驟能有效縮小問題範圍，讓 AI 或開發者快速定位並修復。</p>
+  </div>
+
+  <!-- Section: 對比情境分析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對比情境分析</div>
+    <p>比較 AI 傳統做法與 shadcn 方法在建立註冊頁面的差異。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">安裝套件方式</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"></div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">shadcn 複製代碼方式
+LEFT_CODE:
+# 使用 shadcn 的建議流程
+npx shadcn-ui@latest add button
+# 接著修改 button.tsx 加入 icon 與樣式
+RIGHT_CODE:
+# 傳統方式：安裝第三方套件
+npm install @radix-ui/react-icons @shadcn/button
+# 但可能發生版本衝突、樣式覆蓋、無法自調節問題</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 實際指令範例 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實際指令範例</div>
+    <p>以下為使用 shadcn/ui 建立註冊頁面核心組件的完整指令流程，展現如何將 AI 生成代碼與組件自動化結合。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npx shadcn-ui@latest add input button</span>
+<span class="output">✓ Added input component to components/ui/input.tsx</span>
+<span class="output">✓ Added button component to components/ui/button.tsx</span>
+<span class="comment"># 此命令会自动从官方 repo 拉取原始代碼並貼入 components/ui/</span>
+
+<span class="prompt">$</span> <span class="cmd">cat components/ui/input.tsx | head -n 15</span>
+<span class="output">import * as React from 'react'</span>
+<span class="output">import { cva, type VariantProps } from 'class-var-advance'</span>
+<span class="output">import { cn } from '@/lib/utils'</span>
+<span class="output">const inputVariants = cva('border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500', {</span>
+<span class="output">  variants: {</span>
+<span class="output">    size: { small: 'h-8 text-sm', default: 'h-10' },</span>
+<span class="output">  }</span>
+<span class="output">})</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析</div>
+    <details class="deep-dive">
+      <summary>為什麼 shadcn 能讓 AI 更容易理解並操作？它的代碼結構有何本質差異？</summary>
+      <div class="deep-dive-content">
+        <p>shadcn/ui 之所以受到 AI 青睞，本質在於其「代碼即文檔」的設計哲學。傳統套件（如 Material UI、Ant Design）往往封裝在 npm 包中，內部邏輯黑盒化，AI 難以理解組件如何運作或修改。而 shadcn 將所有組件以原生 TypeScript 檔案形式存在於專案中，每一行代碼都可被人類和 AI 同時閱讀、修改與除錯。例如，一個 Input 組件的原始碼清楚展現了 `cv、cva、inputVariants` 等 Tailwind 組合邏輯，AI 可直接從中學習如何擴充功能（如加入錯誤狀態、icon、disabled 屬性）。這種透明化讓 Vibe 在遭遇問題時更具可預測性——若組件沒作用，開發者可以直接在 `input.tsx` 中加入 `aria-invalid` 或修改 `className` 邏輯，而不必猜測套件內部行為。此外，shadcn 不使用任何外部依賴（如 React 的 useState、useEffect 皆為原生），也進一步降低 AI 推理複雜度，使其更專注於功能本身而非框架細節。因此，shadcn 不僅是 UI 套件，更是一套為 AI 協作量身打造的代碼生態系統。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 shadcn/ui 中，為什麼 AI 偏好直接複製組件代碼而非安裝套件？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">因為套件更小更快，載入效率高</li>
+          <li onclick="checkAnswer(this, true)">因為代碼可見、可修改、可除錯，利於 Vibe 穩定與人工介入</li>
+          <li onclick="checkAnswer(this, false)">因為它內建支援所有 React 狀態管理</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確，因為 shadcn/ui 的核心理念是「代碼即文檔」，所有組件都是可編輯的原生檔案，AI 可直接讀寫修改，且 Vibe 破裂時能快速定位問題。A 錯誤，套件大小不是主因，反而是封裝性降低透明度。C 錯誤，shadcn 並不內建狀態管理，仍需配合其他工具如 Zustand 或 React Context。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪種情境最可能導致 shadcn 組件出現 Vibe 破裂？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">使用最新版的 Node.js 與 Bun</li>
+          <li onclick="checkAnswer(this, true)">未正確配置 `tailwind.config.js` 中的 `content` 路徑</li>
+          <li onclick="checkAnswer(this, false)">組件名稱拼寫錯誤但檔案存在</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確，若 `tailwind.config.js` 的 `content` 未正確指向組件所在目錄（如 `components/**/*.{js,jsx,ts,tsx}`），Tailwind 不會掃描這些檔案，導致 style 無效。A 不是問題，Bun/Node 版本正常即可。C 雖然可能造成報錯，但若檔案存在且路徑正確，AI 仍可透過修正路徑恢復，不如 B 嚴重且普遍。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 npx shadcn-ui@latest add input button 將 Input 與 Button 組件加入你的 Next.js 專案，並確認它們出現在 `components/ui/` 目錄中。</li>
+        <li style="padding: 0.5rem 0;">修改 `components/ui/button.tsx`，新增一個 variant="ghost" 類型，並在 `tailwind.config.js` 中加入對應的 CVa 定義。</li>
+        <li style="padding: 0.5rem 0;">在 `/app/page.tsx` 中使用新加的 Button 與 Input 組件，打造一個簡化版註冊表單（含 Email 與 Password 欄位），並觀察 AI Agent（如 Cursor 或 Claude Code）是否能自動偵測並修正樣式衝突。</li>
+        <li style="padding: 0.5rem 0;">故意在 Input 組件中寫一個錯誤（如 `aria-label={undefined}`），讓 Vibe 破裂，然後嘗試用控制台或日誌找出問題根源，並修復它。記錄所經歷的診斷過程。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 08 · UI 組件與設計（shadcn/ui）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：資源自動化（Icons/Images）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
