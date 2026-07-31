@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 07 — Next.js 全家桶</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: The Shell</span>
+    <h1 class="lesson-title">Next.js 全家桶</h1>
+    <p class="lesson-subtitle">Vibe Coding 情境下的 Client/Server 元件標記邏輯與實務調用</p>
+  </div>
+
+  <!-- Section: 核心概念在 Vibe Coding 中的角色與 AI 協作邏輯 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎯</span> 核心概念在 Vibe Coding 中的角色與 AI 協作邏輯</div>
+    <p>在 Vibe Coding 的工作流中，Next.js 的 App Router 不僅是路由系統，更是 AI Agent 理解「服務器態」與「前端動態行為」之間的關鍵介面。當我們使用 `use client` 標記元件時，實際上是在向 AI Agent 發出一個明確的指令：此元件需在瀏覽器環境中執行，具備事件處理、狀態管理或 DOM 操作能力。反之，未被標記的預設 Server Component 則代表此元件應在服務器端渲染，直接輸出 HTML，避免不必要的 JavaScript 傳輸。AI Agent 在生成程式碼時會依據上下文自動判斷是否需要 `use client`，例如當它讀到 `onClick` 或 `useState` 時，會自動插入該指令。若未正確標記，Vibe 將因「伺服器端嘗試操作物件 DOM」而報錯，這是典型的 Vibe 破裂情境。診斷方法包括檢查元件內是否包含瀏覽器 API（如 `window` 或 `document`），或使用 ESLint 插件提示潛在的問題。</p>
+  </div>
+
+  <!-- Section: Server Component 與 Client Component 的標記邏輯對比 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> Server Component 與 Client Component 的標記邏輯對比</div>
+    <p>當 AI Agent 在撰寫 Next.js 專案時，它必須明確區分哪些元件應該在服務器端執行，哪些需要轉移到瀏覽器。這決定了渲染效率、初始 HTML 大小與互動能力。以下是兩種情境的比較：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">情境 A：錯誤標記 - 使用 Server Component 執行 DOM 操作</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">function DynamicButton() {
+  const handleClick = () => {
+    console.log('Clicked!'); // ✅ 可接受
+    document.getElementById('btn').style.color = 'red'; // ❌ 錯誤：伺服器無 DOM
+  };
+  return <button onClick={handleClick}>Red Text</button>; // 缺少 use client
+}
+此程式碼若未加上 `use client`，會在服務器端運行但試圖操作 browser-only API（如 document），導致 Vibe 破裂，因為伺服器環境沒有 DOM 物件，會拋出 ReferenceError。</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">情境 B：正確標記 - 使用 Client Component 處理互動</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">'use client';
+
+import { useState } from 'react';
+
+function InteractiveButton() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      Clicked {count} times
+    </button>
+  );
+}
+此元件明確標示為 `use client`，表示它將在瀏覽器中執行，可使用狀態與事件處理，符合 Vibe 運行預期。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 `use client` 是 Vibe 穩定的關鍵？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 `use client` 是 Vibe 穩定的關鍵？</div>
+    <details class="deep-dive">
+      <summary>為什麼有些元件不能在伺服器端跑？其實不只是效能問題，更是執行環境的本質差異。</summary>
+      <div class="deep-dive-content">
+        <p>在 Next.js 的 App Router 架構中，預設所有元件都是 Server Component，這意味著它們在服務器端被執行、渲染為純 HTML，再傳送至瀏覽器。然而，一旦元件需要使用瀏覽器專有的功能——如 `addEventListener`、`useEffect`、`useState` 或存取 `window` ——就必須將其轉換為 Client Component，也就是透過 `'use client'` 語句宣告。這不是語法糖，而是明確的執行環境切換命令：它告訴 Next.js 與 AI Agent，此元件需打包進 JavaScript bundle，並在客戶端載入後才執行。若未加此標記卻使用了這些功能，Vibe 將會破裂，因為在 Node.js 環境中根本沒有 `window` 或 `document`，導致無法執行或抛錯。這也是為什麼 AI Agent 在生成互動式元件時，必須主動插入 `'use client'`，否則 Vibe 將不穩定。正確的標記不僅是防止錯誤，更是優化傳輸：避免將大量 JS 碼無謂地傳送到無須互動的頁面部分。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一個程式碼片段最有可能導致 Vibe 破裂（報錯）？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">一個沒有 `use client` 但僅有靜態文字輸出的 Server Component</li>
+          <li onclick="checkAnswer(this, false)">一個有 `use client` 標記且使用 `useState` 與 `onClick` 的互動式元件</li>
+          <li onclick="checkAnswer(this, true)">一個沒有 `use client` 卻在 `componentDidMount`（或等效 `useEffect`）中呼叫 `document.getElementById()` 的元件</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 C 是最可能造成 Vibe 破裂的原因，因為它未宣告為 Client Component 卻執行了瀏覽器特有的 DOM 操作，這在伺服器端是不允許的。選項 A 完全合法，是典型的 Server Component；選項 B 正確使用了 `use client` 與 React Hook，符合 Client Component 規範。若出現錯誤，通常是未正確標記或未在 Client 上下文中使用 server-only 函式。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 在 Next.js App Router 中，API Routes 存放的正確路徑為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">/app/api/users.js</li>
+          <li onclick="checkAnswer(this, false)">/pages/api/users.js</li>
+          <li onclick="checkAnswer(this, true)">/app/api/users/route.ts</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確路徑為 `/app/api/users/route.ts`，這是 App Router 標準的 API Route 定義方式，使用 `GET`, `POST` 等方法導出函數。選項 A 是 CommonJS 形式且未符合模組化結構；選項 B 屬於舊版 Pages Router，不適用於 App Router。AI Agent 在建立 API 時，會自動遵循此路徑結構，若手動放置錯誤位置，Vibe 將無法識別 API 端點，導致請求失敗。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：使用 AI Agent（如 Cursor 或 Claude）建立一個簡單的 `/app/page.tsx`，顯示使用者名稱，並從 `/app/api/user/route.ts` 取得資料。觀察 AI 是否自動加入 `'use client'` 與 `fetch` 呼叫。</li>
+        <li style="padding: 0.5rem 0;">任務二：刻意在 page 中加入 `console.log(window)`，不加 `use client`，然後執行 `npm run dev`，觀察是否觸發 Vibe 破裂，並記錄錯誤訊息。</li>
+        <li style="padding: 0.5rem 0;">任務三：修正任務二的錯誤，加入 `'use client'`，確認 Vibe 恢復正常，並比較兩者輸出差異。</li>
+        <li style="padding: 0.5rem 0;">任務四：閱讀 Next.js 官方文件（https://nextjs.org/docs/app/building-your-application/rendering/components）中關於「Client Components」的說明，寫下一段 100 字以上總結，說明為什麼 `use client` 是必要關鍵字。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 07 · Next.js 全家桶</p>
+    <p style="margin-top: 0.3rem;">下一課預告：UI 組件與設計（shadcn/ui）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
