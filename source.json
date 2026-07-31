@@ -7,14 +7,21 @@
       "name": "TeachingApp",
       "bundleIdentifier": "com.rosana.teachingapp",
       "developerName": "Rosana1517",
-      "version": "1.0.82",
-      "versionDate": "2026-07-31T02:10:56Z",
-      "versionDescription": "Build #1.0.82",
+      "version": "1.0.83",
+      "versionDate": "2026-07-31T02:14:50Z",
+      "versionDescription": "Build #1.0.83",
       "size": 216600,
       "localizedDescription": "私人法語學習教學 App，每日自動更新課程內容。",
       "iconURL": "https://raw.githubusercontent.com/Rosana1517/TeachingApp/main/source_icon.png",
-      "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v82/TeachingApp.ipa",
+      "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v83/TeachingApp.ipa",
       "versions": [
+        {
+          "version": "1.0.83",
+          "date": "2026-07-31T02:14:50Z",
+          "localizedDescription": "Build #1.0.83",
+          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v83/TeachingApp.ipa",
+          "size": 216600
+        },
         {
           "version": "1.0.82",
           "date": "2026-07-31T02:10:56Z",
@@ -41,13 +48,6 @@
           "date": "2026-07-30T12:37:03Z",
           "localizedDescription": "Build #1.0.77",
           "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v77/TeachingApp.ipa",
-          "size": 216601
-        },
-        {
-          "version": "1.0.76",
-          "date": "2026-07-30T12:35:55Z",
-          "localizedDescription": "Build #1.0.76",
-          "downloadURL": "https://github.com/Rosana1517/TeachingApp/releases/download/v76/TeachingApp.ipa",
           "size": 216601
         }
       ]
