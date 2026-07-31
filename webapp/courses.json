@@ -400,6 +400,16 @@
     "generatedDate": null
   },
   {
+    "id": "french-lesson-41",
+    "title": "French Lesson 41",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-41.html",
+    "path": "lessons/french/french-lesson-41.html",
+    "number": 41,
+    "generatedDate": null
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
