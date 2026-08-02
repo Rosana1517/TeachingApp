@@ -540,6 +540,16 @@
     "generatedDate": null
   },
   {
+    "id": "mind-lesson-13",
+    "title": "Mind Lesson 13",
+    "category": "Mind",
+    "categorySlug": "mind",
+    "fileName": "mind-lesson-13.html",
+    "path": "lessons/mind/mind-lesson-13.html",
+    "number": 13,
+    "generatedDate": null
+  },
+  {
     "id": "vibe-lesson-01",
     "title": "Vibe Lesson 01",
     "category": "Vibe",
