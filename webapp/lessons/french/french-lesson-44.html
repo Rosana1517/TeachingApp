@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 44 — 第 44 課：法語部分冠詞 du / de la / de l' / des 的用法與辨別</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 44</span>
+    <h1 class="lesson-title">第 44 課：法語部分冠詞 du / de la / de l' / des 的用法與辨別</h1>
+    <p class="lesson-subtitle">學會表達「一部分」的概念，掌握不可數名詞與 unspecified quantity 的精準說法</p>
+  </div>
+
+  <!-- Section 1: 什麼是部分冠詞？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是部分冠詞？</div>
+    <p>法語的<strong>部分冠詞</strong>（article partitif）用來表示<strong>不可數名詞</strong>或<strong>不確定數量</strong>的名詞，中文可以翻譯為「一些」「一點」。中文沒有冠詞系統，所以這是法國學習者需要特別習慣的概念。部分冠詞有四種形式，根據後方名詞的<strong>性別</strong>與<strong>是否以母音或啞 h 開頭</strong>來選擇：du（陽性單數）、de la（陰性單數）、de l'（母音或啞 h 開頭的前面）、des（複數）。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>部分冠詞在口語中常常與後方名詞<strong>連誦（liaison）</strong>，請特別注意 du 和 des 的發音差異與連誦形式。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">du</div>
+        <div class="pron-ipa">發音 /dy/，u 為圓唇元音，與 du pain 連讀時不連誦</div>
+        <div class="pron-example"><em>du pain</em>（一些麵包）<button class="speak-btn" onclick='speakFrench("du pain")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">de la</div>
+        <div class="pron-ipa">發音 /də la/，la 的 l 輕柔發音</div>
+        <div class="pron-example"><em>de la confiture</em>（一些果醬）<button class="speak-btn" onclick='speakFrench("de la confiture")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">de l'</div>
+        <div class="pron-ipa">發音 /də l/，l' 後方名詞母音或啞 h 開頭時合併</div>
+        <div class="pron-example"><em>de l'eau</em>（一些水）<button class="speak-btn" onclick='speakFrench("de l&#39;eau")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">des</div>
+        <div class="pron-ipa">發音 /de/，s 不發音；但在連誦時發 /dez/ 音</div>
+        <div class="pron-example"><em>des pommes</em>（一些蘋果）<button class="speak-btn" onclick='speakFrench("des pommes")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">des（連誦）</div>
+        <div class="pron-ipa">當後方名詞以母音或啞 h 開頭，s 連誦發 /dez/ 音</div>
+        <div class="pron-example"><em>des amis</em>（一些朋友）<button class="speak-btn" onclick='speakFrench("des amis")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟隨以下詞組練習發音，注意 du 與 des 在連誦時的差異，以及 de la 的輕柔流暢度。</p>
+    <div class="follow-box">
+      <h4>請跟隨以下詞組練習發音，注意 du 與 des 在連誦時的差異，以及 de la 的輕柔流暢度。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">du café</span>
+          <span class="ipa">/dy ka.fe/</span>
+          <span class="meaning">—— 一些咖啡</span>
+          <button class="speak-btn" onclick='speakFrench("du caf\u00e9")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">de la musique</span>
+          <span class="ipa">/də la my.zik/</span>
+          <span class="meaning">—— 一些音樂</span>
+          <button class="speak-btn" onclick='speakFrench("de la musique")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">de l'argent</span>
+          <span class="ipa">/də laʁ.ʒɑ̃/</span>
+          <span class="meaning">—— 一些錢</span>
+          <button class="speak-btn" onclick='speakFrench("de l&#39;argent")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">des légumes</span>
+          <span class="ipa">/de le.ɡym/</span>
+          <span class="meaning">—— 一些蔬菜</span>
+          <button class="speak-btn" onclick='speakFrench("des l\u00e9gumes")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">des amis</span>
+          <span class="ipa">/de.za.mi/</span>
+          <span class="meaning">—— 一些朋友</span>
+          <button class="speak-btn" onclick='speakFrench("des amis")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">du beurre</span>
+          <span class="ipa">/dy bœʁ/</span>
+          <span class="meaning">—— 一些奶油</span>
+          <button class="speak-btn" onclick='speakFrench("du beurre")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：de la 三個音節要輕柔連貫，不要一個一個拆開發音；des 的連誦版本 'dez' 與不連誦 'de' 請務必分清。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照：肯定句 vs. 否定句 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照：肯定句 vs. 否定句</div>
+    <p>部分冠詞在<strong>否定句中會變成 de / d'</strong>，這是法語語法的一大重點。請特別記住這個規則，它適用於所有部分冠詞的形式。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">du → de</div>
+        <div class="pron-ipa">否定句中 du 變成 de</div>
+        <div class="pron-example">Je mange du pain. → Je ne mange pas de pain.<button class="speak-btn" onclick='speakFrench("Je mange du pain. \u2192 Je ne mange pas de pain.")' aria-label="播放發音">🔊</button><br>「我吃麵包。」→「我不吃麵包。」</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">de la → de</div>
+        <div class="pron-ipa">否定句中 de la 變成 de</div>
+        <div class="pron-example">Je bois de l'eau. → Je ne bois pas d'eau.<button class="speak-btn" onclick='speakFrench("Je bois de l&#39;eau. \u2192 Je ne bois pas d&#39;eau.")' aria-label="播放發音">🔊</button><br>注意 de l' 在否定中變成 d'</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">des → de</div>
+        <div class="pron-ipa">否定句中 des 變成 de</div>
+        <div class="pron-example">J'ai des amis. → Je n'ai pas d'amis.<button class="speak-btn" onclick='speakFrench("J&#39;ai des amis. \u2192 Je n&#39;ai pas d&#39;amis.")' aria-label="播放發音">🔊</button><br>「我有朋友。」→「我沒有朋友。」</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪個選項正確填入空白處？「Je bois ___ eau tous les matins.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. du</li>
+          <li onclick="checkAnswer(this, false)">B. de la</li>
+          <li onclick="checkAnswer(this, true)">C. de l'</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ eau 以母音開頭，部分冠詞需用 de l'，因為 de + la/le 在前者情況下合併為 de l'。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪個選項正確填入空白處？「Il ne mange pas ___ fromage.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. du</li>
+          <li onclick="checkAnswer(this, true)">B. de</li>
+          <li onclick="checkAnswer(this, false)">C. des</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 否定句中部分冠詞 du 變為 de，因此正確答案是 de fromage。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「des amis」的連誦發音是下列哪一項？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. /de ami/</li>
+          <li onclick="checkAnswer(this, true)">B. /dez ami/</li>
+          <li onclick="checkAnswer(this, false)">C. /des ami/</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ des 後方母音開頭名詞時，s 發連誦音 /z/，讀作 /dez ami/。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">抄寫 6 個部分冠詞詞組各 3 遍，並大聲朗讀，注意 du、de la、de l'、des 的發音與連誦差異</li>
+        <li style="padding: 0.5rem 0;">用部分冠詞造句 5 句，然後將它們全部改為否定句，觀察部分冠詞變為 de 的規則</li>
+        <li style="padding: 0.5rem 0;">聽一段法語播報或影片，找出部分冠詞出現的時刻，並標記其形式與是否連誦</li>
+        <li style="padding: 0.5rem 0;">完成小測驗中三個題目的解析複習，確保理解每個選項的對錯原因</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 44 · 第 44 課：法語部分冠詞 du / de la / de l' / des 的用法與辨別 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 45 課：法語形容詞的性數一致規則與位置變化</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
