@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 45 — 第 45 課：法語副代詞 y 和 en 的精準應用</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 45</span>
+    <h1 class="lesson-title">第 45 課：法語副代詞 y 和 en 的精準應用</h1>
+    <p class="lesson-subtitle">掌握法語中最常用的兩個副代詞，讓你的句子更自然流暢</p>
+  </div>
+
+  <!-- Section 1: 副代詞 y 與 en 概述 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 副代詞 y 與 en 概述</div>
+    <p>法語中有兩個非常重要的副代詞：<strong>y</strong> 和 <strong>en</strong>。它們用來代替前面出現過的方位或數量，避免重複。y 主要代替「地點」或「間接受詞」，而 en 主要代替「數量」或「部分冠詞 + 名詞」。這兩個代詞在法語口語中使用頻率極高，是法語流利度的關鍵。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>y 和 en 的發音雖然簡單，但要注意它們在句子中的連讀和語調變化。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">y</div>
+        <div class="pron-ipa">發音類似中文「依」，但更輕短，舌尖輕觸下齒</div>
+        <div class="pron-example"><em>j'y vais</em>（我去那裡）<button class="speak-btn" onclick='speakFrench("j&#39;y vais")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">en</div>
+        <div class="pron-ipa">發音為鼻化元音 /ɑ̃/，類似中文「安」但鼻子共振更強</div>
+        <div class="pron-example"><em>j'en ai</em>（我有一些）<button class="speak-btn" onclick='speakFrench("j&#39;en ai")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">y + 元音</div>
+        <div class="pron-ipa">當後接元音開頭的動詞時，y 保持獨立發音，不聯誦</div>
+        <div class="pron-example"><em>j'y ai</em>（我在那裡有）<button class="speak-btn" onclick='speakFrench("j&#39;y ai")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">en + 元音</div>
+        <div class="pron-ipa">en 後接元音時，n 發音連接到下一個音節，形成聯誦</div>
+        <div class="pron-example"><em>j'en ai</em>（我有一些）<button class="speak-btn" onclick='speakFrench("j&#39;en ai")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>跟讀以下句子，注意 y 和 en 的發音位置與連讀規則：</p>
+    <div class="follow-box">
+      <h4>跟讀以下句子，注意 y 和 en 的發音位置與連讀規則：</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">j'y vais</span>
+          <span class="ipa">/ʒi vɛ/</span>
+          <span class="meaning">—— 我去那裡</span>
+          <button class="speak-btn" onclick='speakFrench("j&#39;y vais")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">j'en veux</span>
+          <span class="ipa">/ʒɑ̃ vø/</span>
+          <span class="meaning">—— 我想要一些</span>
+          <button class="speak-btn" onclick='speakFrench("j&#39;en veux")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">il y a</span>
+          <span class="ipa">/il ja/</span>
+          <span class="meaning">—— 有（某物/某人）</span>
+          <button class="speak-btn" onclick='speakFrench("il y a")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">j'en pense</span>
+          <span class="ipa">/ʒɑ̃ pɑ̃s/</span>
+          <span class="meaning">—— 我這樣認為</span>
+          <button class="speak-btn" onclick='speakFrench("j&#39;en pense")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">elle y pense</span>
+          <span class="ipa">/ɛl ji pɑ̃s/</span>
+          <span class="meaning">—— 她在想那件事</span>
+          <button class="speak-btn" onclick='speakFrench("elle y pense")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">j'en mange</span>
+          <span class="ipa">/ʒɑ̃ mɑ̃ʒ/</span>
+          <span class="meaning">—— 我吃一點</span>
+          <button class="speak-btn" onclick='speakFrench("j&#39;en mange")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發音小技巧：y 發音時嘴唇不要圓化，保持放鬆；en 發音時注意鼻音共振，不要發成普通的 'an'。</p>
+  </div>
+
+  <!-- Section 3: y 的用法與例句 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> y 的用法與例句</div>
+    <p>副代詞 <strong>y</strong> 主要用來代替以下兩類成分：<strong>① 地點副詞</strong>（如：là, ici, dans la classe, à Paris）<strong>② 以介詞 à 引導的間接受詞</strong>（如：à ce livre, à mon ami）。y 在句子中通常放在動詞前面。</p>
+  </div>
+
+  <!-- Section 4: en 的用法與例句 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> en 的用法與例句</div>
+    <p>副代詞 <strong>en</strong> 主要用來代替以下兩類成分：<strong>① 部分冠詞 du/de la/de l'/des + 名詞</strong>（表示不確定的數量）<strong>② 數詞 + 名詞</strong>（表示確定的數量）。en 在句子中同樣放在動詞前面。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>y 和 en 的用法容易混淆，以下是關鍵區別：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">y</div>
+        <div class="pron-ipa">代替地點或 à + 人/物</div>
+        <div class="pron-example">Je vais à l'école. → J'y vais.<button class="speak-btn" onclick='speakFrench("Je vais \u00e0 l&#39;\u00e9cole. \u2192 J&#39;y vais.")' aria-label="播放發音">🔊</button><br>注意：y 不代替 direct object</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">en</div>
+        <div class="pron-ipa">代替部分冠詞或數量詞 + 名詞</div>
+        <div class="pron-example">J'ai des amis. → J'en ai.<button class="speak-btn" onclick='speakFrench("J&#39;ai des amis. \u2192 J&#39;en ai.")' aria-label="播放發音">🔊</button><br>en 可以代替 de + 名詞</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">两者同時出現</div>
+        <div class="pron-ipa">en 放在 y 前面</div>
+        <div class="pron-example">J'en parle à Paul. → J'en parle. (但 J'y parle de cela → J'en parle là-bas.)<button class="speak-btn" onclick='speakFrench("J&#39;en parle \u00e0 Paul. \u2192 J&#39;en parle. (\u4f46 J&#39;y parle de cela \u2192 J&#39;en parle l\u00e0-bas.)")' aria-label="播放發音">🔊</button><br>口诀：en 在 y 前</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: 否定句中的 y 和 en -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 否定句中的 y 和 en</div>
+    <p>在否定句中，<strong>ne...pas</strong> 包圍動詞，而代詞 <strong>y</strong> 和 <strong>en</strong> 放在動詞前面、ne 的後面。</p>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「Je vais à la plage.」改寫成包含 y 的句子，應該怎麼說？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je vais y.</li>
+          <li onclick="checkAnswer(this, true)">B. J'y vais.</li>
+          <li onclick="checkAnswer(this, false)">C. Je y vais.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。代詞 y 要放在動詞前面，且 je 和 y 合併為 j'y。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「J'ai des pommes.」改寫成包含 en 的句子，正確形式是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. J'en ai des pommes.</li>
+          <li onclick="checkAnswer(this, false)">B. J'ai en.</li>
+          <li onclick="checkAnswer(this, true)">C. J'en ai.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 C。en 代替 des pommes，放在動詞前面。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 下列哪句話正確使用了 y 和 en？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. J'en y vais.</li>
+          <li onclick="checkAnswer(this, false)">B. J'y en vais.</li>
+          <li onclick="checkAnswer(this, true)">C. J'y vais.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 C。這句話只用了 y，代替地點。A 和 B 的順序錯誤，且 en 和 y 同時出現時 en 在前。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">4. 「Il mange du riz.」的否定形式，使用 en 應該是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Il ne en mange pas.</li>
+          <li onclick="checkAnswer(this, true)">B. Il n'en mange pas.</li>
+          <li onclick="checkAnswer(this, false)">C. Il ne mange pas en.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案是 B。否定句中 en 放在動詞前面，且 ne 要與 en 合併為 n'en。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: 綜合練習：填空 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">6</span> 綜合練習：填空</div>
+    <p>填入適當的 y 或 en：</p>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀「跟練時間」中的所有例句，錄音並自查發音</li>
+        <li style="padding: 0.5rem 0;">完成「小測驗」和「綜合練習」，對照答案糾正錯誤</li>
+        <li style="padding: 0.5rem 0;">用自己的話寫出 5 個包含 y 或 en 的完整句子</li>
+        <li style="padding: 0.5rem 0;">預習下一課：法語指示代名詞 celui / celle / ceux / celles</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 45 · 第 45 課：法語副代詞 y 和 en 的精準應用 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語指示代名詞 celui / celle / ceux / celles 的用法</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
