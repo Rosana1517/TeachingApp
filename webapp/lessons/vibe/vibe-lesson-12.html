@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 12 — 上下文工程（Context Engineering）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">上下文工程（Context Engineering）</h1>
+    <p class="lesson-subtitle">了解系統指令、工具描述與對話歷史如何組成 AI 每次回應看到的完整視角</p>
+  </div>
+
+  <!-- Section: 什麼是上下文工程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🧠</span> 什麼是上下文工程？</div>
+    <p>在 Vibe Coding 的工作流程中，AI 並不知道你專案的完整狀態，它只能看到你「在當下」餵給它的資訊。這個資訊集合就是<strong>上下文</strong>（Context）。上下文工程，就是有意識地設計這些資訊，讓 AI 在做決策時能看到最關鍵、最準確、最有用的內容。
+
+從 Agent 的核心公式 <code>Agent = LLM + 上下文 + 工具</code> 來看，上下文扮演的是<strong>「決策時的認知邊界」</strong>角色——AI 在這個邊界內做判斷，超出邊界的事它不知道、也不會主動去猜。當上下文內容準確且結構清晰，AI 的行為就會符合你的預期，這就是 Vibe 穩定的狀態；反之，如果上下文充滿錯誤資訊、遺漏關鍵脈絡、或是冗長無用，AI 就會做出讓你措手不及的決定，這就是 Vibe 破裂的常見原因。
+
+在實際操作中，上下文主要由三個來源組成：<strong>系統指令</strong>（System Prompt）定義 AI 的角色與行為準則，<strong>工具描述</strong>（Tool Descriptions）讓 AI 知道它能調用哪些能力，以及<strong>對話歷史</strong>（Conversation History）提供近期的互動脈絡。理解這三者的重量與限制，是寫出穩定 AI 輔助程式的基礎。</p>
+  </div>
+
+  <!-- Section: 系統指令如何影響 AI 的每次回應 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📜</span> 系統指令如何影響 AI 的每次回應？</div>
+    <p>系統指令是 AI 在每輪對話中最先讀到的部分，它定義了 AI 的角色、行為框架、技術棧偏好，甚至是禁止事項。在 Cursor 或 Claude Code 等工具中，系統指令通常存在專案根目錄的 <code>.cursorrules</code> 或 <code>CLAUDE.md</code> 檔案裡，這些檔案會被 AI Agent 自動載入，作為每次決策的基礎脈絡。
+
+系統指令的好壞直接決定 Vibe 的穩定程度。一份好的系統指令會明確告訴 AI：你用的是哪個框架、程式碼風格為何、測試怎麼跑、哪些目錄不要動、哪些行為要避免。當 AI 有這些指引時，它產生的程式碼會更貼近你的預期，不需要你一再修正。反之，如果系統指令只寫了「你是個程式設計師」，AI 就不會知道你想用 TypeScript 還是 JavaScript、用的是 Next.js 還是其他框架，它可能會給出完全不符合你專案風格的程式碼，這時你就會感受到 Vibe 正在裂開。
+
+另一個關鍵是<strong>上下文窗口的使用效率</strong>。系統指令佔用的是上下文的一小部分，但它對 AI 行為的影響比例極高。這代表你不需要把整個專案說明都塞進去，只要寫好核心準則，AI 就能在後續對話中保持一致的行為風格。</p>
+  </div>
+
+  <!-- Section: 對話歷史：上下文中的時間維度 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📅</span> 對話歷史：上下文中的「時間維度」</div>
+    <p>除了系統指令，<strong>對話歷史</strong>是上下文中佔用空間最大、也最容易失控的部分。每一次你與 AI 的對話、AI 的回覆、它讀取的檔案內容，都會被追加到上下文裡。隨著對話進行，這個歷史會越來越長，最終觸及 AI 模型的上下文窗口上限。
+
+上下文窗口是一個固定大小的記憶體空間，不同模型有不同的容量限制。例如 Claude 3.5 Sonnet 的上下文窗口是 200K token，GPT-4o 也是 128K 到 200K token。Token 的計算是以文字片段的單位來計算，大致上一個中文詞約 1.5 到 2 個 token，一行程式碼約 10 到 30 個 token，這意味著一段中等長度的對話加上程式碼片段，很容易就消耗掉數萬 token。
+
+當對話歷史過長，AI 會出現兩個常見問題：<strong>注意力稀釋</strong>與<strong>記憶偏移</strong>。前者是指 AI 難以從大量文字中準確鎖定你之前提出的要求，導致它忽略了重要的約束條件；後者是指早期的指令雖然存在上下文裡，但被後續的對話內容掩蓋，AI 的行為開始偏離你最初的預期。這就是為什麼在長對話中，你常常會發現 AI 突然「忘記」了專案的某個核心規範，或是開始用錯誤的框架寫程式。
+
+在 Vibe Coding 中，這個現象通常表現為：前期一切順利，AI 完美遵循你的規範，但對話進行到一半後，它開始給出風格不一致的程式碼、忽略你之前明確指定的技術選擇，或是做出與專案結構衝突的決定。診斷方法很直接：檢查你與 AI 的對話歷史長度，以及最近的幾輪互動，找出 AI 開始偏離的時間點。</p>
+  </div>
+
+  <!-- Section: 上下文過長為什麼會讓 AI 變笨 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📉</span> 上下文過長為什麼會讓 AI 變笨？</div>
+    <p>AI 的上下文窗口大小是固定的，這是一個硬體與成本限制，不是一個可以無限擴充的資源。當上下文中的資訊量接近或超過這個上限時，AI 的表現會明顯下降，這不是因為 AI「變笨」了，而是因為它<strong>能夠處理的資訊量已經超載</strong>。
+
+首先，當對話歷史過長，AI 的注意力機制會變得分散。現代 LLM 使用 Attention 機制來理解文字之間的關聯，但 Attention 的计算成本與上下文長度呈平方關係。為了控制計算量，模型在處理超長上下文時會不自覺地「降低解析度」——它仍然能看到所有文字，但對細節的關注程度會下降。這就像你在一張紙上同時看 100 行程式碼，和只看 10 行程式碼時的注意力集中程度是完全不同的。
+
+其次，<strong>指令遺忘</strong>是一個真實存在的現象。研究表明，當上下文超過一定長度後，模型對早期指令的召回率會顯著下降。這不代表指令從上下文中消失了，而是模型在生成回覆時，無法有效提取並應用那些早期的關鍵資訊。在 Vibe Coding 中，這表現為 AI 忘記了你的核心規範，開始使用不適當的框架、忽略你指定的程式碼風格，或是做出與專案結構衝突的決定。
+
+第三，<strong>工具描述與系統指令的權重競爭</strong>。當上下文很長時，對話歷史佔用大量空間，工具描述和系統指令雖然仍然存在，但它們的相對影響力會下降。AI 可能已經讀到了大量不相關的對話內容，導致它在生成回覆時更依賴近期的對話脈絡，而不是最初的系統指令。這會造成行為的不一致性。
+
+最後，上下文過長還會帶來<strong>延遲與成本</strong>的問題。每個 token 都有計算成本，上下文越長，每次回應的生成時間就越久，API 費用也越高。這不是直接的「變笨」，但會讓你因為頻繁中斷對話、重置上下文來換取更好的表現，進而打斷 Vibe 的流動。</p>
+  </div>
+
+  <!-- Section: 實戰：撰寫你的專案規則檔 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> 實戰：撰寫你的專案規則檔</div>
+    <p>現在來實際操作。在你的專案根目錄建立一個 <code>.cursorrules</code> 或 <code>CLAUDE.md</code> 檔案，內容要包含以下核心元素：
+
+<strong>角色定義</strong>：明確告訴 AI 它是誰，以及它的任務是什麼。例如：「你是一位資深前端工程師，專門協助我開發基於 Next.js 14 App Router 的 TypeScript 專案。」
+
+<strong>技術棧規範</strong>：列出專案使用的核心技術與版本。這能避免 AI 給出過時或不一致的程式碼。
+
+<strong>程式碼風格</strong>：指定你偏好的命名規則、文件結構、錯誤處理方式。
+
+<strong>目錄結構規範</strong>：明確標註哪些目錄由 AI 負責，哪些不要動。
+
+<strong>禁止事項</strong>：列出 AI 絕對不能做的事情，例如「不要修改 tailwind.config.js」、「不要觸碰 .env 檔案」。
+
+以下是一個實際的範例檔案內容，你可以根據自己的專案調整：
+
+在 Cursor 或 Claude Code 中寫好這份檔案後，開始與 AI 對話，請它幫忙建立一個新功能，然後觀察它是否遵循你寫的規則。如果你發現它開始偏離，檢查你的規則檔是否不夠明確，或是對話歷史已經過長導致早期指令被稀釋。</p>
+  </div>
+
+  <!-- Section: 實戰：觀察上下文長度對 AI 行為的影響 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 實戰：觀察上下文長度對 AI 行為的影響</div>
+    <p>這是一個驗證上下文工程重要性的直接實驗。請按照以下步驟操作，觀察 AI 在不同上下文長度下的行為差異：
+
+<strong>步驟一：建立一個新的 Next.js 專案</strong>，使用 TypeScript 與 App Router。在專案根目錄建立 <code>CLAUDE.md</code>，內容如下：
+
+然後，用 Claude Code 或 Cursor 與 AI 對話，請它幫你在專案中建立一個新的功能頁面。記錄 AI 的行為是否符合你的規範。
+
+<strong>步驟二：開始一個新的對話</strong>，重複相同的請求。這次先讓 AI 讀取並理解專案的幾個主要檔案，例如 <code>package.json</code>、<code>tsconfig.json</code>、以及一個現成的頁面組件。讓上下文變得稍微長一些，再提出相同的請求。觀察 AI 的行為是否有變化。
+
+<strong>步驟三：進行更長的對話</strong>，讓 AI 閱讀更多檔案、討論更多細節，甚至加入一些不相關的對話內容。然後再次提出相同的請求。這時你很可能會注意到 AI 開始偏離你最初的規範。
+
+這個實驗的重點不是要證明 AI 變笨了，而是要你<strong>親身體驗</strong>上下文長度如何影響 AI 的決策品質。當你發現 AI 開始偏離時，不要急著責怪它，而是檢查你的上下文——是不是對話歷史太長？是不是系統指令不夠明確？是不是有新的不相關內容擠占了關鍵資訊的空間？
+
+在 Vibe Coding 中，這是一個重要的診斷技巧：<strong>當 AI 的行為開始異常，優先檢查上下文，而不是直接修改程式碼</strong>。</p>
+  </div>
+
+  <!-- Section: 工具描述：讓 AI 知道它的能力邊界 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 工具描述：讓 AI 知道它的「能力邊界」</div>
+    <p>工具描述是上下文中的第三個重要組成部分。當 AI Agent 具備調用工具的能力時，每個工具的<strong>名稱、描述、參數結構</strong>都會被寫入上下文，讓 AI 知道它能做什麼、不能做什麼。
+
+工具描述的品質直接影響 AI 調用工具的準確性。一個好的工具描述應該包含：<strong>工具的名稱</strong>（清晰易懂）、<strong>工具的用途</strong>（它做什麼）、<strong>參數的說明</strong>（每個參數代表什麼）、以及<strong>使用時機</strong>（什麼時候應該調用這個工具）。
+
+例如，如果你給 AI 一個「讀取檔案」的工具，描述應該明確說明：這個工具可以讀取專案中的任何檔案，返回檔案內容的完整文字；適用時機是你需要理解某個檔案的現有程式碼時。如果你只寫「讀取檔案」，AI 可能不知道它能用這個工具來理解現有程式碼，而是把它當成一個一般性的檔案操作工具。
+
+在 Cursor 或 Claude Code 中，工具描述通常由系統自動生成，但你也可以透過 <code>CLAUDE.md</code> 或 <code>.cursorrules</code> 來補充說明哪些工具適合使用、哪些情況應該避免使用。這能帮助 AI 更精準地決定何時調用工具，以及如何使用工具來完成你的任務。
+
+當 Vibe 破裂表現為 AI 調用了錯誤的工具，或是用工具的方式不符合你的預期時，檢查你的工具描述是否足夠明確。一個常見的問題是 AI 用「寫檔案」工具來修改不應該修改的檔案，這時你應該在系統指令中加入「不要修改 <code>tailwind.config.js</code>」這樣的明確禁令。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂時：上下文維度的診斷 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🩺</span> 當 Vibe 破裂時：上下文維度的診斷</div>
+    <p>當 AI 的行為開始偏離你的預期時，從上下文的角度來診斷是最直接的方法。以下是幾個常見的 Vibe 破裂模式及其上下文相關的原因：
+
+<strong>模式一：AI 開始使用錯誤的框架或版本</strong>。這通常意味著系統指令中的技術棧規範不夠明確，或者對話歷史中出現了 conflicting 的資訊。例如，你在系統指令中寫了「使用 Next.js 14」，但後來的對話中你提到了「舊版的 pages router」，AI 可能會混淆。診斷方法：檢查對話歷史中是否有矛盾的資訊，重新明確你的技術棧要求。
+
+<strong>模式二：AI 忽略了你之前明確指定的行為規範</strong>。這是最典型的「指令遺忘」現象，通常發生在上下文很長的時候。診斷方法：檢查對話歷史長度，如果超過 50 輪對話，考慮開始一個新的對話，或在系統指令中再次強調核心規範。
+
+<strong>模式三：AI 調用了不應該調用的工具</strong>。這通常與工具描述不夠明確有關，或者系統指令中缺少禁止事項。診斷方法：檢查你的工具描述是否足夠具體，以及 <code>CLAUDE.md</code> 中是否有明確的「不要做」清單。
+
+<strong>模式四：AI 對專案結構的理解出現偏差</strong>。這通常是因為 AI 沒有正確載入專案的結構資訊，或者上下文中的資訊與實際專案不一致。診斷方法：確保 <code>CLAUDE.md</code> 中包含了正確的目錄結構說明，以及 AI 正確讀取了關鍵的組態檔案。
+
+在 Vibe Coding 中，context 是你可以直接控制的變數。當你發現 AI 的行為異常，優先檢查：<strong>1. 系統指令是否足夠明確？</strong><strong>2. 對話歷史是否過長？</strong><strong>3. 工具描述是否與你的需求一致？</strong></p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列關於上下文工程的敘述，何者正確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">上下文窗口越大，AI 的表現一定越好</li>
+          <li onclick="checkAnswer(this, true)">系統指令對 AI 行為的影響遠大於對話歷史的長度</li>
+          <li onclick="checkAnswer(this, false)">對話歷史越長，AI 越能保持早期指令的一致性</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 選項錯誤，因為上下文窗口過大時會導致注意力稀釋與指令遺忘，反而降低表現。B 選項正確，系統指令定義了 AI 的基礎行為框架，對整體行為的影響權重高於對話歷史。C 選項錯誤，研究顯示當上下文超長時，模型對早期指令的召回率會顯著下降。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 AI 開始使用錯誤的框架版本時，最可能的上下文原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">系統指令中沒有明確指定框架版本</li>
+          <li onclick="checkAnswer(this, true)">對話歷史中出現了矛盾的技術資訊</li>
+          <li onclick="checkAnswer(this, false)">AI 的模型版本太舊</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 這是最常見的上下文污染現象。當對話歷史中包含矛盾的技術資訊（例如前期討論舊版架構，後期又提到新功能），AI 可能混淆並使用錯誤的版本。A 選項也可能是一個原因，但題目強調「開始使用」錯誤版本，暗示之前是正確的，這更符合對話歷史中出現矛盾資訊的情況。C 選項與上下文工程無關。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在你的專案根目錄建立 <code>CLAUDE.md</code> 或 <code>.cursorrules</code> 檔案，撰寫一份包含角色定義、技術棧規範、程式碼風格、目錄結構與禁止事項的完整專案規則檔。</li>
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor，請 AI 幫你建立一個新功能頁面。觀察 AI 的行為是否符合你的規則檔設定，記錄任何偏離或不一致的地方。</li>
+        <li style="padding: 0.5rem 0;">開始一個新的對話，讓 AI 先閱讀你專案的多個檔案（如 <code>package.json</code>、<code>tsconfig.json</code>、以及一個現有頁面組件），累積較長的上下文後，再次提出相同的請求。觀察 AI 的行為是否開始偏離，並記錄差異。</li>
+        <li style="padding: 0.5rem 0;">根據你的觀察，修改你的 <code>CLAUDE.md</code> 或 <code>.cursorrules</code>，讓 AI 在較長對話中仍能保持一致的行為。比較修改前後 AI 的行為差異，寫下你的結論。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 12 · 上下文工程（Context Engineering）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：記憶系統與知識庫</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
