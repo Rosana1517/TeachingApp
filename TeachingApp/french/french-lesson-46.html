@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 46 — 第 46 課：法語否定結構的擴展——jamais、plus、rien 與 personne</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 46</span>
+    <h1 class="lesson-title">第 46 課：法語否定結構的擴展——jamais、plus、rien 與 personne</h1>
+    <p class="lesson-subtitle">學會用不同否定副詞表達「再也不」、「毫無」、「從不」等層次豐富的否定意義</p>
+  </div>
+
+  <!-- Section 1: 否定副詞家族入門 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 否定副詞家族入門</div>
+    <p>我們在第 25 課已學過基本否定 <strong>ne...pas</strong>，本課將擴展否定詞彙。法語的否定結構核心仍然是 <strong>ne + 動詞 + 否定副詞</strong>，但不同副詞帶來精細的語義差異：<strong>jamais</strong>（從未／再也不）、<strong>plus</strong>（不再）、<strong>rien</strong>（什麼都沒有）、<strong>personne</strong>（沒有人）。注意在口語中 ne 常被省略，但否定副詞本身不可省略。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下為本課核心否定副詞的發音要點。請特別注意 <strong>jamais</strong> 與 <strong>rien</strong> 的連音變化，以及口語中 ne 隱形後否定副詞在語流中的重音位置。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">jamais</div>
+        <div class="pron-ipa">/ʒa.mɛ/，e 發 /ɛ/ 半開元音，s 無聲，末尾輔音不發音</div>
+        <div class="pron-example"><em>Je ne sais jamais.</em>（我永遠不知道。）<button class="speak-btn" onclick='speakFrench("Je ne sais jamais.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">plus</div>
+        <div class="pron-ipa">否定用法時發 /ply/，s 發 /z/ 連音；表「更多」時發 /ply/ 但語境不同</div>
+        <div class="pron-example"><em>Je ne mange plus.</em>（我不再吃了。）<button class="speak-btn" onclick='speakFrench("Je ne mange plus.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">rien</div>
+        <div class="pron-ipa">/ʁjɛ̃/，鼻化元音 /jɛ̃/，口語中 ne 常省略</div>
+        <div class="pron-example"><em>Je ne dis rien.</em>（我說不出話。）<button class="speak-btn" onclick='speakFrench("Je ne dis rien.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">personne</div>
+        <div class="pron-ipa">/pɛʁ.sɔn/，o 發半閉元音 /ɔ/，n 與前一字連音時發 /n/</div>
+        <div class="pron-example"><em>Je ne vois personne.</em>（我看不到任何人。）<button class="speak-btn" onclick='speakFrench("Je ne vois personne.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下句子，注意 <strong>ne 的省略</strong>在口語中的自然感，以及否定副詞在語流中的<strong>重音位置</strong>。先慢讀，再逐漸加速。</p>
+    <div class="follow-box">
+      <h4>請跟讀以下句子，注意 <strong>ne 的省略</strong>在口語中的自然感，以及否定副詞在語流中的<strong>重音位置</strong>。先慢讀，再逐漸加速。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Je ne parle jamais.</span>
+          <span class="ipa">/ʒə nə paʁl ʒa.mɛ/</span>
+          <span class="meaning">—— 我從不說話。</span>
+          <button class="speak-btn" onclick='speakFrench("Je ne parle jamais.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il n'a plus d'argent.</span>
+          <span class="ipa">/il na ply daʁ.ʒɑ̃/</span>
+          <span class="meaning">—— 他不再有钱了。</span>
+          <button class="speak-btn" onclick='speakFrench("Il n&#39;a plus d&#39;argent.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Je ne veux rien.</span>
+          <span class="ipa">/ʒə nə vø ʁjɛ̃/</span>
+          <span class="meaning">—— 我不要任何東西。</span>
+          <button class="speak-btn" onclick='speakFrench("Je ne veux rien.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle ne voit personne.</span>
+          <span class="ipa">/ɛl nə vwa pɛʁ.sɔn/</span>
+          <span class="meaning">—— 她不見任何人。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle ne voit personne.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Nous n'avons jamais fini.</span>
+          <span class="ipa">/nu na vɔ̃ ʒa.mɛ fɛ.ni/</span>
+          <span class="meaning">—— 我們從未完成。</span>
+          <button class="speak-btn" onclick='speakFrench("Nous n&#39;avons jamais fini.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：口語中「ne + 動詞」常省略為單一字節，重音落在否定副詞上，例如「je sais pas」比「je ne sais pas」更自然。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>以下表格對比四種否定副詞的用法差異。請特別注意 <strong>rien</strong> 與 <strong>personne</strong> 在否定句中的位置——它們放在動詞後，而 <strong>jamais</strong> 和 <strong>plus</strong> 也有相同位置。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">jamais</div>
+        <div class="pron-ipa">表示時間上的否定：從未／再也不</div>
+        <div class="pron-example">Je ne viens jamais ici.<button class="speak-btn" onclick='speakFrench("Je ne viens jamais ici.")' aria-label="播放發音">🔊</button><br>口語常說「je viens jamais」</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">plus</div>
+        <div class="pron-ipa">表示停止或不再延續的狀態</div>
+        <div class="pron-example">Je ne bois plus de café.<button class="speak-btn" onclick='speakFrench("Je ne bois plus de caf\u00e9.")' aria-label="播放發音">🔊</button><br>注意「plus de + 名詞」表「不再有任何」</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">rien</div>
+        <div class="pron-ipa">否定事物：什麼都沒有</div>
+        <div class="pron-example">Je ne comprends rien.<button class="speak-btn" onclick='speakFrench("Je ne comprends rien.")' aria-label="播放發音">🔊</button><br> rien 不區分性別，總為中性</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">personne</div>
+        <div class="pron-ipa">否定人物：沒有人</div>
+        <div class="pron-example">Je ne connais personne.<button class="speak-btn" onclick='speakFrench("Je ne connais personne.")' aria-label="播放發音">🔊</button><br> personne 不區分性別，總為中性</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「我不再吃肉了」用否定的正确表达是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. Je ne mange plus de viande.</li>
+          <li onclick="checkAnswer(this, false)">B. Je ne mange jamais de viande.</li>
+          <li onclick="checkAnswer(this, false)">C. Je ne mange rien de viande.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「不再」對應 plus，jamais 是「從未」，rien 用於否定事物而非搭配 de + 名詞。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「我什麼都不知道」的正确表达是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je ne sais personne.</li>
+          <li onclick="checkAnswer(this, false)">B. Je ne sais jamais.</li>
+          <li onclick="checkAnswer(this, true)">C. Je ne sais rien.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「什麼都不知道」用 rien，personne 否定人，jamais 否定時間。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 口語中「ne」通常會怎麼處理？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 總是保留，不可省略</li>
+          <li onclick="checkAnswer(this, true)">B. 通常省略，保留否定副詞</li>
+          <li onclick="checkAnswer(this, false)">C. 否定副詞也一起省略</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 口語中 ne 常被省略，但否定副詞（pas、jamais、plus 等）必須保留。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用 jamais、plus、rien、personne 各造一句否定句，並口讀 5 遍。</li>
+        <li style="padding: 0.5rem 0;">寫一段 5-10 句的短文，描述你「不再做的某件事」和「從未做過的某件事」，使用今天學過的否定副詞。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 46 · 第 46 課：法語否定結構的擴展——jamais、plus、rien 與 personne · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 47 課：直接受詞與間接受詞代名詞同時出現的順序規則</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
