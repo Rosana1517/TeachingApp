@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 18 — 長話短說：PREP法</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 18 課</span>
+    <h1 class="lesson-title">長話短說：PREP法</h1>
+    <p class="lesson-subtitle">讓你的主張容易被聽見</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼需要結構？</div>
+    <p>我們常因為害怕衝突或擔心對方不懂，而說了很長一段話，結果對方卻抓不到重點，甚至覺得你在發脾氣。這讓你的真實需求被埋沒，最後往往因為焦慮而放棄表達，選擇沉默或討好。<strong>結構化的表達不是為了贏過對方，而是為了讓你的聲音被清楚接收。</strong>當你的邏輯清晰，焦慮感也會隨之降低，因為你不再需要擔心「他會不會誤會我」。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>PREP 是一種簡單有力的口語表達框架，能幫助你在短時間內組織思緒，讓听者快速理解你的立場。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">P - Point（結論）</div>
+        <div class="principle-desc">第一句話直接說重點，不要鋪陳。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">R - Reason（理由）</div>
+        <div class="principle-desc">簡單說明為什麼這麼想，給出一個核心理由即可。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">E - Example（案例）</div>
+        <div class="principle-desc">用一個具體的例子或事實來支撐理由，讓抽象的觀點具象化。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">P - Point（結論）</div>
+        <div class="principle-desc">最後再次重申你的結論，形成閉環，加深對方印象。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>在練習時，可以先把這四個步驟寫下來，再轉化為口語。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">同事想把工作丟給你，但你已經很忙</span>
+          <span class="line">'我這次沒辦法幫你代做這份報告（P）。因為我目前的進度已經排滿了，擔心倉促完成會影響品質（R）。就像上個專案因為趕工，數據出了錯，我們都不希望再發生（E）。所以我建議你先找其他同事，或者我們看看能不能延期（P）。'</span>
+        </li>
+        <li>
+          <span class="situation">朋友一直開你不喜歡的玩笑</span>
+          <span class="line">'我不喜歡這個玩笑（P）。這讓我覺得不受尊重，也有點難堪（R）。例如上次在聚餐時，大家笑得很開心，只有我覺得很尷尬（E）。以後請不要這樣叫我了（P）。'</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 記住：Example 不需要很長，一句話帶過就好，重點是支撐你的 Reason。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>很多人會把結論藏在中間，或者用藉口包裝，這會讓表達變得無力。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">「抱歉哦，可能因為最近比較忙，加上那個專案其實也不是很急，可能我現在沒辦法幫你……」</td><td>先道歉並給出許多藉口，反而讓對方覺得有空間討價還價，且不清楚你的真實拒絕原因。</td></tr>
+        <tr><td class="bad">「我覺得這件事吧，其實每個人看法不同，然後我就想說……」</td><td>缺乏明確結論，繞圈子會讓听者失去耐心，也無法傳達你的立場。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 PREP 結構中，為什麼要放在「第一句」說結論？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 讓听者立刻明白你的立場</li>
+          <li onclick="checkAnswer(this, false)">B. 讓听者先聽完理由再決定</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">直覺地先說結論，能讓听者在最短時間內抓住重點，避免因為資訊過載而忽略你的需求。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪一段話正確運用了 PREP 結構？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 先說例子，再說結論和理由</li>
+          <li onclick="checkAnswer(this, true)">B. 先說結論，再給理由和例子</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">PREP 的標準順序是 Point（結論）→ Reason（理由）→ Example（例子）→ Point（重申結論），這樣邏輯最清晰。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>在接下來的一天中，挑選一個「非緊急」但需要表達意見或拒絕的小場合（例如：點餐時換掉不喜歡的材料、回覆家人訊息表達觀點）。</li>
+        <li>運用 PREP 結構，先在心裡或紙上寫下 P-R-E-P，然後再開口表達。</li>
+        <li>記錄這次表達後的感受：是否比過去更清晰？對方是否有較好的反應？</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">⚠️</span> 專業提醒</div>
+    <p>本課程為心理教育與技能訓練，不替代專業心理治療。若您感到持續焦慮、情緒困擾嚴重影響生活，建議尋求合格心理師或醫師的協助。</p>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 18 課 · 2026-08-08</p>
+    <p class="next">下一課：學會溫和而堅定地表達需求</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
