@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 17 — RAG 檢索增強生成基礎</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">RAG 檢索增強生成基礎</h1>
+    <p class="lesson-subtitle">打破訓練時效限制，從專案知識庫精準取用答案</p>
+  </div>
+
+  <!-- Section: RAG 是什麼為什麼 Vibe Coding 需要它 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> RAG 是什麼？為什麼 Vibe Coding 需要它？</div>
+    <p>RAG（Retrieval-Augmented Generation，檢索增強生成）的核心概念很直白：<strong>讓 AI 在回答之前，先去查閱相關資料</strong>，而不是只靠訓練時期的記憶瞎猜。在 Vibe Coding 的情境中，Agent 每天要處理成千上萬個專案檔案——README、程式碼註解、設計文件、舊的討論記錄。如果每次詢問都只靠 LLM 內部參數，不僅容易過時，也很難精準對應到你專案的特定實現細節。RAG 讓 Agent 擁有一個<strong>「外置大腦」</strong>：先把相關內容從知識庫中取出，塞進上下文窗口，再讓 LLM 基於這些真實資料回答。這樣做的好處是，答案會貼近專案現實，且你能清楚追溯 AI 是從哪裡找到答案的。</p>
+  </div>
+
+  <!-- Section: AI Agent 是如何調用 RAG 的 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI Agent 是如何調用 RAG 的？</div>
+    <p>一個典型的 RAG 流程包含三個步驟：<strong>查詢 → 檢索 → 生成</strong>。當你向 Agent 提問時，Agent 並不會立刻回答，而是先產生一個搜尋請求（query），用這個請求去查詢你的知識庫。知識庫通常是一座<strong>向量資料庫（Vector Database）</strong>，裡面存著你專案各類文件的「嵌入向量」（Embedding）。Agent 會將你的問題轉換成同樣的向量表示，然後在資料庫中找最相似的片段。找到相關內容後，Agent 會把這些片段作為額外上下文追加到提示詞中，最後由 LLM 綜合原始問題與檢索到的資料，給出有憑有據的答案。這整個過程對你來說是無縫的，但背後涉及 Embedding 轉換、相似度計算與上下文拼接等關鍵技術。</p>
+  </div>
+
+  <!-- Section: 實戰：觀察 RAG 行為 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：觀察 RAG 行為</div>
+    <p>現在我們來實際體驗一次 RAG 的運作。請打開你的專案，並確保裡面已經有一些技術文件（例如 README.md、doc 資料夾下的說明檔）。接著使用 Claude Code 或 Cursor，提出一個需要查閱專案內部文件才能準確回答的問題。例如：<code>「根據專案文件，我們目前用的狀態管理方案是什麼？請引用具體的檔案路徑。」</code>觀察 AI 的回應過程，它應該會先進行搜尋動作，然後再給出答案，並且答案中會明確指出資訊來源的檔案路徑。如果 AI 沒有先搜尋就直接回答，或者給出的答案沒有引用任何專案內文件，這就是一個 vibe broken 的訊號，代表 RAG 流程可能沒有正確觸發或檢索失敗。</p>
+    <div class="terminal-block">
+<span class="comment"># 在 Claude Code 中測試 RAG 行為</span>
+<span class="prompt">$</span> <span class="cmd">claude &quot;根據 README，我們專案的部署流程是什麼？請直接引用原文&quot;</span>
+<span class="output">正在分析問題...</span>
+<span class="output">搜尋相關文件...</span>
+<span class="output">已找到 3 個相關片段</span>
+<span class="output">[摘要回答內容，並附上引用來源：./README.md, ./docs/deployment.md]</span>
+<span class="comment"># 注意觀察 AI 是否先進行搜尋，再給出有根據的答案</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：Embedding 與向量搜尋 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：Embedding 與向量搜尋</div>
+    <details class="deep-dive">
+      <summary>為什麼文字可以被轉換成向量，並且計算相似度？</summary>
+      <div class="deep-dive-content">
+        <p>RAG 的效能關鍵在於 Embedding 模型與向量搜尋。Embedding 模型（如 OpenAI 的 text-embedding-ada-002）會將一段文字轉換成一個固定長度的數值向量，這個向量的每個維度代表文字在某个語義維度上的得分。例如，「汽車」和「車輛」這兩個詞在向量空間中會靠得很近，因為它們的語義相似。當我們把專案的每一份文件切割成小的 chunk，並用同一個 Embedding 模型將它們轉換成向量後，就能存入向量資料庫（如 Pinecone、Weaviate 或本地端的 Chroma）。當使用者提問時，問題也會被轉成向量，然後資料庫使用相似度演算法（常見的是余弦相似度）找出與問題向量最接近的 document 向量。這種方法能夠捕捉語義上的相似性，而不只是關鍵字匹配，因此即使問題和文件中的用詞不完全相同，也能找到相關內容。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 常見 RAG 問題與修復 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 常見 RAG 問題與修復</div>
+    <p>當 RAG 出現 vibe broken 時，通常有幾種典型症狀：<strong>檢索不到相關內容、檢索到錯誤內容、答案缺乏引用來源、或上下文窗口被填滿後遺漏關鍵資訊</strong>。針對這些問題，我們可以從幾個方向診斷與修復：第一，檢查 Embedding 模型是否與向量資料庫的設定一致，如果兩邊用不同的模型，產生的向量無法比較，檢索必然失敗。第二，調整 chunk 大小與重疊率，chunk 太大可能雜訊多，chunk 太小可能缺乏上下文，通常建議在 500~1000 個 token 之間並保留 100~200 的重疊。第三，優化查詢轉換（query transformation），有些系統會將原始問題改寫成更适合搜尋的形式，這能大幅提升檢索準確性。第四，考慮使用混合搜尋，結合關鍵字搜尋（BM25）與向量搜尋，取兩者優點。</p>
+  </div>
+
+  <!-- Section: RAG 與 Function Calling 的協作 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> RAG 與 Function Calling 的協作</div>
+    <p>在進階的 Agent 架構中，RAG 並不是孤立運作的，它經常與 Function Calling 配合使用。例如，Agent 可以先透過 Function Calling 調用一個 <code>search_documents(query)</code> 工具，這個工具內部就會執行 RAG 檢索，然後將結果回傳給 LLM。這種設計的好處是<strong>將檢索邏輯封裝成一個明確的工具</strong>，Agent 可以重複使用，並且可以對工具加入參數驗證、結果過濾等邏輯。另一個協作模式是將 RAG 結果作為 Function 的回傳值，然後 LLM 根據回傳值決定下一步動作，比如是進一步搜尋、直接回答、還是觸發其他工具。這種分工讓 Agent 的行為更可預測，也更容易除錯。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 RAG 流程中，以下哪個步驟是首先發生的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">LLM 直接根據訓練記憶生成答案</li>
+          <li onclick="checkAnswer(this, true)">將問題轉換成向量並搜尋知識庫</li>
+          <li onclick="checkAnswer(this, false)">將所有專案檔案讀入上下文窗口</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ RAG 的第一步是檢索（Retrieve），也就是將使用者問題轉換成向量，並在向量資料庫中尋找最相似的內容片段。選項 A 描述的是不使用 RAG 的純 LLM 回答方式，选项 C 則是低效的做法，因為將所有檔案都讀入會撐爆上下文窗口，也不是 RAG 的設計目的。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪個做法不能有效提升 RAG 檢索準確性？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">調整 chunk 大小與重疊率</li>
+          <li onclick="checkAnswer(this, true)">使用與 Embedding 模型不一致的向量資料庫</li>
+          <li onclick="checkAnswer(this, false)">結合關鍵字搜尋與向量搜尋</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 使用與 Embedding 模型不一致的向量資料庫會導致檢索失敗，因為不同模型產生的向量空間不同，無法進行有效的相似度計算。選項 A 和 C 都是業界公認的有效優化手段。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在專案中新增一個「知識來源」資料夾，放入 2~3 個專案說明文件（如技術決策記錄、API 文件摘要）。</li>
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor，提出一個需要查閱上述文件的問題，觀察 AI 是否先進行檢索再回答。</li>
+        <li style="padding: 0.5rem 0;">如果 AI 沒有先檢索，嘗試調整提示詞，例如加上「請先搜尋專案相關文件再回答」，比較兩次行為的差異。</li>
+        <li style="padding: 0.5rem 0;">回顧今天的 Deep Dive，嘗試用自己的話解釋 Embedding 是如何讓語義搜尋成為可能的。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 17 · RAG 檢索增強生成基礎</p>
+    <p style="margin-top: 0.3rem;">下一課預告：向量資料庫與 Embedding 實戰</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

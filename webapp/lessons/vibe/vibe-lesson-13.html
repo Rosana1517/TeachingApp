@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 13 — 記憶系統與知識庫</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">記憶系統與知識庫</h1>
+    <p class="lesson-subtitle">從個人偏好持久化到集體知識匯聚，建構不中斷的 Vibe Coding 體驗</p>
+  </div>
+
+  <!-- Section: 為什麼記憶是 The Brain 的核心 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🧠</span> 為什麼記憶是 The Brain 的核心？</div>
+    <p>在 Vibe Coding 的流程中，<code>AI 助手</code> 不只是單次對話的工具，而是隨著專案推進持續累積理解的「合作夥伴」。記憶系統的角色，就是將你的程式碼風格、專案設定、常用工具鏈、甚至偏好的錯誤處理方式，從短暫的上下文窗口轉換為可跨對話存取的结构化資料。這讓 AI 能在第二週的對話中，依然記得你在第一週設定的 <code>shadcn/ui</code> 主題變數，或是在第三個分支中沿用你確立的 commit message 慣例。若沒有記憶層，每次新對話都像重新介紹自己，Vibe 的連續性會被硬生生切斷，開發節奏也隨之打亂。</p>
+  </div>
+
+  <!-- Section: 個人記憶 vs. 共享知識庫 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 個人記憶 vs. 共享知識庫</div>
+    <p>個人記憶（Personal Memory）是專屬於單一使用者與單一專案的偏好與歷史，例如你在 <code>Cursor</code> 或 <code>Claude Code</code> 中設定的 <code>~/.claude/settings.json</code> 或 <code>~/.cursor/settings.json</code>，裡面記錄了你偏好的 TypeScript 嚴格模式、忽略的 linter 規則、常用快捷鍵映射等。這些資料僅對你的帳號與裝置有效，AI 在每次對話載入時會讀取這些設定來調整回應風格。相對地，共享知識庫（Shared Knowledge Base）則是面向社群或團隊的集體知識，例如你在 GitHub repo 的 <code>AGENTS.md</code> 中記載的專案架構決策、在 <code>biome.json</code> 或 <code>eslint.config.js</code> 中公開的程式碼規範，或是存放在 <code>.cursor/rules</code> 目錄下的團隊指引。這些檔案會被推送到版本控制，所有協作者與 AI 工具都能讀取，形成可重複、可審閱的知識沉澱。</p>
+  </div>
+
+  <!-- Section: AI 如何實現記住我的偏好 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI 如何實現「記住我的偏好」？</div>
+    <p>AI 工具的「記住我的偏好」功能，本質上是一個將非結構化對話歷史序列化到持久化儲存的過程。當你透過 <code>Ctrl+I</code>（Cursor）或 <code>/memory</code> 命令（Claude Code）新增一條記憶時，系統會將這段文字與當前上下文（專案路徑、檔案類型、甚至 timestamp）綁定，寫入使用者級別的 JSON 或 YAML 檔案。在下一次啟動對話時，工具會在載入專案根目錄的 <code>AGENTS.md</code>、<code>.cursor/rules</code> 或 <code>~/.claude/</code> 目錄後，主動將匹配的記憶片段注入初始 prompt 的系統訊息區塊。這種機制讓 AI 不需要你重複說明「用 Tailwind 的 <code>ring</code> 而不是 <code>border</code>」，因為記憶層已經替你把這個偏好編碼進了每次對話的開場上下文裡。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂：記憶失效的診斷 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 當 Vibe 破裂：記憶失效的診斷</div>
+    <p>最常見的 Vibe 破裂症狀是「AI 剛剛才記住的設定，下一個對話就不認得了」。診斷第一步是確認記憶檔案確實存在且路徑正確：在 macOS/Linux 上檢查 <code>~/.claude/settings.json</code> 或 <code>~/.cursor/settings.json</code>，在 Windows 上檢查 <code>%APPDATA%\Claude\settings.json</code> 或 <code>%APPDATA%\Cursor\User\settings.json</code>。第二步是檢查記憶是否被專案級的 <code>AGENTS.md</code> 或 <code>.cursor/rules</code> 覆蓋——若專案目錄下存在同名設定，專案層級通常優先於使用者層級。第三步是確認工具版本是否支援該記憶功能，舊版 Cursor 或 Claude Code 可能尚未實現跨對話記憶持久化。若檔案存在但 AI 仍忽略偏好，可嘗試清除快取並重啟工具，或直接在下一次對話開頭用 <code>/clear</code> 重置上下文後重新載入記憶。</p>
+  </div>
+
+  <!-- Section: 實戰任務：讓 AI 記住一項專案偏好 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 實戰任務：讓 AI 記住一項專案偏好</div>
+    <p>請選擇你正在使用的 AI 編程助手（Cursor 或 Claude Code），執行以下操作：首先在專案根目錄建立一個 <code>AGENTS.md</code> 檔案，寫入兩行內容，第一行是 <code># 專案優先級設定</code>，第二行是 <code>在處理 React 元件時，請優先使用 <code>tsx</code> 格式並為每個 prop 加上 TypeScript 型別註解。</code>。接著開啟新對話，輸入 <code>幫我建立一個 Button 元件</code>，觀察 AI 的回應是否自動套用 tsx 格式與 prop 註解。若沒有，請檢查 <code>AGENTS.md</code> 的語法是否正確（避免使用未封閉的 tag），並確認工具版本已更新。最後，嘗試在 Cursor 中使用 <code>Ctrl+I</code> 新增一條個人記憶：「當我提到 shadcn/ui 時，請使用 <code>badge</code> 組件而非 <code>button</code> 作為警示提示」，然後在另一個全新對話中輸入 <code>顯示一個警告</code>，驗證 AI 是否正確調用該記憶並選擇 <code>badge</code> 組件。</p>
+  </div>
+
+  <!-- Section: 深入解析：記憶的載入時機與優先級 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：記憶的載入時機與優先級</div>
+    <details class="deep-dive">
+      <summary>為什麼你的記憶有時被讀取、有時被忽略？</summary>
+      <div class="deep-dive-content">
+        <p>AI 工具載入記憶的時機並非隨機，而是遵循一套明確的層級與觸發條件。當新對話啟動時，工具會依序掃描四個來源：第一層是工具的全域設定（如 <code>~/.claude/settings.json</code>），第二層是專案根目錄的 <code>AGENTS.md</code> 與 <code>.cursor/rules/</code> 目錄，第三層是對話歷史中標記為「記憶」的片段，第四層是當前上下文窗口中自動提取的隱性偏好。優先級順序為：全域設定 &lt; 專案規則 &lt; 歷史記憶 &lt; 隱性上下文。然而，若某個來源的檔案不存在或語法無效，工具會靜默跳過而不會報錯，這正是記憶「消失」卻難以追蹤的主因。此外，記憶的匹配並非全文比對，而是透過關鍵字觸發——例如你設定的記憶包含 <code>shadcn/ui</code>，則當對話中出現該字串時，工具才會將相關偏好注入系統訊息。若專案中完全未提及 <code>shadcn/ui</code>，即使記憶檔案存在，該偏好也不會被載入，這就是為什麼有些設定看起來「有時靈有時不靈」。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一項是「個人記憶」的典型儲存位置？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">GitHub repository 的 <code>README.md</code></li>
+          <li onclick="checkAnswer(this, true)"><code>~/.claude/settings.json</code></li>
+          <li onclick="checkAnswer(this, false)">專案的 <code>package.json</code> 中的 <code>scripts</code> 欄位</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ <code>~/.claude/settings.json</code> 是 Claude Code 儲存使用者級別偏好設定的標準路徑，屬於個人記憶範疇。選項 A 的 <code>README.md</code> 是專案文件，屬於共享知識庫；選項 C 的 <code>package.json</code> 用於宣告依賴與腳本，不儲存 AI 記憶。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當 AI 忽略你新增的記憶時，最可能的診斷步驟是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">重新安裝作業系統</li>
+          <li onclick="checkAnswer(this, true)">檢查記憶檔案是否存在且路徑正確，並確認工具版本支援該功能</li>
+          <li onclick="checkAnswer(this, false)">將專案資料夾重新命名為 <code>vibe_project</code></li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 記憶失效的最常見原因是檔案不存在、路徑錯誤或工具版本過舊，因此應優先檢查這三項。選項 A 的重裝作業系統與記憶機制完全無關；選項 C 的資料夾命名不會影響 AI 工具讀取記憶的邏輯，因為記憶載入是基於檔案路徑與內容，而非資料夾名稱。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在專案根目錄建立 <code>AGENTS.md</code>，寫入三行專案級規則：TypeScript 嚴格模式、使用 <code>lucide-react</code> 圖示、避免使用 <code>any</code> 型別。</li>
+        <li style="padding: 0.5rem 0;">使用 Cursor 的 <code>Ctrl+I</code> 新增一條個人記憶：「當我要求建立表單時，請優先使用 <code>@radix-ui/react-form</code> 而非 <code>react-hook-form</code>」。</li>
+        <li style="padding: 0.5rem 0;">開啟全新對話，輸入 <code>建立一個登入表單</code>，觀察 AI 是否載入個人記憶並使用 <code>@radix-ui/react-form</code>；若未載入，檢查記憶檔案路徑與工具版本。</li>
+        <li style="padding: 0.5rem 0;">在終端機執行 <code>ls -la ~/.claude/settings.json</code>（macOS/Linux）或 <code>dir %APPDATA%\Claude\settings.json</code>（Windows），確認檔案存在並記錄其修改時間，驗證記憶是否被持久化儲存。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 13 · 記憶系統與知識庫</p>
+    <p style="margin-top: 0.3rem;">下一課預告：工具設計與 Function Calling</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

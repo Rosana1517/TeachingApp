@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 11 — Agent 核心公式：LLM + 上下文 + 工具</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">Agent 核心公式：LLM + 上下文 + 工具</h1>
+    <p class="lesson-subtitle">拆解智能體的智慧三元組，理解 Vibe Coding 的自動化邏輯</p>
+  </div>
+
+  <!-- Section: Agent 核心公式拆解 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🧠</span> Agent 核心公式拆解</div>
+    <p>Agent 的本質可以歸納成一個公式：<strong>Agent = LLM + 上下文 + 工具</strong>。LLM 是決策大腦，負責理解意圖、規劃步驟與生成回應；上下文是視野，決定 Agent 能看到哪些資訊與歷史；工具是手腳，讓模型能夠實際與外部環境互動、讀寫檔案或執行程式。在 Vibe Coding 中，這個公式解釋了為什麼有時候 Agent 看起來很聰明卻做不出正確功能——通常不是模型不夠強，而是上下文給錯了，或是工具沒有正確定義。理解這個三元組，能幫助你快速定位問題發生在哪個層面，而不是盲目重複提問。</p>
+  </div>
+
+  <!-- Section: LLM：決策核心與限制 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> LLM：決策核心與限制</div>
+    <p>現代 LLM 本質上是一個極其強大的「文字接龍」引擎，透過海量文本訓練學到了語言結構與部分世界知識，但模型本身<b>沒有主動執行動作的能力</strong>。在 Agent 架構裡，LLM 扮演的是<b>規劃者</b>的角色：根據你給的指令與工具說明，決定下一步要調用哪個工具、傳入什麼參數。換句話說，模型越強，規劃越精準；但就算是最先進的模型，若沒有正確的上下文與可用的工具，它也只會產生「看似合理卻無法執行」的輸出。在 Vibe Coding 中，選擇合適的模型會直接影響開發效率與輸出品質，例如 Claude 3.5 Sonnet 或 GPT-4o 在程式碼生成與工具調用上表現突出。</p>
+  </div>
+
+  <!-- Section: 上下文：視野決定理解深度 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 上下文：視野決定理解深度</div>
+    <p>上下文是 Agent 能看見的「資訊窗口」，包含你的提示詞、工作區檔案內容、對話歷史、工具輸出結果等。上下文的設計稱為 <strong>Context Engineering</strong>，目標是讓模型在不超出 token 限制的前提下，看到最相關且最有價值的資訊。一個常見的錯誤是丟入過多的無關檔案，導致模型注意力分散；另一個極端是上下文太少，模型只能憑記憶猜測，容易產生幻覺。在 Vibe Coding 流程中，善用 `.cursorrules`、`.clinerules` 或系統提示詞來設定開發上下文，能大幅減少無效輸出與重複說明。</p>
+  </div>
+
+  <!-- Section: 工具：從思考到執行的橋樑 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 工具：從思考到執行的橋樑</div>
+    <p>工具是讓 Agent 從「說」變成「做」的關鍵元件。透過工具定義，模型可以調用程式碼執行、檔案讀寫、網路請求或專用函數。在 Claude Code、Cursor Agent 或 Bolt 等工具型 Agent 裡，工具清單通常包含 `ReadFile`、`WriteFile`、`Bash`、`WebFetch` 等內建操作，也可透過 MCP（Model Context Protocol）擴展更多能力。當你發現 Agent 一直「只說不做」或輸出與需求不符，很可能是工具定義不完整或權限設定有問題。工具設計的原則是：<b>明確的名稱、清晰的參數說明、可預期的輸出格式</b>，這能讓模型更準確地選擇與呼叫工具。</p>
+  </div>
+
+  <!-- Section: 實戰：畫出你的 Agent 拆解圖 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎨</span> 實戰：畫出你的 Agent 拆解圖</div>
+    <p>請打開你目前正在使用的 Agent 工具（Claude Code、Cursor Agent、Bolt 或其他），嘗試用紙筆或數位圖表畫出它的 <strong>LLM + 上下文 + 工具</strong> 拆解圖。標註出你當前對話裡哪些是模型資訊、哪些是注入的上下文、哪些是可用的工具清單。這個練習能讓你直觀理解 Agent 的運作邊界，也會幫助你在後續課程中快速診斷「Vibe 破裂」的原因，例如：模型輸出錯誤 → 檢查工具定義；輸出偏離目標 → 檢查上下文是否有干擾資訊。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">普通聊天視窗</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">你：寫一個 Next.js 專案
+模型：直接輸出程式碼
+限制：無法讀寫檔案、無法執行指令、無法查看現有專案
+===</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">專業 Coding Agent（如 Claude Code）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">你：寫一個 Next.js 專案
+模型：先查看工作區結構 → 讀取相關檔案 → 生成程式碼並寫入 → 執行 npm install → 啟動 dev server
+能力：具備檔案操作、指令執行、工具調用與迭代能力
+===</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼同一顆模型換 Harness 表現天差地遠 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼同一顆模型換 Harness 表現天差地遠？</div>
+    <details class="deep-dive">
+      <summary>模型能力相同，為何 Claude Code 比聊天框更能完成複雜開發任務？</summary>
+      <div class="deep-dive-content">
+        <p>同一個 LLM 背後的推理能力是一樣的，但「表現差異」來自三個 Harness 層面的設計：<strong>上下文管理策略</strong>、<strong>工具調用機制</strong>與<strong>錯誤恢復循環</strong>。聊天視窗通常只把使用者的輸入當作單一提示，模型無法持續保留執行狀態；而專業 Coding Agent 會把工作區狀態、工具輸出、歷史決策都納入上下文視窗，形成一個連續的執行圖譜。此外，Harness 會定義工具調用的觸發條件與參數驗證，避免模型產生格式錯誤的工具呼叫。當 Vibe 破裂時，若錯誤訊息是工具參數錯誤，代表 Harness 的工具定義需要修正；若是模型邏輯錯誤，則需要調整上下文或提問策略。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. Agent 核心公式中，哪個組件負責「執行動作」而非「生成文字」？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">LLM</li>
+          <li onclick="checkAnswer(this, false)">上下文</li>
+          <li onclick="checkAnswer(this, true)">工具</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ LLM 負責生成文字與規劃，上下文負責提供資訊視野，而工具才是讓模型能真正執行檔案操作、指令呼叫或外部互動的組件，因此選 C。
+===</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 Agent 一直輸出「看起來合理但無法執行」的程式碼，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">模型版本太舊</li>
+          <li onclick="checkAnswer(this, true)">上下文裡缺少專案結構或工具定義</li>
+          <li onclick="checkAnswer(this, false)">作業系統不支援</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 模型產出合理文字不代表能執行，若上下文未提供專案結構、依賴清單或工具規範，模型只能憑記憶猜測，容易產生格式錯誤或無法運行的程式碼。A 不是主因，C 與此問題無關。
+===</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 下列哪項屬於 Context Engineering 的實踐？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">更換更快的模型</li>
+          <li onclick="checkAnswer(this, true)">設計 `.cursorrules` 來限制模型只關注特定檔案</li>
+          <li onclick="checkAnswer(this, false)">增加工具調用次數</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Context Engineering 是關於如何組織與過濾輸入資訊，`.cursorrules` 正是透過限制模型關注範圍來提升輸出精準度。A 是模型選擇，C 是工具使用策略，都不屬於上下文設計。
+===</div>
+      </div>
+    </div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">畫出你正在使用的 Agent 的 LLM + 上下文 + 工具拆解圖，並寫下每個組件的實際例子。</li>
+        <li style="padding: 0.5rem 0;">在 Cursor 或 Claude Code 中，故意輸入一個缺少關鍵上下文的指令（例如只說「幫我優化效能」但不給檔案），觀察模型如何回應，記錄問題點。</li>
+        <li style="padding: 0.5rem 0;">查看你使用的 Agent 工具清單（可透過 `claude tools` 或 Cursor 設定），嘗試新增一個自訂工具或修改工具描述，觀察輸出變化。</li>
+        <li style="padding: 0.5rem 0;">當 Vibe 破裂時，用三元組思路診斷問題：檢查模型是否被錯誤上下文干擾、工具是否正確定義、或是提問方式需要調整。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 11 · Agent 核心公式：LLM + 上下文 + 工具</p>
+    <p style="margin-top: 0.3rem;">下一課預告：上下文工程（Context Engineering）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

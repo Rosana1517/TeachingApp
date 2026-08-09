@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 16 — Coding Agent 與檔案系統架構</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">Coding Agent 與檔案系統架構</h1>
+    <p class="lesson-subtitle">把檔案系統從「儲存區」升級為 Agent 的「外部大腦」</p>
+  </div>
+
+  <!-- Section: 架構核心：為什麼是檔案 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🧠</span> 架構核心：為什麼是檔案？</div>
+    <p>在 Vibe Coding 的實戰中，業界驗證過最強的通用 Agent 範式，就是<strong>「會寫代碼的 Agent」加上「對檔案系統的完全控制權」</strong>。為什麼 Claude Code、Cursor 或 Devin 都選擇代碼執行、檔案讀寫與搜尋這三種工具作為核心？答案很簡單：<strong>代碼是人類最精密、最無歧義的語言</strong>。相較於讓 Agent 在聊天框裡口頭描述修改方案（容易產生誤解），直接讓它修改 .js 或 .tsx 文件，然後執行測試，是目前可擴展性與準確性最高的路徑。檔案系統在這裡不再只是靜態的儲存庫，而是成為了 Agent 的<strong>「工作記憶」</strong>與<strong>「思維鏈（Chain of Thought）」</strong>的外掛硬碟。</p>
+  </div>
+
+  <!-- Section: 檔案系統作為暫存記憶 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📂</span> 檔案系統作為「暫存記憶」</div>
+    <p>當 Vibe 崩潰（例如編譯錯誤或邏輯跑偏）時，修復的關鍵往往不在於換一個更聰明的 Prompt，而在於<strong>如何利用檔案系統來承載上下文</strong>。成熟的 Agent 會在執行複雜任務時，先在專案根目錄建立一個 <code>.vibe-context.md</code> 或 <code>plan.md</code>，將當前目標、已完成的步驟、遇到的陷阱寫進去。這樣做有兩個巨大好處：第一，它繞過了 LLM 的上下文視窗限制，將長期狀態存在磁碟上；第二，當 Agent 發生「幻觉」或迷失方向時，你可以直接打開這個檔案查看它的計畫，甚至手動修正其中的錯誤步驟，讓 Agent 從「被修正後的計畫」繼續執行。這就是將檔案系統當作<strong>「外部大腦」</strong>的實務應用。</p>
+  </div>
+
+  <!-- Section: 診斷與修復 Vibe 破裂 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🩺</span> 診斷與修復 Vibe 破裂</div>
+    <p>當 Vibe 破裂，Agent 陷入死迴圈（Loops）時，請執行以下診斷步驟：<strong>1. 檢查檔案mtime與內容</strong>：看 Agent 最近修改了哪些文件，確認它是否真的在解決問題，還是在亂改無關代碼。<strong>2. 引入「觀察者」檔案</strong>：在專案中建立一個 <code>memory.md</code>，要求 Agent 每完成一個子步驟，就回寫一行狀態到這個檔案。如果狀態沒有更新，代表 Agent 卡住了。<strong>3. 干預工具權</strong>：如果 Agent 過度依賴 <code>bash</code> 卻不寫代碼，檢查它的工具權限設定，強制它使用 <code>write_file</code> 而非手動 echo 來修改代碼，確保變更可追蹤。</p>
+  </div>
+
+  <!-- Section: 實戰：讓 Agent 使用 Plan 檔案 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：讓 Agent 使用 Plan 檔案</div>
+    <p>以下是一個真實的實務場景：要求 Claude Code 基於一個計畫檔來重构代碼。這能訓練 Agent 先思考、再執行，避免盲目改碼。</p>
+    <div class="terminal-block">
+<span class="comment"># 1. 先建立計畫檔，作為 Agent 的「記憶體」</span>
+<span class="prompt">$</span> <span class="cmd">echo &quot;TODO: 將 src/utils.js 重构為 TypeScript，並更新測試&quot; &gt; plan.md</span>
+
+<span class="comment"># 2. 啟動 Claude Code，並指定它參考計畫檔</span>
+<span class="prompt">$</span> <span class="cmd">claude -p &quot;請根據 plan.md 的指示，執行重构任務。每完成一步請更新 plan.md 的狀態。&quot;</span>
+
+<span class="comment"># 3. 觀察 Agent 的行為：它應該先讀取 plan.md，然後產生 .ts 文件，最後執行測試</span>
+<span class="output">Reading plan.md...</span>
+<span class="output">Found task: Refactor src/utils.js to TypeScript.</span>
+<span class="output">Creating src/utils.ts...</span>
+<span class="output">Running tests...</span>
+<span class="output">All tests passed.</span>
+<span class="output">Updating plan.md...</span>
+
+<span class="comment"># 4. 檢查最終的 plan.md，確認 Agent 是否忠實執行了計畫</span>
+<span class="prompt">$</span> <span class="cmd">cat plan.md</span>
+[✓] 建立 src/utils.ts
+[✓] 更新測試檔案
+[✓] 清除旧版 src/utils.js
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼是這三種工具 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼是這三種工具？</div>
+    <details class="deep-dive">
+      <summary>為什麼 Claude Code 不選擇資料庫或 GUI 操作，而是死磕檔案系統？</summary>
+      <div class="deep-dive-content">
+        <p>這背後是<strong>「最小惊讶原則」</strong>與<strong>「可觀測性」</strong>的考量。資料庫操作需要連接字串、遷移腳本，環境差異極大；GUI 操作則難以透過文字 LLM 精確控制。相比之下，<strong>檔案系統是程式碼的唯一源頭</strong>。當 Agent 修改了一個 TypeScript 文件，整個生態系（TypeScript 編譯器、ESLint、Vitest、Next.js 開發伺服器）會自動響應這些變更。這種<strong>「改檔即生效」</strong>的鏈式反應，讓 Agent 可以用極少的工具調用，實現極大的系統影響。此外，檔案系統是<strong>「持久化」</strong>的，這意味著 Agent 的中斷狀態可以被保存，這對於長時任務至關重要。選擇檔案系統作為核心，本質上是選擇了<strong>「最通用、最穩定、最可追溯」</strong>的介面。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Vibe Coding 中，為什麼建議讓 Agent 將計畫寫入檔案（如 plan.md）而非僅依賴聊天上下文？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">因為聊天上下文佔用 GPU 記憶體，寫入檔案可以節省計算成本。</li>
+          <li onclick="checkAnswer(this, true)">因為檔案系統提供了持久化記憶，能突破 LLM 上下文視窗限制，並允許人類干預與追蹤。</li>
+          <li onclick="checkAnswer(this, false)">因為 LLM 無法記住超過 10 行的對話，寫入檔案是為了訓練模型的短期記憶能力。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 選項錯誤，雖然節省上下文有間接好處，但核心原因是<strong>持久化</strong>與<strong>可觀測性</strong>，讓 Agent 能在多次交互中保持狀態，並讓開發者隨時查看計畫進度。C 選項錯誤，LLM 的上下文視窗遠大於 10 行，寫檔案是為了擴展到整個專案層級的記憶，而非訓練短期記憶。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 Agent 陷入「修改代碼但測試一直失敗」的死迴圈時，以下哪種診斷方式最有效？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">直接重置整個專案的 git 歷史，強制 Agent 從零開始。</li>
+          <li onclick="checkAnswer(this, true)">檢查檔案系統的 mtime（修改時間）與內容變更，確認 Agent 是否真的在解決問題，並手動修正 memory.md 中的錯誤步驟。</li>
+          <li onclick="checkAnswer(this, false)">更換一個更強的 LLM 模型（如從 Claude 3.5 換到 GPT-4o），因為這是模型智商不夠的問題。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 選項過於極端且會丟失工作成果。C 選項錯誤，死迴圈通常是<strong>工具使用策略</strong>或<strong>上下文缺失</strong>的問題，而非單純的模型智商問題，換模型無法解決架構缺陷。B 選項正確，因為透過觀察檔案變更與計畫檔狀態，可以精確定位 Agent 是卡在「理解錯誤」還是「執行錯誤」，從而進行有效干預。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">建立你的「外部大腦」：在任意一個 Next.js 專案根目錄，建立一個 <code>TODO.md</code> 檔案，寫下三個你想讓 AI 完成的任務（例如：新增一個組件、修復一個 Bug、更新測試）。</li>
+        <li style="padding: 0.5rem 0;"><strong>實戰觀察</strong>：使用 Claude Code 或 Cursor Composer，輸入指令「請閱讀 TODO.md 並開始執行第一個任務，每完成一步請在 TODO.md 中打勾」。觀察 AI 是如何讀取、修改檔案並更新計畫的。</li>
+        <li style="padding: 0.5rem 0;"><strong>人為干預</strong>：在 AI 執行過程中，手動修改 <code>TODO.md</code>，將第一個任務刪除，並新增一個錯誤的任務描述。觀察 AI 是否會依據新的檔案內容調整行為，還是會固執地執行舊的邏輯。</li>
+        <li style="padding: 0.5rem 0;"><strong>診斷演練</strong>：故意寫一個有錯的 <code>package.json</code> 或引入一個會報錯的依賴，觀察 Agent 是如何透過讀取錯誤訊息檔案（如 <code>npm-debug.log</code> 或終端輸出）來嘗試修復的。記錄下它使用的工具順序。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 16 · Coding Agent 與檔案系統架構</p>
+    <p style="margin-top: 0.3rem;">下一課預告：RAG 檢索增強生成基礎</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

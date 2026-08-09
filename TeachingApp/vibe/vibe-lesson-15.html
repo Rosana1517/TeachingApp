@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 15 — MCP 協議深度解析</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">MCP 協議深度解析</h1>
+    <p class="lesson-subtitle">讓 AI 用標準化插頭操作外部系統的統一規範</p>
+  </div>
+
+  <!-- Section: 什麼是 MCPVibe Coding 中的統一插頭 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是 MCP？Vibe Coding 中的統一插頭</div>
+    <p>在 Vibe Coding 中，AI Agent 需要與外部系統互動才能完成複雜任務，例如操作 GitHub、控制瀏覽器或讀取檔案。過去，每個 AI 工具（Bolt、Claude Code、Cursor 等）都要為 GitHub、瀏覽器、資料庫等各自開發專屬的對接程式碼，導致重複勞動、規格不一致與維護困難。MCP（Model Context Protocol）是一種開放協議，定義了 AI 與工具之間的標準化通訊方式，由 Anthropic 等公司主導推動。它讓開發者只需實現一次 MCP Server，就能被所有支援 MCP 的 AI 工具使用，如同 USB-C 統一了各種裝置的充電插頭。對於 Vibe Coding 而言，MCP 扮演「通用翻譯層」的角色，讓 AI 能以一致的方式操作各種外部資源，而不必擔心底層介面的差異。當 Vibe 穩定時，AI 能流暢地透過 MCP 調用工具；當 Vibe 破裂，常見原因包括 MCP Server 未啟動、配置錯誤、環境變數缺失或權限不足，診斷時應檢查 Server 日誌與網路連線狀態。</p>
+  </div>
+
+  <!-- Section: MCP 協議架構與通訊流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> MCP 協議架構與通訊流程</div>
+    <p>MCP 協議基於客戶端-伺服器模型，使用 JSON-RPC 2.0 作為通訊格式。AI 工具（如 Claude Code）作為客戶端，在啟動時讀取配置文件（如 `.mcp.json`），找出可用的 MCP Server 列表。客戶端透過標準輸入/輸出（stdio）或 HTTP/SSE 連線與 Server 建立會話。MCP Server 實現一組標準工具，每個工具都有明確的名稱、描述與參數 schema（使用 JSON Schema 格式）。例如 GitHub MCP Server 提供 `list_repos`、`create_issue` 等工具，瀏覽器 MCP Server 提供 `navigate`、`click` 等工具。AI 在執行任務時，會根據提示詞與上下文，動態選擇並呼叫相應工具；MCP Server 接收請求後執行實際操作（如呼叫 GitHub API），並將結果以標準格式回傳。這種設計讓工具擴充變得簡單：只需新增一個符合規範的 Server，就能立即被所有支援 MCP 的 AI 工具使用，無需修改 AI 工具本身。</p>
+  </div>
+
+  <!-- Section: 實戰：啟動 GitHub MCP Server -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：啟動 GitHub MCP Server</div>
+    <p>我們將啟動官方提供的 GitHub MCP Server，讓 AI 能夠操作 GitHub 倉庫。首先確保已安裝 Node.js 與 npm（或 Bun）。使用 npm 全域安裝 `@modelcontextprotocol/server-github`：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm install -g @modelcontextprotocol/server-github</span>
+<span class="output">added 1 package in 2s</span>
+<span class="prompt">$</span> <span class="cmd">which server-github</span>
+/usr/local/bin/server-github
+<span class="comment"># 確認安裝路徑，後續用於配置文件</span>
+然後在專案根目錄創建 `.mcp.json` 配置文件，指定 Server 的執行路徑與環境變數（如 GITHUB_TOKEN）。環境變數可用於認證，避免硬編碼敏感資訊。
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：MCP 如何統一工具對接 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：MCP 如何統一工具對接？</div>
+    <details class="deep-dive">
+      <summary>為什麼 MCP 能解決「每個 AI 都要重新對接」的痛點？</summary>
+      <div class="deep-dive-content">
+        <p>MCP 的核心創新在於將「工具能力」與「AI 邏輯」解耦。過去，AI 工具開發者必須為每個外部服務（GitHub、瀏覽器、資料庫）編寫專屬的 API 包裝與錯誤處理，導致重複工作與維護負擔。MCP 定義了一套標準的介面：Server 只需實作一組具名的工具函數（如 `fs.read_file`），並透過 JSON-RPC 宣告工具的 schema；Client 則只需根據 schema 動態產生提示詞與參數驗證，無需知道工具實作細節。這種設計讓「新增一個工具」變成「啟動一個 Server 進程」，AI 工具只需支援 MCP 協議即可使用所有相容 Server。Vibe Coding 依賴 AI 快速迭代與調整，MCP 讓開發者能隨時插入或替換工具，而不影響 AI 的核心提示邏輯，大幅提升靈活性與可維護性。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: Vibe 破裂診斷：MCP 連線失敗處理 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> Vibe 破裂診斷：MCP 連線失敗處理</div>
+    <p>當 AI 無法調用 MCP 工具時，Vibe 會破裂，常見症狀包括工具呼叫失敗、返回錯誤訊息或 AI 卡住等待。診斷步驟應系統性進行：1) 檢查 MCP Server 是否啟動——直接執行 Server 二進位檔，觀察是否有錯誤輸出或連線提示。2) 確認環境變數——例如 GitHub Server 需要 `GITHUB_TOKEN`，確保已設定且值有效（可透過 `echo $GITHUB_TOKEN` 驗證）。3) 測試網路連線——若 Server 需要外部 API（如 GitHub API），確認防火牆或代理設定未阻擋請求。4) 驗證配置——檢查 `.mcp.json` 中的路徑、參數是否正確，工具名稱是否與 Server 宣告一致。5) 啟用詳細日誌——許多 AI 工具支援 `--verbose` 參數，可輸出 JSON-RPC 通訊細節，便於定位問題層級。記錄這些步驟，有助於在 Vibe 破裂時快速恢復工作流程。</p>
+  </div>
+
+  <!-- Section: 對照：傳統工具對接 vs MCP 方式 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照：傳統工具對接 vs MCP 方式</div>
+    <p>讓我們比較過去與現在的工具對接方式，體會 MCP 帶來的簡化效果。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">傳統方式（無 MCP）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"># 每個 AI 工具需針對 GitHub 開發專屬對接
+# 範例：為 Bolt 編寫 GitHub 工具鏈
+const boltGithubPlugin = {
+  name: &#x27;bolt-github&#x27;,
+  call: async (params) =&gt; {
+    const token = process.env.BOLT_GH_TOKEN;
+    const response = await fetch(&#x27;https://api.github.com/user/repos&#x27;, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.json();
+  }
+};
+# 若改用 Claude Code，必須再寫一次相同邏輯
+# 若支援新服務（如 Discord），又需開發新插件</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">MCP 方式</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"># 只需一個 MCP Server，所有 AI 工具皆可共用
+# 範例：GitHub MCP Server（官方實現）
+{
+  &quot;name&quot;: &quot;github&quot;,
+  &quot;tools&quot;: [
+    {
+      &quot;name&quot;: &quot;list_repos&quot;,
+      &quot;description&quot;: &quot;列出用戶的倉庫&quot;,
+      &quot;inputSchema&quot;: { &quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: {} }
+    },
+    {
+      &quot;name&quot;: &quot;create_issue&quot;,
+      &quot;description&quot;: &quot;在倉庫創建 issue&quot;,
+      &quot;inputSchema&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;repo&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;title&quot;: { &quot;type&quot;: &quot;string&quot; }
+        }
+      }
+    }
+  ]
+}
+# Claude Code、Bolt、Cursor 等工具只要支援 MCP，
+# 即可自動發現並使用此 Server，無需額外編碼</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 1. 以下關於 MCP 協議的描述，何者正確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">MCP 是閉源協議，僅限特定 AI 工具使用。</li>
+          <li onclick="checkAnswer(this, true)">MCP 讓 AI 工具能透過標準化方式調用外部工具，無需為每個工具重新開發對接程式碼。</li>
+          <li onclick="checkAnswer(this, false)">MCP 主要用於 AI 內部的上下文管理，不涉及外部工具互動。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ MCP 是開放協議，定義 AI 與工具間的標準通訊方式，讓工具實現只需一次，即可被多個 AI 工具共用。選項 A 錯誤，MCP 是開放協議且由多家公司推動；選項 C 錯誤，MCP 主要用於外部工具對接，而非內部上下文管理。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 2. 在 Vibe Coding 中，若 AI 無法調用 MCP 工具，最可能的原因為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">AI 模型的參數量不足。</li>
+          <li onclick="checkAnswer(this, true)">MCP Server 未正確啟動或配置錯誤。</li>
+          <li onclick="checkAnswer(this, false)">網路頻寬不足導致提示詞延遲。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Vibe 破裂時，MCP 工具調用失敗通常源於 Server 層面問題，如未啟動、配置錯誤、環境變數缺失或權限不足。選項 A 與 AI 模型容量無關；選項 C 可能影響整體速度，但不會直接導致工具調用失敗。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">1. 安裝並配置 GitHub MCP Server：在全域安裝 `@modelcontextprotocol/server-github`，建立 `.mcp.json` 配置文件，填入有效的 GITHUB_TOKEN（可從 GitHub Settings → Developer settings → Personal access tokens 申請，選擇必要權限如 `repo`）。</li>
+        <li style="padding: 0.5rem 0;">2. 啟動 Claude Code 並測試：執行 `claude`（支援 MCP 的版本），它會自動載入 `.mcp.json`；然後讓 AI 執行 `list_repos` 工具，確認能正確列出你的倉庫，觀察工具調用過程。</li>
+        <li style="padding: 0.5rem 0;">3. 模擬 Vibe 破裂情境：暫時移除或錯誤設定 GITHUB_TOKEN 環境變數，重新啟動 AI，觀察錯誤訊息，並嘗試診斷與修復連線問題，紀錄解決步驟與關鍵線索。</li>
+        <li style="padding: 0.5rem 0;">4. 延伸探索：查詢並啟動另一個 MCP Server（如 `@modelcontextprotocol/server-browser` 或 `@modelcontextprotocol/server-filesystem`），讓 AI 完成一項簡單操作（如開啟網頁或讀取檔案），比較不同 Server 的配置與行為差異。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 15 · MCP 協議深度解析</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Coding Agent 與檔案系統架構</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

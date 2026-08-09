@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 13 — 辨識情緒勒索的三張牌</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 13 課</span>
+    <h1 class="lesson-title">辨識情緒勒索的三張牌</h1>
+    <p class="lesson-subtitle">當關係被恐懼、義務與內疚綁架時，如何守住自己的邊界</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是情緒勒索？</div>
+    <p>情緒勒索是一種透過<strong>恐懼、義務與內疚</strong>來控制他人行為的關係模式。勒索者會利用你的軟弱點（例如害怕失去關係、認為自己必須妥協），讓你覺得「只好照做」。這不是正常的請求或說服，而是讓對方在壓力下服從的操弄手段。<br><br>在ACT觀點中，我們承認這種壓力帶來的不適感是真實的，但不必被它驅動著走；我們可以先看見這三張牌，再選擇自己要怎麼回應。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解：三張勒索牌</div>
+    <p>勒索者通常會交替使用以下三種手段，讓對方感到困惑、自責、無力。<br>辨識它們，是建立回應的第一步。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">恐懼牌</div>
+        <div class="principle-desc">暗示或明示「你不聽我的，就會有後果」，例如冷戰、威脅離開、讓環境變得太難相處。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">義務牌</div>
+        <div class="principle-desc">強調「我們是一家人／朋友，你就應該……」，把關係義務壓成必須服從的理由。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">內疚牌</div>
+        <div class="principle-desc">把問題歸咎於你，例如「都是你讓我這麼失望」「你怎麼這麼自私」，讓對方為別人的情緒負責。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>面對勒索時，目標不是贏過對方，而是<strong>溫和而明確地守住自己的邊界</strong>。以下句型可用於低風險情境練習，先從熟悉的人與較小的壓力開始。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">對方用內疚牌：「你怎麼這麼自私，從來不考慮我的感受！」</span>
+          <span class="line">我聽得出你很失望，但我現在有我的難處，這次我沒辦法照你的意思做。</span>
+        </li>
+        <li>
+          <span class="situation">對方用義務牌：「我們是一家人，你就不能幫幫我嗎？」</span>
+          <span class="line">我知道這對你很急，但我也需要照顧自己的界限，這次我真的幫不了。</span>
+        </li>
+        <li>
+          <span class="situation">對方用恐懼牌：「如果你這樣做，我就再也不理你了！」</span>
+          <span class="line">我聽到你這樣說，我覺得有點壓力。但我需要時間考慮自己的決定。</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 說話時語氣保持平靜，重點在描述自己的感受與決定，而非指責對方。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>在勒索情境中，有些回應會不自覺地讓對方繼續操弄，或是讓自己更內耗。以下列出常見卻效果有限的說法，並說明為什麼不建議直接使用。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">「對不起，都是我的錯……」</td><td>完全吞下對方的歸咎，會讓勒索者更习惯用內疚牌操控，同時讓你越來越失去自己的聲音。</td></tr>
+        <tr><td class="bad">「你為什麼要這樣對我？」</td><td>雖然表達了委屈，但容易陷入爭辯對方的動機，反而讓對話焦點偏離邊界的設定。</td></tr>
+        <tr><td class="bad">「好吧，那就這樣吧！」</td><td>用無奈接受來避免衝突，長期下來會累積怨氣，也讓對方覺得施壓有效。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 對方說：「如果你真的在乎我，就會來陪我。」這屬於哪一種勒索牌？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 義務牌</li>
+          <li onclick="checkAnswer(this, false)">B. 恐懼牌</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">「在乎」被當作義務的條件，暗示你不該拒絕，屬於義務牌。恐懼牌通常帶有後果威脅。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 面對勒索，下列哪一種回應比較符合本課的建議？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 溫柔而明確地守住邊界</li>
+          <li onclick="checkAnswer(this, false)">B. 用更激烈的話反擊回去</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">本課目標是溫和而堅定地表達自己的界限，不是壓過對方或引發衝突。激烈反擊可能讓對方更強化操控。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>今天觀察一次互動（可以是真實對話、影視橋段或新聞），試著辨識對方是否使用了「恐懼、義務、內疚」其中一種牌。記下情境與你感受到的壓力。</li>
+        <li>選一個低風險情境（例如朋友臨時改約、家人提出小要求），用本課句型寫一段回應，語氣保持平靜，不攻擊對方。</li>
+        <li>完成後，簡單紀錄：我用到了哪一種勒索牌的辨識？我的回應讓我感覺如何？（不要求對方改變，只觀察自己的感受）</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">ℹ️</span> 專業協助提醒</div>
+    <p>本課程為心理教育與技能練習，不替代專業心理治療或諮商。若您發現自己長期處於被操控、威脅或嚴重內耗的關係中，建議尋求合格心理師或諮商師的協助。您值得在安全、尊重的情況下學習溝通與界限。</p>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 13 課 · 2026-08-02</p>
+    <p class="next">下一課：價值澄清：找到自己的錨點</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
