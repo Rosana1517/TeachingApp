@@ -29,7 +29,7 @@
       <input type="time" id="notif-time" value="20:00">
     </div>
     <p class="offline-note" id="notif-status" style="margin-top:12px"></p>
-    <button class="primary-btn" id="notif-permission-btn">允許瀏覽器通知</button>
+    <button class="primary-btn" id="notif-permission-btn">開啟推播通知</button>
   </div>
 
   <div class="card">
@@ -56,6 +56,7 @@
   </nav>
 </div>
 
+<script src="js/push.js"></script>
 <script>
 const SETTINGS_KEY = "NotificationSettingsKey";
 
@@ -73,7 +74,7 @@ function saveSettings(settings) {
 
 function pad(n) { return String(n).padStart(2, "0"); }
 
-function init() {
+async function init() {
   const settings = loadSettings();
   const enabledEl = document.getElementById("notif-enabled");
   const timeEl = document.getElementById("notif-time");
@@ -81,9 +82,20 @@ function init() {
   enabledEl.checked = settings.isEnabled;
   timeEl.value = `${pad(settings.reminderHour)}:${pad(settings.reminderMinute)}`;
 
-  const persist = () => {
+  const persist = async () => {
     const [h, m] = timeEl.value.split(":").map(Number);
     saveSettings({ isEnabled: enabledEl.checked, reminderHour: h, reminderMinute: m });
+
+    if (enabledEl.checked) {
+      const existing = await Push.getCurrentSubscription();
+      if (existing) {
+        // Already subscribed — re-subscribing just updates the reminder
+        // time server-side (subscribe() reuses the existing PushSubscription).
+        await Push.subscribeToPush(h, m).catch(() => {});
+      }
+    } else {
+      await Push.unsubscribeFromPush();
+    }
     updateStatus();
   };
 
@@ -91,12 +103,17 @@ function init() {
   timeEl.addEventListener("change", persist);
 
   document.getElementById("notif-permission-btn").addEventListener("click", async () => {
-    if (!("Notification" in window)) {
-      document.getElementById("notif-status").textContent = "此瀏覽器不支援通知，請改用「加入主畫面」後的獨立 App 模式。";
+    const status = document.getElementById("notif-status");
+    const [h, m] = timeEl.value.split(":").map(Number);
+    try {
+      await Push.subscribeToPush(h, m);
+      enabledEl.checked = true;
+      saveSettings({ isEnabled: true, reminderHour: h, reminderMinute: m });
+    } catch (err) {
+      status.textContent = err.message;
       return;
     }
-    const permission = await Notification.requestPermission();
-    updateStatus(permission);
+    updateStatus();
   });
 
   document.getElementById("refresh-btn").addEventListener("click", async () => {
@@ -113,19 +130,20 @@ function init() {
   updateStatus();
 }
 
-function updateStatus(explicitPermission) {
+async function updateStatus() {
   const status = document.getElementById("notif-status");
-  const permission = explicitPermission || (("Notification" in window) ? Notification.permission : "unsupported");
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-
-  if (permission === "granted") {
-    status.textContent = isStandalone
-      ? "通知權限已開啟。"
-      : "通知權限已開啟，但 iOS 只有在「加入主畫面」後的獨立模式才會顯示通知。";
-  } else if (permission === "denied") {
-    status.textContent = "通知已被封鎖，請至瀏覽器設定重新開啟。";
+  const blocked = Push.pushBlockedReason();
+  if (blocked) {
+    status.textContent = blocked;
+    return;
+  }
+  const subscription = await Push.getCurrentSubscription();
+  if (Notification.permission === "denied") {
+    status.textContent = "通知已被封鎖，請至系統設定重新開啟。";
+  } else if (subscription) {
+    status.textContent = "推播通知已開啟，即使關閉 App 也會準時提醒。";
   } else {
-    status.textContent = "尚未授權通知權限。";
+    status.textContent = "尚未開啟推播通知。";
   }
 }
 

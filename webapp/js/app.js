@@ -171,16 +171,17 @@ function dismissInstallBanner() {
   document.getElementById("install-banner").classList.remove("show");
 }
 
-// In-app substitute for the native daily push notification: if today's
+// Fallback for browsers/situations without an active Web Push subscription
+// (e.g. push unsupported, or the user hasn't granted it yet): if today's
 // reminder time has passed and there's still an unlearned course, show a
-// one-time notification for the day when the app is opened. This only
-// fires while the app is actually running — it cannot wake up in the
-// background. Real background delivery needs Web Push (a push server +
-// VAPID keys), which is a later phase.
+// one-time notification while the app happens to be open. Skipped entirely
+// when a real push subscription exists, since the push server already
+// covers this — showing both would double-notify.
 async function checkDailyReminder() {
   const settings = JSON.parse(localStorage.getItem("NotificationSettingsKey") || "null");
   if (!settings || !settings.isEnabled) return;
   if (!("Notification" in window) || Notification.permission !== "granted") return;
+  if (window.Push && (await Push.getCurrentSubscription())) return;
 
   const today = new Date().toISOString().slice(0, 10);
   const lastShown = localStorage.getItem("lastReminderShownDate");

@@ -19,3 +19,5 @@ __pycache__/
 # Wrangler / Cloudflare
 webapp/.wrangler/
 .wrangler/
+push-worker/node_modules/
+push-worker/.wrangler/

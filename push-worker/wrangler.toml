@@ -1,0 +1,19 @@
+name = "teachingapp-push"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Runs every 15 minutes; each subscriber's local reminder time is checked
+# against this window, so the effective delivery precision is +/-15 min.
+[triggers]
+crons = ["*/15 * * * *"]
+
+[[kv_namespaces]]
+binding = "SUBSCRIPTIONS"
+id = "77879f373dc4451da53f86c7a831d16b"
+
+[vars]
+VAPID_SUBJECT = "mailto:rosana870107@gmail.com"
+VAPID_PUBLIC_KEY = "BB53PHFVTcxcuCC414xAoAaG3negoZVU4B0i7BLt8t-RdVqtPDs4ajhMEybkNMbRq5JiCAKXMcHhuYCMvRlSBro"
+# ALLOWED_ORIGIN restricts which site can call /subscribe and /unsubscribe.
+ALLOWED_ORIGIN = "https://teachingapp.pages.dev"

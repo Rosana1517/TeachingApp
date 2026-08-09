@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v6";
+const CACHE_VERSION = "v7";
 const CACHE_NAME = `teachingapp-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "css/style.css",
   "js/app.js",
   "js/progress.js",
+  "js/push.js",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "courses.json",
@@ -94,6 +95,37 @@ self.addEventListener("fetch", (event) => {
         if (fallback) return fallback;
       }
       return new Response("Offline and not cached", { status: 503 });
+    })()
+  );
+});
+
+self.addEventListener("push", (event) => {
+  let payload = { title: "TeachingApp 學習提醒", body: "今天還有課程沒學完，點開看看吧！" };
+  try {
+    if (event.data) payload = { ...payload, ...event.data.json() };
+  } catch {
+    // ignore malformed payloads, fall back to the default text above
+  }
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: "icons/icon-192.png",
+      badge: "icons/icon-192.png",
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    (async () => {
+      const clientsList = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      const existing = clientsList.find((c) => c.url.includes(self.registration.scope));
+      if (existing) {
+        existing.focus();
+      } else {
+        self.clients.openWindow("index.html");
+      }
     })()
   );
 });
