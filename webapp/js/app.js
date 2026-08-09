@@ -114,13 +114,23 @@ function toggleLearnedSection() {
   renderCourseList();
 }
 
+function formatCourseDate(dateStr) {
+  if (!dateStr) return "";
+  const [, m, d] = dateStr.split("-");
+  return `${m}/${d}`;
+}
+
 function courseCardHtml(course) {
   const isLearned = Progress.isReadState(course.id);
+  const dateLabel = formatCourseDate(course.generatedDate);
+  const meta = dateLabel
+    ? `${escapeHtml(course.category)} · ${dateLabel}`
+    : escapeHtml(course.category);
   return `
     <div class="course-card ${isLearned ? "learned" : ""}" onclick="location.href='course.html?id=${encodeURIComponent(course.id)}'">
       <div class="info">
         <p class="title">${escapeHtml(course.title)}</p>
-        <p class="meta">${escapeHtml(course.category)}</p>
+        <p class="meta">${meta}</p>
       </div>
       <button class="check" aria-label="標記完成" onclick="event.stopPropagation(); toggleLearned('${escapeAttr(course.id)}')">${isLearned ? "✓" : ""}</button>
     </div>`;

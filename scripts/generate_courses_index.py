@@ -8,6 +8,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +18,19 @@ LESSONS_OUT = os.path.join(WEBAPP_ROOT, "lessons")
 COURSES_JSON = os.path.join(WEBAPP_ROOT, "courses.json")
 
 LESSON_PATTERN = re.compile(r"^(?P<category>[a-zA-Z0-9]+)-lesson-(?P<number>\d+)\.html$")
+
+
+def get_git_date(filepath):
+    """Return YYYY-MM-DD of the last commit that touched filepath, or None."""
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%as", "--", filepath],
+            capture_output=True, text=True, cwd=REPO_ROOT
+        )
+        date = result.stdout.strip()
+        return date if date else None
+    except Exception:
+        return None
 
 
 def parse_course_metadata(filename):
@@ -53,11 +67,13 @@ def main():
             category, title, number = metadata
             category_slug = category.lower().replace(" ", "-")
 
+            src_path = os.path.join(subdir, filename)
             dest_dir = os.path.join(LESSONS_OUT, category_slug)
             os.makedirs(dest_dir, exist_ok=True)
-            shutil.copy2(os.path.join(subdir, filename), os.path.join(dest_dir, filename))
+            shutil.copy2(src_path, os.path.join(dest_dir, filename))
 
             course_id = filename.replace(".html", "")
+            rel_src = os.path.relpath(src_path, REPO_ROOT).replace("\\", "/")
             courses.append({
                 "id": course_id,
                 "title": title,
@@ -66,7 +82,7 @@ def main():
                 "fileName": filename,
                 "path": f"lessons/{category_slug}/{filename}",
                 "number": number,
-                "generatedDate": None,
+                "generatedDate": get_git_date(rel_src),
             })
 
     courses.sort(key=lambda c: (c["category"], c["number"]))
