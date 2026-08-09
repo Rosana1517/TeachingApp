@@ -173,11 +173,14 @@ function dismissInstallBanner() {
 
 // In-app substitute for the native daily push notification: if today's
 // reminder time has passed and there's still an unlearned course, show a
-// one-time banner for the day. Real Web Push is a later phase (needs a
-// push server + iOS 16.4+ standalone install).
-function checkDailyReminder() {
+// one-time notification for the day when the app is opened. This only
+// fires while the app is actually running — it cannot wake up in the
+// background. Real background delivery needs Web Push (a push server +
+// VAPID keys), which is a later phase.
+async function checkDailyReminder() {
   const settings = JSON.parse(localStorage.getItem("NotificationSettingsKey") || "null");
   if (!settings || !settings.isEnabled) return;
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
 
   const today = new Date().toISOString().slice(0, 10);
   const lastShown = localStorage.getItem("lastReminderShownDate");
@@ -191,7 +194,18 @@ function checkDailyReminder() {
   if (unlearned().length === 0) return;
 
   localStorage.setItem("lastReminderShownDate", today);
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("TeachingApp 學習提醒", { body: `該複習了：${unlearned()[0].title}` });
+  const title = "TeachingApp 學習提醒";
+  const body = `該複習了：${unlearned()[0].title}`;
+
+  // iOS Safari (including installed standalone PWAs) does not implement the
+  // `new Notification()` constructor at all — it silently throws. Notifications
+  // there must go through the active service worker's registration instead.
+  if ("serviceWorker" in navigator) {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (reg) {
+      reg.showNotification(title, { body });
+      return;
+    }
   }
+  new Notification(title, { body });
 }
