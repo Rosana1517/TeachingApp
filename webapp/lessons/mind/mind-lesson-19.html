@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 19 — 長期維持：把改變變成自己的底色</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 19 課</span>
+    <h1 class="lesson-title">長期維持：把改變變成自己的底色</h1>
+    <p class="lesson-subtitle">讓新行為穩定扎根，而非短暫衝刺</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼學了還是會退步？</div>
+    <p>你已經學會了緩衝句、DEAR MAN、PREP 等工具，也開始練習小型暴露。但現實是：壓力大的時候、身體疲憊的時候、情境特別熟悉的時刻，舊反應會悄悄回來。這不是失敗，這是大腦的習慣機制——新神經迴路還沒強到能取代舊迴路。這課要講的不是「怎麼堅持」，而是「怎麼讓改變變得穩定」：<strong>長期維持的核心，是把練習融入日常節奏，而非靠意志力硬撐。</strong></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>長期維持與「小型暴露計畫」不同：暴露計畫是有意識地創造練習機會；長期維持關注的是如何在生活常态中保持新行為，不依賴刻意安排。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">習慣疊加</div>
+        <div class="principle-desc">把新行為掛在已經穩定的舊習慣上，降低執行門檻。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">頻率勝於強度</div>
+        <div class="principle-desc">每週練習三次、每次五分鐘，比一個月衝刺一次有效得多。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">環境設計</div>
+        <div class="principle-desc">調整生活情境讓新行為更容易發生，減少對意志力的依賴。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">自我監控</div>
+        <div class="principle-desc">用簡單記錄追蹤自己的反應，讓進步可視化。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>長期維持不需要對外的話術，更多是自我對話的句型——用來幫自己在壓力時刻記起新行為。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">壓力來襲，又想馬上退縮時</span>
+          <span class="line">我先停三秒，問自己：這次我想練習的新行為是什麼？</span>
+        </li>
+        <li>
+          <span class="situation">發現自己又退回討好模式後</span>
+          <span class="line">剛才那是舊習慣被觸發，不代表我做不到新的。</span>
+        </li>
+        <li>
+          <span class="situation">覺得最近沒有進步、想放棄時</span>
+          <span class="line">維持本身也是進步，不需要每次都更進一步。</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 這些句型要提前寫下來、貼在常看的地方，不要用臨時想的方式說自己。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>長期維持最容易踩的坑，是把自己推向兩種極端：完美主義或全面放棄。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">「我昨天崩潰了，這課全白學了」</td><td>把一次退步等同於全部無效，忽略持續練習已經累積的效果。</td></tr>
+        <tr><td class="bad">「我必須每天都做到才算維持」</td><td>完美頻率反而容易放棄，維持的重點是整體趨勢而非單日表現。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪一種做法比較符合「長期維持」的原則？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 每週固定三次低風險練習</li>
+          <li onclick="checkAnswer(this, true)">B. 一個月內集中練習十次</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">頻率勝於強度是長期維持的核心概念。每週固定三次低風險練習，比一次性密集練習更能穩定強化新神經迴路。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 發現自己又退回討好模式時，最適宜的自我對話是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 告訴自己是舊習慣被觸發</li>
+          <li onclick="checkAnswer(this, true)">B. 責怪自己沒有真正進步</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">把退步理解為舊習慣被觸發，是維持動力的做法；自我責備反而容易導致全面放棄。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>寫下一件你每天必定會做的事（例如刷牙、喝水、等紅綠燈），把「停三秒＋新行為選擇」掛在後面，練習一次。</li>
+        <li>在手機備忘錄或紙本上，寫下今天用的自我對話句型（從課程提供的三個句型中選一個），貼在每天會看到的地方。</li>
+        <li>用一句話記錄今天你察覺到自己的舊習慣被觸發的時刻，不加批判，只記下來。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 19 課 · 2026-08-10</p>
+    <p class="next">下一課：長期維持：把改變變成自己的底色</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>

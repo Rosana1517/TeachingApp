@@ -690,6 +690,16 @@
     "generatedDate": "2026-08-09"
   },
   {
+    "id": "mind-lesson-19",
+    "title": "Mind Lesson 19",
+    "category": "Mind",
+    "categorySlug": "mind",
+    "fileName": "mind-lesson-19.html",
+    "path": "lessons/mind/mind-lesson-19.html",
+    "number": 19,
+    "generatedDate": "2026-08-10"
+  },
+  {
     "id": "vibe-lesson-01",
     "title": "Vibe Lesson 01",
     "category": "Vibe",
@@ -858,5 +868,15 @@
     "path": "lessons/vibe/vibe-lesson-17.html",
     "number": 17,
     "generatedDate": "2026-08-09"
+  },
+  {
+    "id": "vibe-lesson-18",
+    "title": "Vibe Lesson 18",
+    "category": "Vibe",
+    "categorySlug": "vibe",
+    "fileName": "vibe-lesson-18.html",
+    "path": "lessons/vibe/vibe-lesson-18.html",
+    "number": 18,
+    "generatedDate": "2026-08-10"
   }
 ]

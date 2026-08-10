@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 18 — 向量資料庫與 Embedding 實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">向量資料庫與 Embedding 實戰</h1>
+    <p class="lesson-subtitle">用 pgvector 把文字轉成向量，實現語意搜索與 RAG 檢索</p>
+  </div>
+
+  <!-- Section: 核心概念：向量是什麼為什麼需要它 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 核心概念：向量是什麼？為什麼需要它？</div>
+    <p>文字本身對計算機來說是無法直接比較相似度的字串，但透過 Embedding 模型可以把一段文字轉換成一個數位向量（例如 768 維的數值陣列）。這個向量的每一個維度都承載著語意資訊，語意相近的內容在向量空間中的幾何距離也會相近。pgvector 是 PostgreSQL 的開源擴展，讓 Supabase 這類關聯式資料庫能直接儲存與計算向量，不用另外架設 Milvus 或 Pinecone。對 Vibe Coding 而言，這代表你的資料庫同時具備「精確篩選」與「語意模糊匹配」兩種能力，AI Agent 在實作 RAG 系統時可以完全依賴單一資料庫後端，減少組件間的整合成本與網路延遲。</p>
+  </div>
+
+  <!-- Section: 傳統資料庫 vs. 向量資料庫 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 傳統資料庫 vs. 向量資料庫</div>
+    <p>當你需要搜尋「如何修復 macOS 終端機報錯」時，關鍵字搜尋只會比對字面，而語意搜尋能理解「bash 錯誤排除」與「terminal command failure」是同一段需求。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">傳統關係型搜尋</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">SELECT * FROM docs WHERE content LIKE &#x27;%bash%&#x27;;
+-- 只能比對字串，語意相近但用詞不同的記錄不會被找到</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">向量語意搜尋</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">SELECT * FROM docs ORDER BY embedding &lt;=&gt; &#x27;[0.12, -0.45, ...]&#x27; LIMIT 5;
+-- 根據向量距離排序，找到語意最相近的紀錄，無論用詞是否相同</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 實戰：在 Supabase 開啟 pgvector 並搜尋 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：在 Supabase 開啟 pgvector 並搜尋</div>
+    <p>首先要在 Supabase 專案中啟用 pgvector 擴充套件，接著建立带有 vector 型別的資料表，最後用 cosine distance（&lt;=&gt; 運算子）進行語意相似度排序。以下是完整的流程範例，包含安裝指令、建表語法與查詢語法。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">supabase db push</span>
+<span class="comment"># 啟用 pgvector 擴充套件（若尚未啟用）</span>
+<span class="prompt">$</span> <span class="cmd">supabase functions deploy get-embedding --env-file .env.local</span>
+<span class="error">Error: function &quot;get-embedding&quot; not found</span>
+<span class="comment"># 若函數尚未建立，需先完成 Edge Function 設定</span>
+
+<span class="prompt">$</span> <span class="cmd">psql postgresql://... -c &quot;CREATE EXTENSION IF NOT EXISTS vector;&quot;</span>
+<span class="output">CREATE EXTENSION</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：Embedding 是如何產生語意距離的 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：Embedding 是如何產生語意距離的？</div>
+    <details class="deep-dive">
+      <summary>為什麼「蘋果手機」和「iPhone」的向量會比較接近？</summary>
+      <div class="deep-dive-content">
+        <p>Embedding 模型的訓練過程是透過大量文本資料，讓模型學習每個詞彙或句子在語境中的分佈特徵。當一段文字被輸入模型後，會經過多層神經網路轉換，最終輸出固定長度的浮點數向量。這個過程的本質是「語意壓縮」：意義相近的文字在向量空間中會傾向聚集在同一區域。例如模型在訓練時看過「Apple iPhone 手機 智慧型裝置」等共現關係，就會把「蘋果手機」與「iPhone」映射到相近的座標。pgvector 提供 L2 distance（&lt;-&gt;）、inner product（&lt;#&gt;）與 cosine distance（&lt;=&gt;）三種距離計算方式，語意搜尋通常使用 cosine distance，因為它只看方向不看長度，更能反映語意相似度而非絕對數值差異。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: Vibe 破裂診斷：常見錯誤與修復 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> Vibe 破裂診斷：常見錯誤與修復</div>
+    <p>當語意搜索查詢失敗時，最常見的原因有三種：一是 pgvector 擴充套件未啟用，系統會回傳錯誤表明找不到 vector 型別；二是向量維度與查詢向量不一致，例如資料表設為 768 維但傳入的 embedding 是 1536 維；三是未建立向量索引，導致查詢效能極差甚至超時。修復步驟包括：先用 supabase db remote commit 確認擴充套件狀態，再用 \d 資料表名稱 檢查向量欄位維度，最後加上 CREATE INDEX ON docs USING ivfflat (embedding vector_cosine_ops); 建立索引。這些問題在 Vibe Coding 中容易因 AI 生成的 SQL 語法不一致而發生，建議用 Cursor 或 Claude Code 的 database schema 檢視功能先確認結構再執行寫入。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Supabase 中使用 pgvector 進行語意搜索時，哪個運算子代表 cosine distance？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">&lt;-&gt;</li>
+          <li onclick="checkAnswer(this, true)">&lt;=&gt;</li>
+          <li onclick="checkAnswer(this, false)">&lt;#&gt;</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ &lt;=&gt; 是 pgvector 的 cosine distance 運算子，用於計算兩個向量之間的餘弦相似度。&lt;-&gt; 是 L2 歐氏距離，&lt;#&gt; 是內積（inner product）。語意搜索通常使用 cosine distance 因為它只比較向量方向而非絕對長度。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 embedding 維度與資料表欄位設定不一致時，會發生什麼情況？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">查詢結果隨機排序</li>
+          <li onclick="checkAnswer(this, false)">Supabase 自動降維後正常執行</li>
+          <li onclick="checkAnswer(this, true)">資料庫回傳錯誤拒絕寫入或查詢</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ pgvector 會嚴格檢查向量維度，若寫入的 embedding 維度與欄位定義不符，會直接回傳錯誤如 "vector dimension mismatch"。自動降維或隨機排序都不是實際行為，必須確保 Embedding 模型輸出維度與資料表欄位設定一致。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在 Supabase 資料庫中啟用 pgvector 擴充套件，並建立一個名為 articles 的資料表，包含 id、title、content 與 embedding vector(768) 四個欄位。</li>
+        <li style="padding: 0.5rem 0;">使用 OpenAI 的 text-embedding-3-small 模型產生三篇文章的 embedding，並用 INSERT 語句寫入資料庫。</li>
+        <li style="padding: 0.5rem 0;">執行語意搜索查詢，找出與「如何部署 Next.js 到 Vercel」語意最相近的兩筆記錄。</li>
+        <li style="padding: 0.5rem 0;">使用 Cursor 或 Claude Code 的 Terminal，監控查詢效能並觀察缺少索引時的錯誤訊息，接著建立 ivfflat 索引並比較查詢時間差異。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 18 · 向量資料庫與 Embedding 實戰</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 的評估與除錯</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
