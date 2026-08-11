@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 19 — Agent 的評估與除錯</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">Agent 的評估與除錯</h1>
+    <p class="lesson-subtitle">用分層排查診斷 Vibe 破裂的真正原因</p>
+  </div>
+
+  <!-- Section: 為什麼 Vibe Coding 也需要除錯能力 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼 Vibe Coding 也需要除錯能力？</div>
+    <p>Vibe Coding 的核心信念是「讓 AI 幫你寫出想要的東西」，但這不代表你可以完全忽略技術細節。當 Agent 的輸出開始偏離預期、行為變得不可預測，或者你投入的時間越來越多卻得不到想要的結果時，這就叫做 Vibe 破裂。這時你不能只是重新提示或換一個模型就希望問題消失，因為問題的本質可能不在於模型本身，而在於上下文設計、工具實現，或是三者的組合方式。
+
+這一課要教你一套系統化的排查框架：把 Agent 的每一次失敗回應拆成三個層面——模型能力、上下文設計、工具設計——然後逐一驗證哪個層面才是真正的瓶頸。你會學會如何用數據而非感覺來判斷問題出在哪裡，以及如何針對不同層面采取正確的修復動作。這不是要你把 Agent 變成一台需要手動調校的機器，而是讓你擁有「知道問題在哪裡」的能力，這樣你才能繼續用 Vibe 的方式快速推進，而不是被困在反复重試的循環裡。</p>
+  </div>
+
+  <!-- Section: 分層排查框架：模型、上下文、工具 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 分層排查框架：模型、上下文、工具</div>
+    <p>當你看到一個失敗的 AI 回應時，第一反應往往是「模型太差」或「提示詞不夠好」，但這是一種過度簡化的歸因。正確的做法是建立一個三層排查框架：第一層是模型能力，問題可能是模型本身無法理解你的意圖、無法處理複雜的推理、或者對特定領域的知識不夠充足；第二層是上下文設計，問題可能是系統提示詞沒有提供足夠的上下文資訊、上下文窗口被無關內容佔據、或者上下文中的範例與當前任務不匹配；第三層是工具設計，問題可能是工具介面不夠明確、工具實現有 bug、或者工具的輸入輸出格式與模型預期不符。
+
+這三層不是互斥的——一個複雜的失敗可能同時涉及多個層面——但它們提供了一個有秩序的排查路線圖。你會先從最外層開始問：「這是模型能力問題嗎？」如果答案是不確定，就往下問：「上下文設計有問題嗎？」如果還是找不到原因，最後才問：「是工具的問題嗎？」這樣可以避免你在一開始就錯誤地歸因於模型，從而錯過更簡單、更有效的修復方式。</p>
+  </div>
+
+  <!-- Section: 實戰診斷：針對一次失敗回應逐層排查 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰診斷：針對一次失敗回應逐層排查</div>
+    <p>讓我們來看一個具體的失敗案例。假設你正在用一個 Coding Agent 來實現一個功能：根據使用者輸入的城市名稱，呼叫天氣 API 取得該城市的即時天氣，然後生成一個簡潔的天氣報告。Agent 的系統提示詞已經定義了可用的工具，包含一個 weather_tool，接受 city 參數並回傳 JSON 格式的天氣數據。你輸入「台北今天天氣」，但 Agent 回覆了一個完全錯誤的答案，甚至沒有呼叫天氣工具。
+
+這時你需要啟動分層排查。首先檢查工具層：你確認 weather_tool 的實現邏輯是否正確、API 端點是否可達、回傳格式是否與工具介面定義一致。你可以直接呼叫工具而不透過 Agent，用一個簡單的函數呼叫測試工具本身是否能正常運作。接下來檢查上下文層：你檢查系統提示詞是否清楚描述了工具的用途、輸入格式、輸出格式，以及是否有足夠的範例幫助模型理解工具的調用方式。最後檢查模型層：如果工具和上下文都正常，但模型仍然沒有正確使用工具，你才考慮換一個工具函數支援更好的模型，或者嘗試用不同的模型進行 A/B 測試。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">node -e &quot;</span>
+const result = await weatherTool({ city: &#x27;Taipei&#x27; });
+console.log(JSON.stringify(result, null, 2));
+&quot;
+<span class="output">{</span>
+<span class="output">  &quot;city&quot;: &quot;台北&quot;,</span>
+<span class="output">  &quot;temperature&quot;: 28,</span>
+<span class="output">  &quot;condition&quot;: &quot;多雲&quot;,</span>
+<span class="output">  &quot;humidity&quot;: 75</span>
+<span class="output">}</span>
+<span class="comment"># 工具本身運作正常，問題不在工具實現</span>
+<span class="comment"># 接下來檢查模型是否正確理解工具介面</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 Vibe 會在這三個層面破裂 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 Vibe 會在這三個層面破裂？</div>
+    <details class="deep-dive">
+      <summary>模型、上下文、工具三者如何相互作用，以及為什麼排查必須有順序？</summary>
+      <div class="deep-dive-content">
+        <p>Vibe 破裂的本質是 Agent 的行為偏離了你的預期，但「偏離」的原因可能完全不同。理解這背後機制，才能建立正確的排查直覺。
+
+從模型層面來看，問題往往源於「能力缺口」。當任務超過模型目前的處理上限時——例如需要多步推理、需要對特定領域有深度理解、或者需要精確的計算能力——模型可能會開始「臆造」答案。這在學術上被稱為 hallucination，但在實戰中更常見的表现是模型開始使用不存在的工具、給出格式錯誤的回應、或者完全忽略你的指示。這不是模型「故意的」，而是當模型面對它不確定的情境時，它會傾向於給出一個看似合理的答案，而不是承認它不知道。
+
+上下文層面的問題更隱微，因為它不表現為模型的「錯誤」，而是表現為模型的「誤解」。當你設計系統提示詞時，你實際上是在為模型建構一個認知框架——模型會根據這個框架來理解你的意圖、判斷該使用哪些工具、以及如何組織它的回應。如果這個框架不夠清晰、不夠具體、或者包含與當前任務無關的資訊，模型就會在這個框架內做出「邏輯合理但結果錯誤」的決策。這就是為什麼上下文工程是 Agent 開發中最需要技巧的部分：你無法直接告訴模型該做什麼，你只能透過上下文間接引導它的行為。
+
+工具層面的問題最容易診斷但也最容易忽視。一個設計不良的工具可能具備完美的概念介面，但實際實現時出現參數解析錯誤、API 呼叫失敗、或者回傳格式不符合模型預期。當工具的錯誤訊息不夠清晰，或者工具的行為與文件描述不一致時，模型會感到「困惑」——它嘗試使用工具，但工具的回覆與它的預期不符，這會導致模型在後續的回應中表現出不一致甚至矛盾的行为。
+
+排查順序之所以重要，是因為這些層面之間存在依賴關係。模型依賴上下文來理解任務，上下文依賴工具來實現任務。如果你在工具層面有問題時就嘗試調整模型或上下文，你會得到一个「看似修復了問題但實際上是掩蓋了問題」的結果——模型可能開始產生不同的錯誤，但根本問題仍然存在。正確的順序是從最底層的技術問題開始排查，逐步向上移動，這樣可以確保你解決的是真正的根因，而不是症狀。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 對比：模糊提示詞 vs 結構化上下文 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 對比：模糊提示詞 vs 結構化上下文</div>
+    <p>讓我們來看兩種不同的上下文設計方式如何影響同一個 Agent 的行為。第一個範例使用了模糊的提示詞，第二个範例使用了結構化的上下文設計，它們面對相同的任務會產生不同的結果。
+
+在模糊提示詞的情境中，你只告訴模型「你是一個天氣助手，幫使用者查詢天氣」。模型可能理解這句話的意思，但它不知道應該使用哪個工具、以什麼格式傳遞參數、以及如何處理工具的回應。這導致模型可能直接生成一個假的天氣報告，或者嘗試呼叫一個不存在工具。
+
+在結構化上下文的情境中，你提供了明確的工具定義、清晰的參數說明、具體的範例，以及工具的回應格式。模型能夠在這些約束下做出正確的決策：它知道應該呼叫 weather_tool，知道應該傳遞 city 參數，知道如何解析工具的回傳 JSON。這不僅提高了正確率，還讓模型的行為變得可預測和可重現。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">模糊提示詞</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">你是一個天氣助手，幫使用者查詢天氣。</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">結構化上下文</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">你是天氣查詢助手。
+使用 weather_tool 查詢天氣。
+
+weather_tool 定義：
+- 參數：city（字串，城市名稱）
+- 回傳格式：
+  {
+    &quot;city&quot;: &quot;城市名稱&quot;,
+    &quot;temperature&quot;: 數值（攝氏度）,
+    &quot;condition&quot;: &quot;天氣狀況&quot;,
+    &quot;humidity&quot;: 數值（百分比）
+  }
+
+範例：
+使用者：「台北今天天氣」
+→ 呼叫 weather_tool({ city: &quot;台北&quot; })
+→ 根據回傳資料生成簡潔報告</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當一個 Coding Agent 在實現功能時經常生成不存在的函數名稱，這最可能屬於哪一層的問題？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">模型能力問題——該模型無法理解程式碼語法</li>
+          <li onclick="checkAnswer(this, true)">上下文設計問題——系統提示詞未明確約束輸出格式</li>
+          <li onclick="checkAnswer(this, false)">工具設計問題——工具實現有 bug</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 當模型生成不存在的函數名稱時，最常见的原因是上下文設計問題。如果系統提示詞沒有明確規定「只能使用已定義的工具」或「不要自行創造不存在的函數」，模型會根據它的訓練數據自由發揮，可能產生日語常見但在此專案中不存在的函數名稱。模型能力問題通常表現為無法完成任務或推理錯誤，而非產生日語常見但錯誤的程式碼；工具設計問題通常表現為工具呼叫失敗或回傳錯誤格式，而非模型生成不存在的函數名稱。正確的修復方式是加強系統提示詞，明確約束模型的輸出格式和可用工具範圍。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 你發現 Agent 在呼叫工具時經常傳遞錯誤的參數類型，例如把數字傳成字串。以下哪個排查順序最合理？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">先換模型，再檢查工具實現，最後調整上下文</li>
+          <li onclick="checkAnswer(this, true)">先檢查工具實現，再檢查上下文設計，最後考慮模型能力</li>
+          <li onclick="checkAnswer(this, false)">先調整上下文，再換模型，最後忽略工具實現</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確的排查順序是從底層開始。首先檢查工具實現——確認工具的參數解析邏輯是否能正確處理字串類型，以及工具的錯誤處理是否清晰。如果工具實現正確，再檢查上下文設計——系統提示詞是否明確說明了參數類型要求，是否有足夠的範例。只有在排除工具和上下文問題後，才考慮是否是模型能力問題，例如該模型對參數類型的理解能力較弱。選項 A 和 C 的順序都不合理，因為如果工具實現有問題，換模型或調整上下文都無法解決根本問題。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 使用評估指標追蹤 Agent 表現 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 使用評估指標追蹤 Agent 表現</div>
+    <p>當你想要判斷 Agent 的表現時，不能只靠「感覺」——你需要建立可量化的評估指標。最基礎的指標包括成功率（agent 成功完成任務的比率）、正確率（agent 給出正確答案的比率）、以及平均回應品質分數（由人類或另一個模型評分）。這些指標可以幫助你追蹤不同模型、不同上下文設計、不同工具實現之間的差異，從而建立數據驅動的決策依據。
+
+建立評估框架的第一步是定義什麼叫做「成功」。對於一個天氣查詢 Agent 來說，成功可能意味著「正確呼叫了天氣工具並根據回傳數據生成了準確的天氣報告」。你可以寫一個自動化測試，模擬不同的使用者輸入，記錄 Agent 的每一步行為，然後自動評分。這不僅能帮你發現問題，還能帮你追踪修復後的改進效果。
+
+當你把評估框架建立好後，每次修改 Agent 的配置時，你都可以運行相同的測試套件，比較結果。這樣你可以知道你的修改是讓 Agent 變好還是變壞，而不是只能靠直覺判斷。這就是 Vibe Coding 中「用數據驗證選擇」的核心意義——它不是要你把 Creative 的過程變成機械化的測試驅動開發，而是讓你在做出重要決策時有足夠的資訊基礎。</p>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：建立你的排查清單
+寫出一份針對你當前 Agent 專案的分層排查清單，包含模型層、上下文層、工具層各自的檢查要點和診斷方法。這份清單應該足夠具體，讓你在未來遇到 Vibe 破裂時可以快速按步驟排查。</li>
+        <li style="padding: 0.5rem 0;">任務二：實測一次失敗案例
+選擇一個你或同學的 Agent 專案中最近發生的一次失敗回應，用分層排查框架分析可能的原因。寫下你的假設和驗證步驟，最後確認真正的根因是什麼。</li>
+        <li style="padding: 0.5rem 0;">任務三：操作 Agent 觀察行為
+使用 Claude Code 或 Cursor 等 Coding Agent，故意設計一個失敗情境——例如提供一個格式錯誤的系統提示詞，或定義一個有 bug 的工具——觀察 Agent 如何回應。記錄它的行為模式，並用分層排查框架分析問題所在。</li>
+        <li style="padding: 0.5rem 0;">任務四：設計評估指標
+為你的 Agent 設計至少三個可量化的評估指標，並寫出自動測試的實現思路。這些指標應該能夠幫助你在未來追踪 Agent 的表現變化，並在修改配置時做出數據驅動的決策。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 19 · Agent 的評估與除錯</p>
+    <p style="margin-top: 0.3rem;">下一課預告：多 Agent 協作</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
