@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 53 — 第 53 課：法語主有代名詞的流暢運用</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 53</span>
+    <h1 class="lesson-title">第 53 課：法語主有代名詞的流暢運用</h1>
+    <p class="lesson-subtitle">代替「主有形容詞 + 名詞」，讓句子更精簡自然</p>
+  </div>
+
+  <!-- Section 1: 為什麼要學主有代名詞？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼要學主有代名詞？</div>
+    <p>當你已經用過 <strong>主有形容詞</strong>（mon/ton/son…）來表達「我的、你的、他的…」之後，接下來要學會用<strong>主有代名詞</strong>來代替「主有形容詞＋名詞」，避免重複。例如：「Ce livre est <strong>à moi</strong>」可以簡化成「Ce livre est <strong>le mien</strong>。」這課將帶你掌握 le mien、la mienne、les miens、les miennes 等形式的變化與連讀。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表：主有代名詞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表：主有代名詞</div>
+    <p>主有代名詞須與所取代的名詞在<strong>性別與數量</strong>上保持一致。以下是单數與複數、陽性與陰性的完整形式：<br><strong>陽性單數</strong>：le mien /lə mjɛ̃/、le tien /lə tjɛ̃/、le sien /lə sjɛ̃/、le nôtre /lə nɔːtʁ/、le vôtre /lə votʁ/、le leur /lə lœʁ/<br><strong>陰性單數</strong>：la mienne /la mjɛn/、la tienne /la tjɛn/、la sienne /la sjɛn/、la nôtre、la vôtre、la leur<br><strong>陽性複數</strong>：les miens /le mjɛ̃/、les tiens /le tjɛ̃/、les siens /le sjɛ̃/、les nôtres /le noːtʁ/、les vôtres /le votʁ/、les leurs /le lœʁ/<br><strong>陰性複數</strong>：les miennes /le mjɛn/、les tiennes /le tjɛn/、les siennes /le sjɛn/、les nôtres、les vôtres、les leurs</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">le mien</div>
+        <div class="pron-ipa">陽性單數第一-person，/ə/ 在聯誦時發 /ljɛ̃/</div>
+        <div class="pron-example"><em>Ce stylo est le mien.</em>（這支筆是我的。）<button class="speak-btn" onclick='speakFrench("Ce stylo est le mien.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">la tienne</div>
+        <div class="pron-ipa">陰性單數第二-person，重讀 /jɛn/</div>
+        <div class="pron-example"><em>La voiture est la tienne.</em>（這輛車是你的。）<button class="speak-btn" onclick='speakFrench("La voiture est la tienne.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">les nôtres</div>
+        <div class="pron-ipa">複數形式（陽／陰同形），/nɔːtʁ/ 保持鼻化</div>
+        <div class="pron-example"><em>Nos amis sont les nôtres.</em>（我們的朋友是他們的。）<button class="speak-btn" onclick='speakFrench("Nos amis sont les n\u00f4tres.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">les leurs</div>
+        <div class="pron-ipa">複數形式，注意 /ʁ/ 最後不發音</div>
+        <div class="pron-example"><em>Ces livres sont les leurs.</em>（這些書是他們的。）<button class="speak-btn" onclick='speakFrench("Ces livres sont les leurs.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟著朗讀以下句子，注意「主有代名詞」前的冠詞（le/la/les）必須與名詞性別與數量一致，並留意聯誦與重音位置。</p>
+    <div class="follow-box">
+      <h4>請跟著朗讀以下句子，注意「主有代名詞」前的冠詞（le/la/les）必須與名詞性別與數量一致，並留意聯誦與重音位置。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Ce sac est le mien.</span>
+          <span class="ipa">/sæk ɛ lə mjɛ̃/</span>
+          <span class="meaning">—— 這個袋子是我的。</span>
+          <button class="speak-btn" onclick='speakFrench("Ce sac est le mien.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Cette robe est la tienne.</span>
+          <span class="ipa">/sɛt ʁob ɛ la tjɛn/</span>
+          <span class="meaning">—— 這件裙子是你的。</span>
+          <button class="speak-btn" onclick='speakFrench("Cette robe est la tienne.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ces enfants sont les siens.</span>
+          <span class="ipa">/sɛ ɑ̃fɑ̃ sɔ̃ le sjɛ̃/</span>
+          <span class="meaning">—— 這些孩子是他的（親生的）。</span>
+          <button class="speak-btn" onclick='speakFrench("Ces enfants sont les siens.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Nos chaises sont les leurs.</span>
+          <span class="ipa">/no ʃɛz sɔ̃ le lœʁ/</span>
+          <span class="meaning">—— 我們的椅子是他們的。</span>
+          <button class="speak-btn" onclick='speakFrench("Nos chaises sont les leurs.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：練習時可先口語重複「主有形容詞＋名詞」，再改說「主有代名詞」，感受語句的精簡效果。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照：主有形容詞 vs. 主有代名詞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照：主有形容詞 vs. 主有代名詞</div>
+    <p>主有形容詞必須放在名詞前面並與名詞的性別、數量一致；主有代名詞則代替「名詞＋主有形容詞」，本身包含冠詞（le/la/les），需與被取代名詞的性別數量一致。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">mon livre → le mien</div>
+        <div class="pron-ipa">陽性單數：形容詞加名詞 vs. 代名詞</div>
+        <div class="pron-example">J'ai lu ton livre. → C'est le tien.<button class="speak-btn" onclick='speakFrench("J&#39;ai lu ton livre. \u2192 C&#39;est le tien.")' aria-label="播放發音">🔊</button><br>注意 le/la/les 不能省略</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ta voiture → la tienne</div>
+        <div class="pron-ipa">陰性單數：形容詞加名詞 vs. 代名詞</div>
+        <div class="pron-example">Elle cherche sa voiture. → Elle cherche la sienne.<button class="speak-btn" onclick='speakFrench("Elle cherche sa voiture. \u2192 Elle cherche la sienne.")' aria-label="播放發音">🔊</button><br>陰性單數代名詞多一個 -e</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">nos amis → les nôtres</div>
+        <div class="pron-ipa">複數：陽／陰同形，重音落在倒数第二个音节</div>
+        <div class="pron-example">Ils sont nos amis. → Ce sont les nôtres.<button class="speak-btn" onclick='speakFrench("Ils sont nos amis. \u2192 Ce sont les n\u00f4tres.")' aria-label="播放發音">🔊</button><br>nôtre/vôtre 保留重音符号以區分與主有形容詞</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">leurs idées → les leurs</div>
+        <div class="pron-ipa">複數代名詞，注意 /ʁ/ 通常不發音</div>
+        <div class="pron-example">Ce sont leurs idées. → Ce sont les leurs.<button class="speak-btn" onclick='speakFrench("Ce sont leurs id\u00e9es. \u2192 Ce sont les leurs.")' aria-label="播放發音">🔊</button><br>leurs 作形容詞時 /ʁ/ 發音，作代名詞時不發</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「Ce cahier est à moi.」可以用哪一個主有代名詞簡化？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. le mien</li>
+          <li onclick="checkAnswer(this, false)">B. la mienne</li>
+          <li onclick="checkAnswer(this, false)">C. les miens</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ cahier 是陽性單數，故用 le mien。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪一句主有代名詞與名詞的性別、數量不匹配？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Cette table est la sienne.</li>
+          <li onclick="checkAnswer(this, false)">B. Ces fleurs sont les nôtres.</li>
+          <li onclick="checkAnswer(this, true)">C. Ces fleurs sont le nôtre.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ fleurs 是複數陰性，代名詞應為 les nôtres，而不是 le nôtre。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 主有代名詞「les vôtres」對應的主有形容詞是哪一組？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. votre / vos</li>
+          <li onclick="checkAnswer(this, false)">B. ton / ta / tes</li>
+          <li onclick="checkAnswer(this, false)">C. leur / leurs</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ vôtre 來自兩人的「你們」，形容詞為 votre（單數）或 vos（複數）。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">寫出 6 個主有代名詞（第一、二、三人稱單數與複數），並與對應的主有形容詞配對。</li>
+        <li style="padding: 0.5rem 0;">用主有代名詞改寫 5 個含有「主有形容詞＋名詞」的句子，記錄性別與數量的變化。</li>
+        <li style="padding: 0.5rem 0;">朗讀第 53 課的跟練句子各 3 遍，並錄下自己的發音，檢查聯誦與重音是否自然。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 53 · 第 53 課：法語主有代名詞的流暢運用 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 54 課：法語疑問副詞 où、quand、comment、pourquoi 的精準用法</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
