@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 20 — 多 Agent 協作</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">多 Agent 協作</h1>
+    <p class="lesson-subtitle">拆解複雜任務，讓多個專責 Agent 分工合作</p>
+  </div>
+
+  <!-- Section: 為什麼需要多 Agent 協作 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🤖</span> 為什麼需要多 Agent 協作？</div>
+    <p>在 Vibe Coding 中，單一 Agent 雖然強大，但當任務超出其上下文窗口或專業範圍時，就會出現「Vibe 破裂」——產出品質下降、邏輯矛盾或指令偏離。多 Agent 協作的核心在於<strong>群體智能</strong>：將複雜任務拆解為多個子任務，分配給專責 Agent，每個 Agent 專注於自己的領域，透過協作完成單一 Agent 無法獨立處理的專案。這類似現實中的軟體團隊：開發者寫程式、測試者找漏洞、架構師把關設計。在 AI 語境下，我們可以設計一個「產出 Agent」負責生成程式碼，一個「審查 Agent」負責檢查錯誤與最佳實踐，透過明確的角色分工與通訊協議，提升整體系統的可靠性與產出品質。</p>
+  </div>
+
+  <!-- Section: 單一 Agent vs. 多 Agent 架構對比 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> 單一 Agent vs. 多 Agent 架構對比</div>
+    <p>理解多 Agent 協作的價值，需要對比單一 Agent 的局限性。單一 Agent 面對複雜任務時，容易出現上下文膨脹導致注意力分散、缺乏專業深度審查、以及難以維護長期一致性。多 Agent 架構則透過分工與專門化，解決這些問題。以下透過具體情境對比，說明兩者的差異。</p>
+  </div>
+
+  <!-- Section: 單一 Agent 與多 Agent 情境對比 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 單一 Agent 與多 Agent 情境對比</div>
+    <p>在實際開發中，我們經常遇到需要生成程式碼並同時確保品質的任務。以下是單一 Agent 與多 Agent 處理同一任務的方式對比：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">單一 Agent 處理</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"># 單一 prompt 要求生成並審查程式碼
+&quot;幫我寫一個 Next.js 的 API 路由，處理使用者註冊，並檢查錯誤處理是否完整&quot;
+# Agent 嘗試一次性完成所有步驟
+# 可能導致：註冊邏輯簡陋、錯誤處理不完整、上下文過長後忽略部分要求</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">多 Agent 協作處理</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"># Agent A（產出）：專注於生成程式碼
+&quot;請生成 Next.js API 路由，處理使用者註冊，包含基礎錯誤處理&quot;
+# Agent B（審查）：專注於檢查與改進
+&quot;檢查以下程式碼的錯誤處理是否完整，並提出改進建議&quot;
+# 透過明確分工，每個 Agent 可專注於特定職責，提升輸出品質</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 實戰：設計雙 Agent 分工流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> 實戰：設計雙 Agent 分工流程</div>
+    <p>實作多 Agent 協作的第一步是設計清晰的分工流程。我們以「生成並審查程式碼」為例，建立一個簡單的雙 Agent 架構。首先，定義兩個 Agent 的角色與輸入輸出。產出 Agent 接收原始需求，生成初始程式碼；審查 Agent 接收產出 Agent 的結果，進行檢查並提供反饋。接著，設計協作流程：產出 Agent 完成後，將結果傳遞給審查 Agent；審查 Agent 提供改進建議；若需要，可讓產出 Agent 根據反饋進行迭代。這個流程可以透過簡單的指令腳本或協調腳本來實現，關鍵在於明確的交接協議與輸入輸出格式。</p>
+  </div>
+
+  <!-- Section: 雙 Agent 協作流程實作範例 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 雙 Agent 協作流程實作範例</div>
+    <p>以下展示如何使用 Claude Code 或類似工具，設計一個簡單的雙 Agent 協作流程。我們透過指令傳遞與輸出截斷來模擬 Agent 間的通訊。</p>
+    <div class="terminal-block">
+<span class="comment"># 步驟 1：產出 Agent 生成程式碼</span>
+<span class="prompt">$</span> <span class="cmd">claude -p &quot;生成一個 Express.js 的簡單 REST API，包含 GET 和 POST 端點，使用 Express 框架&quot;</span>
+<span class="output">產出 Agent 回應：生成完整的 Express 應用程式程式碼，包含 route 定義與基本錯誤處理</span>
+<span class="comment"># 步驟 2：審查 Agent 檢查程式碼</span>
+<span class="prompt">$</span> <span class="cmd">cat generated_code.js | claude -p &quot;檢查以下程式碼的潛在問題與改進建議&quot;</span>
+<span class="output">審查 Agent 回應：指出缺少環境變數管理、錯誤處理不完整、缺少輸入驗證等問題</span>
+<span class="comment"># 步驟 3：產出 Agent 根據反饋改進</span>
+<span class="prompt">$</span> <span class="cmd">claude -p &quot;根據以下審查建議改進程式碼：1. 添加環境變數管理 2. 完善錯誤處理 3. 加入輸入驗證&quot;</span>
+<span class="output">產出 Agent 回應：生成改進後的程式碼，包含環境變數配置、統一錯誤處理中間件、輸入驗證邏輯</span>
+    </div>
+  </div>
+
+  <!-- Section: 多 Agent 協作的底層原理與協調機制 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 多 Agent 協作的底層原理與協調機制</div>
+    <details class="deep-dive">
+      <summary>多 Agent 如何透過分工與通訊協議，實現超越單一 Agent 的複雜任務處理能力？</summary>
+      <div class="deep-dive-content">
+        <p>多 Agent 協作的核心在於<strong>任務拆解</strong>與<strong>專責分工</strong>。每個 Agent 可被視為一個專門的 LLM 實例，擁有不同的系統提示詞（System Prompt）與工具集，專注於特定子任務。例如，「程式碼生成 Agent」被優化為擅長結構化輸出與框架知識，「代碼審查 Agent」則被優化為熟悉最佳實踐、安全漏洞與效能瓶頸。Agent 間的通訊透過明確的介面協議實現：通常包含輸入格式（如 JSON 結構的需求描述）、輸出格式（如程式碼塊與審查報告）、以及協調邏輯（如迭代條件或最終合併規則）。這種協作模式本質上是將複雜問題分解為多個可管理的子問題，利用專項能力降低單一模型的認知負載，同時透過交叉檢查提升整體輸出品質。在 Vibe Coding 中，這種架構能有效防止「Vibe 破裂」——當單一 Agent 上下文過長或任務過複雜時，分工後的專責 Agent 能保持更高的專注度與輸出穩定性。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 診斷與修復 Vibe 破裂 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🩺</span> 診斷與修復 Vibe 破裂</div>
+    <p>即使採用多 Agent 協作，仍可能出現「Vibe 破裂」——例如審查 Agent 未能正確識別關鍵錯誤、產出 Agent 忽略反饋，或協作流程中斷。診斷時，首先檢查 Agent 的輸入輸出格式是否符合預期協議；其次檢視每個 Agent 的專項提示詞是否足夠明確；最後確認協調邏輯是否有錯誤處理與迭代機制。修復策略包括：調整 Agent 的角色定義與工具集、增加明確的驗收標準、或引入第三個協調 Agent 來仲裁分歧。在實戰中，建議先記錄每個 Agent 的輸出日誌，分析破裂發生在哪个階段，再針對性地調整。</p>
+  </div>
+
+  <!-- Section: 小測驗：多 Agent 協作的核心概念 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗：多 Agent 協作的核心概念</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 多 Agent 協作的主要優勢是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">減少所需的 AI 模型數量，降低成本</li>
+          <li onclick="checkAnswer(this, true)">透過任務拆解與專責分工，提升複雜任務的處理能力與輸出品質</li>
+          <li onclick="checkAnswer(this, false)">完全取代單一 Agent，不再需要任何上下文工程</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ </div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 在設計雙 Agent 協作流程時，關鍵要素是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">讓兩個 Agent 使用完全相同的系統提示詞</li>
+          <li onclick="checkAnswer(this, true)">明確定義每個 Agent 的角色、輸入輸出格式與協作協議</li>
+          <li onclick="checkAnswer(this, false)">確保所有溝通透過自然語言進行，避免結構化格式</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務：實作多 Agent 協作流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務：實作多 Agent 協作流程</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">設計一個簡單的雙 Agent 協作流程，使用 Claude Code 或 Cursor 等工具，實現「程式碼生成 → 審查改進」的分工。</li>
+        <li style="padding: 0.5rem 0;">為產出 Agent 撰寫明確的系統提示詞，專注於生成特定類型的程式碼（例如：Express API、React 組件）。</li>
+        <li style="padding: 0.5rem 0;">為審查 Agent 撰寫專項提示詞，要求檢查程式碼的安全性、錯誤處理與最佳實踐。</li>
+        <li style="padding: 0.5rem 0;">實際執行協作流程：先讓產出 Agent 生成程式碼，再將結果交給審查 Agent，最後根據反饋進行迭代改進，並記錄每個階段的輸出與觀察到的行為變化。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 20 · 多 Agent 協作</p>
+    <p style="margin-top: 0.3rem;">下一課預告：自動化流程（n8n）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
