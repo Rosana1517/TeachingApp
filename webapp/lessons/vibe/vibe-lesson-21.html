@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 21 — 自動化流程（n8n）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: The Brain</span>
+    <h1 class="lesson-title">自動化流程（n8n）</h1>
+    <p class="lesson-subtitle">用 n8n 串接 GitHub Actions，打造代碼提交到部署的自動化鏈</p>
+  </div>
+
+  <!-- Section: 為什麼 Vibe Coding 需要自動化流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🤖</span> 為什麼 Vibe Coding 需要自動化流程？</div>
+    <p>在 Vibe Coding 的工作流程中，我們大部分時間都花在「寫碼 → 測試 → 修復 → 部署」的循環上。當這個循環全靠人工執行時，不仅效率低落，而且最容易在「手動部署」這個環節出錯——遺漏某個步驟、設定錯誤的環境變數、或者忘記執行測試，都會導致部署失敗。n8n 作為一個開源的自動化工作流程平台，讓你能用視覺化的方式設計和執行自動化流程，特別適合用來串接 GitHub Actions 的 CI/CD 流程。它的核心價值在於：<strong>把重複性的技術決策轉化為可重複執行的流程</strong>，讓 AI Agent 不再需要記住每個部署步驟，而是透過自動化觸發器來確保每次代碼提交都能經過完整的測試和部署流程。
+
+AI Agent 如何運用 n8n？Agent 可以透過 n8n 的 REST API 觸發或監控自動化流程，例如：當 GitHub 收到新的 push 事件時，n8n 可以自動呼叫測試 API、部署腳本，並把結果回傳給 Agent 進行異常檢測。這種「Agent 觸發 → n8n 執行 → Agent 接收結果」的模式，讓自動化流程成為 Agent 工具箱中的一個<strong>外部工具</strong>，而不需要把複雜的部署邏輯寫進 Agent 的 prompt 裡。</p>
+  </div>
+
+  <!-- Section: 核心觀念：從手動到自動化的躍遷 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 核心觀念：從手動到自動化的躍遷</div>
+    <p>在 Vibe Coding 中，自動化流程扮演著「可靠的後台執行者」角色。當 Agent 完成程式碼撰寫並提交到 GitHub 後，手動流程需要開發者自己執行測試、檢查報告、手動部署；而自動化流程則是由 GitHub Actions 接收 webhook 事件，自動觸發測試和部署，n8n 在這個過程中扮演<strong>整合者</strong>的角色——它可以把多個 Action 的結果收集起來，根據結果決定下一步動作（例如：測試失敗時發送通知、部署成功時更新監控儀表板）。
+
+| 手動部署 | 自動化部署 |
+|---------|-----------|
+| 開發者執行測試命令 | GitHub Actions 自動觸發測試 |
+| 開發者檢查測試報告 | n8n 解析報告並判斷是否通過 |
+| 開發者執行部署命令 | 測試通過後自動觸發部署 Action |
+| 開發者手動通知團隊 | n8n 自動發送通知（Discord/Slack/Email） |
+
+| 情境 A：手動部署 | 情境 B：自動化部署 |
+|----------------|-----------------|
+| 提交代碼後，開發者需要： &lt;br/&gt;1. 執行 npm test &lt;br/&gt;2. 查看測試報告 &lt;br/&gt;3. 執行 npm run build &lt;br/&gt;4. 上傳到伺服器 &lt;br/&gt;5. 重啟服務 &lt;br/&gt;6. 手動通知團隊 | 提交代碼後，GitHub Actions 自動： &lt;br/&gt;1. 觸發測試 &lt;br/&gt;2. 生成報告 &lt;br/&gt;3. 打包應用 &lt;br/&gt;4. 部署到生產環境 &lt;br/&gt;5. n8n 接收結果並通知團隊 |</p>
+  </div>
+
+  <!-- Section: 實戰：搭建 n8n  GitHub Actions 自動化流 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：搭建 n8n + GitHub Actions 自動化流</div>
+    <p>首先，我們需要在本地或伺服器上部署 n8n。最簡單的方式是使用 Docker：</p>
+    <div class="terminal-block">
+<span class="comment"># 使用 Docker 部署 n8n</span>
+<span class="prompt">$</span> <span class="cmd">docker run -it --rm \</span>
+  --name n8n \
+  -p 5678:5678 \
+  -v ~/.n8n:/home/node/.n8n \
+  n8nio/n8n
+
+<span class="output">n8n ready on http://localhost:5678</span>
+<span class="output"></span>
+<span class="output">👉 Open the Web UI: http://localhost:5678</span>
+
+<span class="comment"># 或者使用 Docker Compose（推薦用於生產環境）</span>
+<span class="prompt">$</span> <span class="cmd">cat &gt; docker-compose.yml &lt;&lt; &#x27;EOF&#x27;</span>
+version: &#x27;3.8&#x27;
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: unless-stopped
+    ports:
+      - &quot;5678:5678&quot;
+    environment:
+      - N8N_PORT=5678
+      - N8N_EDITOR_BASE_URL=http://localhost:5678
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=your_secure_password
+    volumes:
+      - ~/.n8n:/home/node/.n8n
+EOF
+
+<span class="prompt">$</span> <span class="cmd">docker-compose up -d</span>
+<span class="output">Created n8n_n8n_1 ... done</span>
+
+<span class="comment"># 驗證 n8n 是否運行中</span>
+<span class="prompt">$</span> <span class="cmd">curl -s http://localhost:5678/api/v1/healthz</span>
+<span class="output">{&quot;status&quot;:&quot;ok&quot;}</span>
+    </div>
+  </div>
+
+  <!-- Section: GitHub Actions 與 n8n 的串接原理 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> GitHub Actions 與 n8n 的串接原理</div>
+    <details class="deep-dive">
+      <summary>為什麼 n8n 適合當 GitHub Actions 的「後勤整合者」？</summary>
+      <div class="deep-dive-content">
+        <p>GitHub Actions 的本質是一個事件驅動的 CI/CD 平台，它透過 YAML 檔案定義「當某個事件發生時（如 push、pull_request），執行哪些步驟」。然而，Actions 本身的功能比較偏向「執行特定任務」，當你需要跨服務整合（例如：測試失敗時發通知、部署成功時更新資料庫）時，單靠 Actions 會變得很複雜。
+
+n8n 的核心優勢在於它的<strong>節點系統</strong>。每個節點代表一個特定功能（HTTP 請求、數據轉換、條件判斷、通知發送等），你可以像接線一樣把節點串起來形成流程。當 GitHub 觸發 webhook 到 n8n 的 webhook 節點時，n8n 可以執行一串邏輯：先呼叫測試 API，解析返回的 JSON，根據結果決定是發送成功通知還是失敗報警，最後把結果記錄到資料庫或發送給 Slack。
+
+這種設計讓 n8n 成為「多步驟決策流程」的理想載體，而 GitHub Actions 負責「單點任務執行」，兩者的分工非常清晰：Actions 處理測試和部署的技術細節，n8n 處理跨服務的協調和通知。對 Vibe Coding 來說，這種分工讓 AI Agent 可以專注在程式碼邏輯上，而不需要處理部署流程的複雜性。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 實戰：建立自動化測試流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：建立自動化測試流程</div>
+    <p>現在我們在 n8n 中建立一個完整的自動化流程。首先開啟 n8n UI（http://localhost:5678），點擊「Create Workflow」：</p>
+    <div class="terminal-block">
+<span class="comment"># 步驟 1：在 GitHub 上建立 repository（假設已使用 Git 初始化）</span>
+<span class="prompt">$</span> <span class="cmd">git init</span>
+<span class="prompt">$</span> <span class="cmd">git remote add origin https://github.com/your-username/your-repo.git</span>
+<span class="prompt">$</span> <span class="cmd">git add .</span>
+<span class="prompt">$</span> <span class="cmd">git commit -m &quot;Initial commit&quot;</span>
+<span class="prompt">$</span> <span class="cmd">git push -u origin main</span>
+
+<span class="output">Enumerating objects: 10, done.</span>
+<span class="output">Counting objects: 100% (10/10), done.</span>
+<span class="output">Writing objects: 100% (10/10), 1.23 KiB | 1.23 MiB/s, done.</span>
+<span class="output">Total 10 (delta 0), reused 0 (delta 0), pack-reused 0</span>
+
+<span class="comment"># 步驟 2：在 GitHub 建立 .github/workflows/test.yml</span>
+<span class="prompt">$</span> <span class="cmd">mkdir -p .github/workflows</span>
+<span class="prompt">$</span> <span class="cmd">cat &gt; .github/workflows/test.yml &lt;&lt; &#x27;EOF&#x27;</span>
+name: Test and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: &#x27;20&#x27;
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+        continue-on-error: false
+      
+      - name: Notify n8n on success
+        if: success()
+        run: |
+          curl -X POST https://your-n8n-instance.com/webhook/test-success \
+            -H &quot;Content-Type: application/json&quot; \
+            -d &#x27;{&quot;repo&quot;: &quot;${{ github.repository }}&quot;, &quot;commit&quot;: &quot;${{ github.sha }}&quot;}&#x27;
+      
+      - name: Notify n8n on failure
+        if: failure()
+        run: |
+          curl -X POST https://your-n8n-instance.com/webhook/test-failure \
+            -H &quot;Content-Type: application/json&quot; \
+            -d &#x27;{&quot;repo&quot;: &quot;${{ github.repository }}&quot;, &quot;commit&quot;: &quot;${{ github.sha }}&quot;, &quot;branch&quot;: &quot;${{ github.ref }}&quot;}&#x27;
+EOF
+
+<span class="comment"># 步驟 3：在 n8n 中建立對應的 Webhook 節點</span>
+<span class="comment"># （此步驟在 n8n UI 中操作，這裡展示預期流程）</span>
+<span class="output">Webhook 節點 URL: https://your-n8n-instance.com/webhook/test-success</span>
+<span class="output">Webhook 節點 URL: https://your-n8n-instance.com/webhook/test-failure</span>
+
+<span class="comment"># 步驟 4：提交到 GitHub</span>
+<span class="prompt">$</span> <span class="cmd">git add .github/workflows/test.yml</span>
+<span class="prompt">$</span> <span class="cmd">git commit -m &quot;Add CI/CD workflow&quot;</span>
+<span class="prompt">$</span> <span class="cmd">git push origin main</span>
+
+<span class="output">To https://github.com/your-username/your-repo.git</span>
+<span class="output">   abc1234..def5678  main -&gt; main</span>
+    </div>
+  </div>
+
+  <!-- Section: Vibe 破裂診斷：常見問題與修復 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> Vibe 破裂診斷：常見問題與修復</div>
+    <p>當自動化流程「Vibe 破裂」時，通常有幾個常見原因。最常見的是<strong>Webhook 無法觸發</strong>——檢查 n8n 的 Webhook 節點是否設定為「等待請求」模式，並且確認 GitHub 的 webhook URL 是否正確。另一個常見問題是<strong>測試失敗但流程繼續</strong>，這通常是因为 GitHub Actions 的 <code>continue-on-error: true</code> 設定錯誤，或者 n8n 的條件判斷邏輯有問題。
+
+第三個常見問題是<strong>部署失敗</strong>，這通常與環境變數或憑證有關。確保你在 n8n 中使用「憑證」功能來管理 API keys 和密碼，不要直接在流程中硬編碼敏感資訊。第四個問題是<strong>通知延遲或丟失</strong>，這可能是因為 n8n 的執行佇列過長，或者 webhook 節點的超時時間太短。
+
+當問題發生時，按以下順序診斷：<strong>1）檢查 GitHub Actions 日誌</strong>（Repository → Actions → 選擇最近的 workflow run），<strong>2）檢查 n8n 的執行歷史</strong>（左侧選單 → Execution），<strong>3）手動觸發 webhook 測試</strong>（在 n8n 中點擊 Webhook 節點的「Test webhook」按鈕），<strong>4）查看 n8n 日誌</strong>（如果開啟了日誌記錄）。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 n8n 中，Webhook 節點的哪種模式最適合用來接收 GitHub 的 push 事件？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">等待模式（Wait）</li>
+          <li onclick="checkAnswer(this, true)">立即回應模式（Immediate）</li>
+          <li onclick="checkAnswer(this, false)">佇列模式（Queue）</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 立即回應模式會直接處理請求並返回響應，適合 GitHub webhook 這種「需要立即確認收到」的場景。等待模式會讓 Webhook 暫停流程等待後續資料，適合需要分階段收到的場景。佇列模式用於高負載情況。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 GitHub Actions 的測試失敗時，n8n 收到通知後應該做什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">自動修復測試代碼並重新提交</li>
+          <li onclick="checkAnswer(this, true)">發送失敗通知給開發者，並記錄失敗詳情</li>
+          <li onclick="checkAnswer(this, false)">忽略失敗，繼續執行部署</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ n8n 的角色是整合者和協調者，不應該擅自修改代碼。正確做法是發送通知讓開發者知道問題，並記錄詳細資訊供後續除錯。自動修復代碼超出了 n8n 的能力範圍，而忽略失敗則會導致問題積累。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 以下哪個是 n8n 相對於純 GitHub Actions 方案的優勢？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">n8n 可以編譯程式碼</li>
+          <li onclick="checkAnswer(this, true)">n8n 提供視覺化流程編輯和跨服務整合能力</li>
+          <li onclick="checkAnswer(this, false)">n8n 可以直接執行 JavaScript 代碼</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ n8n 的核心價值在於視覺化流程編輯和跨服務整合。雖然 GitHub Actions 也能執行 JavaScript，但 n8n 的節點系統讓複雜的跨服務流程更容易設計和維護。編譯程式碼不是 n8n 的功能，而執行 JavaScript 在兩者中都能實現。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：本地部署 n8n
+使用 Docker 或 Docker Compose 在本機或伺服器上部署 n8n，並確認可以透過瀏覽器存取 http://localhost:5678（或對應的公開 URL）。建立第一個 Admin 帳號。</li>
+        <li style="padding: 0.5rem 0;">任務二：建立簡單的 GitHub Actions 流程
+在一個新的 GitHub repository 中，建立 .github/workflows/test.yml，設定當 push 到 main 分支時執行 npm test。確保這個流程能正確執行（可以建立一個簡單的 Node.js 專案來測試）。</li>
+        <li style="padding: 0.5rem 0;">任務三：串接 n8n 與 GitHub Actions
+在 n8n 中建立一個 Workflow，包含兩個 Webhook 節點（一個用於成功通知，一個用於失敗通知）。修改 GitHub Actions 流程，在測試成功和失敗時分別呼叫這兩個 Webhook。提交代碼後，觀察 n8n 是否收到正確的觸發事件。</li>
+        <li style="padding: 0.5rem 0;">任務四：用 AI Agent 優化流程
+開啟 Cursor 或 Claude Code，讓它幫你改進剛才建立的 n8n Workflow。具體要求：
+- 加入條件判斷節點，根據測試結果決定發送哪種通知
+- 加入一個「失敗時自動創建 GitHub Issue」的節點（使用 n8n 的 GitHub 節點）
+- 觀察 Agent 如何理解並實現這個需求，注意它選擇的節點類型和連線方式
+- 記錄 Agent 的決策過程，思考它如何將你的需求轉化為視覺化流程</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 21 · 自動化流程（n8n）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：BaaS 核心（Supabase）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
