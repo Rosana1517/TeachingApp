@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 22 — BaaS 核心（Supabase）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 4: The Soul</span>
+    <h1 class="lesson-title">BaaS 核心（Supabase）</h1>
+    <p class="lesson-subtitle">讓 AI 為你寫 SQL，打造可擴展的雲端資料層</p>
+  </div>
+
+  <!-- Section: Supabase 在 Vibe Coding 中的角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🗄️</span> Supabase 在 Vibe Coding 中的角色</div>
+    <p>Supabase 在本課程中的定位是<strong>「AI 可操作的後端基礎設施」</strong>。當 Vibe Coding 的 Agent 需要持久化資料時，它會透過自然語言理解需求，直接生成對應的 SQL 指令。這種設計讓開發者不需要手寫複雜的 ORM 查詢，而是讓 AI 扮演資料庫架構師的角色。Supabase 的即時資料庫功能與 Row Level Security 機制，正好符合 Agent 需要動態調整存取權限的需求。值得注意的是，當 Vibe 出現資料不一致的現象時，通常不是 Supabase 本身的問題，而是 AI 生成的 SQL 缺乏適當的約束條件。</p>
+  </div>
+
+  <!-- Section: AI 撰寫 SQL 的兩種路徑比較 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> AI 撰寫 SQL 的兩種路徑比較</div>
+    <p>當 Agent 需要操作資料庫時，主要有兩種實現方式。第一種是直接生成標準 SQL 語句，這種方式最直接但需要手動處理連線設定。第二種是透過 Supabase 提供的 JavaScript/TypeScript 客戶端庫，讓 AI 生成更符合現代前端開發習慣的程式碼。前者適合需要精細控制資料庫行為的情境，後者則能充分利用框架提供的型別檢查與錯誤處理機制。選擇哪種方式取決於專案的複雜度與團隊熟悉的技術棧。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">純 SQL 生成方式</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// AI 直接生成的查詢
+const result = await supabase
+  .from(&#x27;users&#x27;)
+  .select(&#x27;*&#x27;)
+  .eq(&#x27;status&#x27;, &#x27;active&#x27;)
+  .order(&#x27;created_at&#x27;, { ascending: false })
+
+// 優點：直觀、容易除錯
+// 缺點：需手動處理錯誤邊界</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">TypeScript 客戶端方式</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// 帶有型別檢查的查詢
+type User = {
+  id: string
+  email: string
+  created_at: string
+}
+
+const { data, error } = await supabase
+  .from&lt;User&gt;(&#x27;users&#x27;)
+  .select()
+  .returns&lt;User[]&gt;()
+
+// 優點：編譯期錯誤檢查
+// 缺點：需要額外定義型別</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 建立 User Profile 表的 AI 調用流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> 建立 User Profile 表的 AI 調用流程</div>
+    <p>當 Agent 接到「建立使用者檔案系統」的需求時，會經歷三個關鍵步驟。首先是解析自然語言需求，轉換成資料庫設計語言。接著根據設計生成 migration 檔案，確保架構變更可追溯。最後是執行 migration 並驗證資料結構。這個過程中，AI 會自動處理外鍵關係、索引設定與預設值等細節。若發生表結構錯誤，通常可以透過查看 Supabase Dashboard 的 SQL Editor 來診斷，或檢查 Agent 生成的 migration 檔案是否有語法錯誤。</p>
+  </div>
+
+  <!-- Section: 實戰指令：從零開始設定 Supabase -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 實戰指令：從零開始設定 Supabase</div>
+    <p>初始化 Supabase 專案有標準化的指令流程。首先安裝官方 CLI 工具，然後建立新專案並啟動本地開發環境。接著透過 Web UI 建立資料表，或使用 migration 檔案進行版本控制。每個步驟都有對應的 CLI 指令，讓 AI Agent 可以自動化整個設定過程。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm install -g supabase</span>
+<span class="output">已安裝 supabase v1.145.2</span>
+<span class="prompt">$</span> <span class="cmd">supabase login</span>
+<span class="output">請在瀏覽器中完成認證...</span>
+<span class="prompt">$</span> <span class="cmd">supabase init</span>
+<span class="output">建立 supabase/ 資料夾結構</span>
+<span class="prompt">$</span> <span class="cmd">supabase start</span>
+<span class="error">ERROR: Docker daemon not running</span>
+<span class="comment"># 需要先啟動 Docker Desktop</span>
+<span class="prompt">$</span> <span class="cmd">docker desktop start</span>
+<span class="output">Docker Desktop 正在啟動...</span>
+<span class="prompt">$</span> <span class="cmd">supabase start</span>
+<span class="output">Starting...</span>
+<span class="output">Database: postgres://postgres:postgres@localhost:54322/postgres</span>
+    </div>
+  </div>
+
+  <!-- Section: AI 生成 SQL 的技術原理 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> AI 生成 SQL 的技術原理</div>
+    <details class="deep-dive">
+      <summary>為什麼 AI 能準確將自然語言轉成正確的 SQL？</summary>
+      <div class="deep-dive-content">
+        <p>AI 生成 SQL 的能力建立在兩個技術基礎之上。首先是大型語言模型對 SQL 語法的深度訓練，這些模型在龐大的程式碼庫中學習了各種資料庫查詢模式。其次是 Supabase 提供的 schema 資訊，這些結構化資料讓 AI 能了解表格的欄位類型、約束條件與關係定義。當自然語言轉換成 SQL 時，模型會先解析語意意圖，然後根據提供的資料庫結構生成符合語法的查詢。這個過程之所以可靠，是因為 SQL 本身具有嚴格的語法規則，而資料庫的 schema 定義提供了足夠的上下文資訊。當 Vibe 破裂時，最常見的原因是 AI 對資料庫結構的理解不完整，或是生成的 SQL 與實際 schema 不匹配。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當 AI 生成的 SQL 出現語法錯誤時，最佳排除步驟是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">直接修改 AI 生成的程式碼</li>
+          <li onclick="checkAnswer(this, true)">檢查 Supabase 控制台確認 schema 是否符合預期</li>
+          <li onclick="checkAnswer(this, false)">重啟開發伺服器</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確因為 schema 不一致是 SQL 錯誤的主要原因。選項 A 是治標不治本，選項 C 與問題無關。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪個不是 Supabase 的優勢功能？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">即時資料庫訂閱</li>
+          <li onclick="checkAnswer(this, false)">內建向量搜尋</li>
+          <li onclick="checkAnswer(this, true)">自動備份到 Amazon S3</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Supabase 提供原生向量搜尋（pgvector）與即時訂閱功能，但自動備份需要手動設定。這是常見的迷思。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日實戰任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎯</span> 今日實戰任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 AI 工具生成完整的 User Profile 資料表結構，包含 id、email、username、created_at 等欄位</li>
+        <li style="padding: 0.5rem 0;">撰寫 migration 檔案並執行，觀察 AI 如何處理資料表關係</li>
+        <li style="padding: 0.5rem 0;">在 Supabase Dashboard 手動插入測試資料，然後讓 AI 生成查詢語句驗證資料正確性</li>
+        <li style="padding: 0.5rem 0;">模擬 Vibe 破裂情境：故意讓 AI 生成有語法錯誤的 SQL，觀察錯誤訊息並修復</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 22 · BaaS 核心（Supabase）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：緩存與存儲（Redis/R2）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
