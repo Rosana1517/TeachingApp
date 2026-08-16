@@ -803,11 +803,19 @@ def main():
     if next_id <= len(LESSONS):
         lesson = LESSONS[next_id - 1]
     else:
-        lesson = generate_lesson_via_llm(next_id, previous_topics)
+        # LLM 回應偶爾會是格式錯誤的 JSON（例如被截斷、漏逗號），單次失敗不代表
+        # 服務掛了，多試幾次通常就能拿到合法的回應，避免動不動就整天沒有新課。
+        lesson = None
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            lesson = generate_lesson_via_llm(next_id, previous_topics)
+            if lesson is not None:
+                print(f"已透過 LLM API 生成第 {next_id:02d} 課內容（第 {attempt} 次嘗試）")
+                break
+            print(f"第 {attempt} 次 LLM 生成失敗，{'重試中...' if attempt < max_attempts else '已達重試上限'}")
         if lesson is None:
-            print("LLM 生成失敗，本次不產生新課程（避免重複舊內容佔用課號）")
+            print("LLM 多次生成皆失敗，本次不產生新課程（避免重複舊內容佔用課號）")
             return
-        print(f"已透過 LLM API 生成第 {next_id:02d} 課內容")
 
     duplicate = find_duplicate_topic(lesson.get("title", ""), previous_topics)
     if duplicate:
