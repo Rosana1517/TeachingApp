@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 21 — 自我同理：對待自己的溫柔態度</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 21 課</span>
+    <h1 class="lesson-title">自我同理：對待自己的溫柔態度</h1>
+    <p class="lesson-subtitle">用對待好朋友的方式，來對待自己</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼自我同理很重要</div>
+    <p>當你犯錯、退步或沒有做到時，你內在的聲音是什麼？是嚴厲的責備，還是溫柔的理解？<strong>自我同理（Self-compassion）</strong>不是放縱自己，而是在面對自己的不足時，選擇用善意而非批判來對待自己。研究顯示，擁有自我同理的人，更有毅力堅持改變，也更不容易陷入焦慮與逃避。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>自我同理有三個核心元素，缺一不可。理解它們，才能真正做到溫柔對待自己。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">自我善意</div>
+        <div class="principle-desc">像對待好朋友一樣，用溫和語氣跟自己說話，而不是責備。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">共通人性</div>
+        <div class="principle-desc">承認「不完美是人類共同經驗」，我不是唯一會失敗的人。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">正觀照</div>
+        <div class="principle-desc">看見自己的情緒與困難，但不被它淹沒，保持覺察而不評判。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>當你在復發處理中感到挫折時，以下句型可以幫助你切換內在對話。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">又一次逃避了，覺得自己很糟糕</span>
+          <span class="line">我又退步了。這不代表我失敗了，只代表我在學習的過程中。</span>
+        </li>
+        <li>
+          <span class="situation">跟別人說不的時候很緊張</span>
+          <span class="line">我在練習說不，緊張是正常的，每個人開始學新技能都會緊張。</span>
+        </li>
+        <li>
+          <span class="situation">覺得自己做得不夠好</span>
+          <span class="line">我已經盡了目前的力氣。我不需要完美，我只需要持續前進。</span>
+        </li>
+        <li>
+          <span class="situation">被自己的舊反應嚇到</span>
+          <span class="line">我的大腦還在習慣舊模式，這很正常。我正在重新訓練它。</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 選一句你最容易說出口的开始練習，不必全記。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>自我批判的內在對話會消耗你的能量，讓你更想逃避。留意這些說法，並輕輕替換成自我同理的語言。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">"我怎麼又這樣，我永遠改不掉"</td><td>這是絕對化的自我攻擊，會讓大腦進入防禦模式，更難改變。</td></tr>
+        <tr><td class="bad">"別人都不會這樣，只有我這麼差"</td><td>這忽略了共通人性，把困難個人化，增加孤獨與羞恥感。</td></tr>
+        <tr><td class="bad">"我連這一點都做不到，太沒用了"</td><td>用單一事件定義整體價值，忽略了你正在努力的事實。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪一句最符合「自我同理」的態度？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 我允許自己這次沒做好，並繼續嘗試</li>
+          <li onclick="checkAnswer(this, false)">B. 我必須更努力，下次絕不能再失敗</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">A是自我同理：接納當下的不完美，並保持前進的意願。B是自我批判，用懲罰式的語言要求自己，長期會增加焦慮與逃避。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「共通人性」指的是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 承認不完美是人類共同的經驗</li>
+          <li onclick="checkAnswer(this, false)">B. 別人的問題比我更嚴重很多</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">共通人性是指明白「每個人都會犯錯、都會掙扎」，你不是孤單的。B是把注意力轉向別人來安慰自己，這不等於自我同理。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>回想今天或最近一次你對自己感到不滿的時刻，用自我同裡的三個元素（自我善意、共通人性、正觀照）寫下一段話，給自己。</li>
+        <li>選一句「可以直接用的句型」，在接下來24小時內，至少對自己默念一次。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📌</span> 專業協助提醒</div>
+    <p>本課程為心理教育與技能訓練，不提供心理治療。若您長期感到焦慮、情緒低落或自我攻擊嚴重影響生活，建議尋求專業心理師或精神科醫師協助。</p>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 21 課 · 2026-08-16</p>
+    <p class="next">下一課：自我監督：建立個人成長檔案</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
