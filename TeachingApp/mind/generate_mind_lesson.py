@@ -10,7 +10,9 @@
 
 import os
 import re
+import sys
 import json
+import difflib
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -255,6 +257,29 @@ def get_previous_topics():
             seen.add(topic)
             deduped.append(topic)
     return deduped
+
+
+def normalize_topic(title):
+    """去掉「第N課：」這類編號前綴，只留下主題本身，方便比對是否重複。"""
+    t = re.sub(r'^第\s*\d+\s*課[:：]\s*', '', title or '')
+    return t.strip()
+
+
+def find_duplicate_topic(new_title, previous_topics, threshold=0.82):
+    """檢查新課程主題是否與過去教過的主題重複或高度相似。
+    有相似項就回傳該舊主題，否則回傳 None。"""
+    new_norm = normalize_topic(new_title)
+    if not new_norm:
+        return None
+    for old_title in previous_topics:
+        old_norm = normalize_topic(old_title)
+        if not old_norm:
+            continue
+        if new_norm == old_norm:
+            return old_title
+        if difflib.SequenceMatcher(None, new_norm, old_norm).ratio() >= threshold:
+            return old_title
+    return None
 
 
 LESSON_SCHEMA_INSTRUCTIONS = """\
@@ -773,14 +798,21 @@ def main():
     next_id = get_next_lesson_id()
     print(f"將生成第 {next_id:02d} 課")
 
+    previous_topics = get_previous_topics()
+
     if next_id <= len(LESSONS):
         lesson = LESSONS[next_id - 1]
     else:
-        lesson = generate_lesson_via_llm(next_id, get_previous_topics())
+        lesson = generate_lesson_via_llm(next_id, previous_topics)
         if lesson is None:
             print("LLM 生成失敗，本次不產生新課程（避免重複舊內容佔用課號）")
             return
         print(f"已透過 LLM API 生成第 {next_id:02d} 課內容")
+
+    duplicate = find_duplicate_topic(lesson.get("title", ""), previous_topics)
+    if duplicate:
+        print(f"偵測到主題重複：新課程「{lesson.get('title', '')}」與已存在課程「{duplicate}」高度相似，停止生成本課。")
+        sys.exit(1)
 
     html_content = generate_html(lesson)
     filename = f"mind-lesson-{lesson['id']:02d}.html"

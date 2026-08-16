@@ -7,7 +7,9 @@
 
 import os
 import re
+import sys
 import json
+import difflib
 import html as html_module
 import urllib.request
 import urllib.error
@@ -650,6 +652,29 @@ def get_previous_topics():
             seen.add(topic)
             deduped.append(topic)
     return deduped
+
+
+def normalize_topic(title):
+    """去掉「第N課：」這類編號前綴，只留下主題本身，方便比對是否重複。"""
+    t = re.sub(r'^第\s*\d+\s*課[:：]\s*', '', title or '')
+    return t.strip()
+
+
+def find_duplicate_topic(new_title, previous_topics, threshold=0.82):
+    """檢查新課程主題是否與過去教過的主題重複或高度相似。
+    有相似項就回傳該舊主題，否則回傳 None。"""
+    new_norm = normalize_topic(new_title)
+    if not new_norm:
+        return None
+    for old_title in previous_topics:
+        old_norm = normalize_topic(old_title)
+        if not old_norm:
+            continue
+        if new_norm == old_norm:
+            return old_title
+        if difflib.SequenceMatcher(None, new_norm, old_norm).ratio() >= threshold:
+            return old_title
+    return None
 
 
 def get_outline_item(lesson_id):
@@ -1320,6 +1345,7 @@ def main():
 
     # 選擇對應的課程
     outline_item = get_outline_item(next_id)
+    previous_topics = get_previous_topics()
     if next_id <= len(LESSONS):
         lesson = LESSONS[next_id - 1]
     else:
@@ -1327,7 +1353,7 @@ def main():
         max_attempts = 3
         for attempt in range(1, max_attempts + 1):
             try:
-                lesson = generate_lesson_via_llm(next_id, get_previous_topics(), outline_item=outline_item)
+                lesson = generate_lesson_via_llm(next_id, previous_topics, outline_item=outline_item)
             except Exception as error:
                 # 任何未預期的例外（解析器邊角案例、網路問題等）都不該讓整個
                 # GitHub Action 直接失敗；當成這次嘗試失敗，讓迴圈重試或最終落到
@@ -1335,11 +1361,21 @@ def main():
                 print(f"第 {attempt} 次生成時發生未預期例外：{error!r}", flush=True)
                 lesson = None
             if lesson is not None:
-                print(f"已透過 LLM API 生成第 {next_id:02d} 課內容（第 {attempt} 次嘗試）")
-                break
+                duplicate = find_duplicate_topic(lesson.get("title", ""), previous_topics)
+                if duplicate:
+                    print(f"第 {attempt} 次生成的主題「{lesson.get('title', '')}」與已存在課程「{duplicate}」重複，捨棄重試。")
+                    lesson = None
+                else:
+                    print(f"已透過 LLM API 生成第 {next_id:02d} 課內容（第 {attempt} 次嘗試）")
+                    break
             print(f"第 {attempt} 次 LLM 生成失敗，{'重試中...' if attempt < max_attempts else '改用備用課程內容'}")
         if lesson is None:
             lesson = build_fallback_lesson(next_id, outline_item)
+
+    duplicate = find_duplicate_topic(lesson.get("title", ""), previous_topics)
+    if duplicate:
+        print(f"偵測到主題重複：新課程「{lesson.get('title', '')}」與已存在課程「{duplicate}」高度相似，停止生成本課。")
+        sys.exit(1)
 
     # 生成 HTML
     html_content = generate_html(lesson)
