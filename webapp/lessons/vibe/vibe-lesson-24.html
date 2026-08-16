@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 24 — API 通訊與第三方整合</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 4: The Soul</span>
+    <h1 class="lesson-title">API 通訊與第三方整合</h1>
+    <p class="lesson-subtitle">讓你的 App 學會打電話——理解 API Routes、Request/Response 結構，與 Webhook 接收外部事件</p>
+  </div>
+
+  <!-- Section: 為什麼 Vibe Coding 需要 API 通訊 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼 Vibe Coding 需要 API 通訊？</div>
+    <p>在 Vibe Coding 的脈絡裡，你的 Next.js 應用程式不應該是資訊孤島。AI Agent 負責把「靜態的 UI 與邏輯」組裝成可用的原型，但真正讓產品活起來的是它與外部世界的對話能力——讀取即時天氣、追蹤 GitHub 事件、呼叫 AI 模型、寫入資料庫，全部依賴 API 通訊。沒有這層能力，你的 Vibe 只是好看但不能用的殼。本課的核心目標是讓你能夠清楚地描述「我要叫哪一台伺服器做什麼事」，並且能看懂對方回來的結果長什麼樣子，這樣當 Vibe 破裂時你才有辦法指出問題在哪一端：是你發出去的 Request 格式錯了，還是對方的 Response 結構跟你預期不同。</p>
+  </div>
+
+  <!-- Section: API Routes 與 Client-Side Fetch 的差別 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> API Routes 與 Client-Side Fetch 的差別</div>
+    <p>Next.js 提供兩種最常見的服務端通訊寫法：一是直接使用 <code>fetch()</code>（在 Client Component 裡調用），二是把邏輯寫進 <code>app/api/</code> 目錄下的 Server Route。兩者的本質區別在於請求發生在哪一台機器上。Client-Side Fetch 的請求是從使用者的瀏覽器直接發出去，這意味著 API Key 可能會暴露在前端原始碼裡，也常常會遇到 CORS 限制。Server Route 則是由你的伺服器（localhost 或上線後的 Vercel Node runtime）發出請求，前端只負責接收結果，安全性與穩定性都更好。當 Vibe 破裂時，檢查方式很直接：打開瀏覽器的 Network 面板，看 Request 是哪一端發出的、Status Code 是多少、Response Body 的內容是否符合預期。</p>
+  </div>
+
+  <!-- Section: 實作範例：用 Open-Meteo 免費天氣 API 寫一個 Server Route -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實作範例：用 Open-Meteo 免費天氣 API 寫一個 Server Route</div>
+    <p>Open-Meteo 是一個完全免費、不需要 API Key 的氣象 API，非常適合教學使用。我們先在 Next.js 專案裡新增 <code>app/api/weather/route.ts</code>，以下是完整的實作邏輯。這個 Route 接收使用者傳來的城市名稱（或經緯度），Proxy 到 Open-Meteo 的 API，再把結果回傳給前端。這樣寫的好處是前端永遠不會看到 Open-Meteo 的 URL，日後即使要換成需要 Key 的商業 API（例如 OpenWeatherMap），也只在本機這個 Server Route 裡改一行就好。</p>
+    <div class="terminal-block">
+<span class="comment"># 這是我們在 route.ts 裡會寫的核心 fetch 邏輯（請用 AI Agent 產生完整檔案）</span>
+<span class="comment"># 不需要手動輸入，但要看懂它在做什麼</span>
+<span class="prompt">$</span> <span class="cmd">cat app/api/weather/route.ts</span>
+import { NextRequest, NextResponse } from &quot;next/server&quot;
+
+export async function GET(request: NextRequest) {
+  const city = request.nextUrl.searchParams.get(&quot;city&quot;) ?? &quot;台北&quot;
+  const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&amp;q=${encodeURIComponent(city)}`
+  const geoRes = await fetch(geoUrl)
+  const geoData = await geoRes.json()
+  if (!geoData.length) {
+    return NextResponse.json({ error: &quot;找不到該城市&quot; }, { status: 404 })
+  }
+  const { lat, lon } = geoData[0]
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&amp;longitude=${lon}&amp;current=temperature_2m,wind_speed_10m`
+  const weatherRes = await fetch(weatherUrl)
+  const weatherData = await weatherRes.json()
+  return NextResponse.json(weatherData.current)
+}
+<span class="comment"># 啟動開發伺服器</span>
+<span class="prompt">$</span> <span class="cmd">bun run dev</span>
+<span class="output">Ready at http://localhost:3000</span>
+    </div>
+  </div>
+
+  <!-- Section: Webhooks讓外部事件主動找上門 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> Webhooks——讓外部事件主動找上門</div>
+    <p>前面學的都是「你主動去問別人拿資料」，Webhook 則是反過來：你提供一個 URL 端點，讓別的服务在發生特定事件時主動 POST 資料過來。GitHub 的 Push Event、Stripe 的付款成功通知、甚至是其他 AI Agent 完成工作後的回調，全部走這個模式。在 Next.js 裡，你只需要在 <code>app/api/webhook/route.ts</code> 裡寫一個 <code>POST</code> handler，接收 <code>request.body</code> 裡的事件 payload，驗證簽章（如果是 Stripe 這種有安全機制的服務），然後根據事件類型執行對應的邏輯（例如更新資料庫、發送推播）。當 Vibe 破裂時，最常見的原因是：簽章驗證失敗、<code>content-type: application/json</code> 沒寫對導致 <code>request.json()</code> 解析錯誤、或是伺服器端沒有正確返回 <code>200 OK</code> 讓發送端知道已經收到。</p>
+  </div>
+
+  <!-- Section:  深入解析：Request 與 Response 的結構為什麼長這樣 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 🔬 深入解析：Request 與 Response 的結構為什麼長這樣？</div>
+    <details class="deep-dive">
+      <summary>為什麼我們要把 request 和 response 當成結構化的物件來處理？</summary>
+      <div class="deep-dive-content">
+        <p>HTTP 通訊的本質是一問一答的契約關係。當你發送一個 Request，你同時定義了三件事：Method（GET/POST/PUT/DELETE，決定動作類型）、Headers（告訴對方你要什麼格式、身分憑證、Content-Type 是什麼）、Body（POST/PUT 時攜帶的實際資料）。而 Response 則對應地回傳：Status Code（200 成功、404 找不到、500 伺服器內部的錯誤）、Headers（Content-Type、CORS 權限、Cache-Control），以及 Body（JSON、HTML、或純文字）。理解這個對稱結構非常關鍵，因為 Vibe Coding 裡絕大部分「報錯看不懂」的問題，根源都在這裡——例如 Next.js 的 <code>NextResponse.json()</code> 預設會自動把 <code>Content-Type</code> 設為 <code>application/json</code>，但如果你手寫 <code>new Response("hello")</code> 而不指定 headers，前端收到的是純文字，不是 JSON，接著 <code>await res.json()</code> 就會拋出 <code>Unexpected token 'h'</code> 的錯誤。另一個常見陷阱：Open-Meteo 的 API 回傳的 <code>current</code> 欄位是一個物件，但有些人以為它會直接回傳 <code>temperature_2m</code> 的數值，結果在前端做 <code>data.temperature_2m</code> 拿到的永遠是 <code>undefined</code>。把 Request/Response 結構想清楚，就能精準定位這一切。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Next.js 的 Server Route（app/api/.../route.ts）裡，以下哪一段程式碼能正確回應一個 JSON？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">return "Hello World"</li>
+          <li onclick="checkAnswer(this, false)">return new Response("Hello World")</li>
+          <li onclick="checkAnswer(this, true)">return NextResponse.json({ message: "Hello World" })</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ NextResponse.json() 是 Next.js 專屬的 Response 建構工具，它不僅回傳 JSON 格式的 Body，還會自動把 Content-Type 標頭設為 application/json，這是與一般 JavaScript new Response() 最主要的差別。選項 A 回傳的是純字串，前端收到時 Content-Type 是 text/plain，會導致 JSON.parse 失敗；選項 B 雖然不會錯，但 Content-Type 預設是 text/plain，前端若預期 JSON 也會解析錯誤。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗（第二題） -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗（第二題）</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當你的 App 呼叫 Open-Meteo API 後收到 Status 200，但前端顯示「溫度：undefined」，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">Open-Meteo API 當機了</li>
+          <li onclick="checkAnswer(this, true)">API 回傳的資料結構是 <code>{ current: { temperature_2m: 25 } }</code>，但前端直接讀取 <code>data.temperature_2m</code> 而沒有先取 <code>data.current</code></li>
+          <li onclick="checkAnswer(this, false)">你的 Next.js 版本太舊，不支援這個 API</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Status 200 表示請求成功，排除伺服器端問題。Open-Meteo 的 current 是一個巢狀物件，正確的讀取路徑是 <code>data.current.temperature_2m</code>，若直接讀 <code>data.temperature_2m</code> 就會是 undefined。這不是 Next.js 版本問題，而是對 API Response 結構理解不正確所致。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">請用 AI Agent（Cursor / Claude Code / Bolt 皆可）在你現有的 Next.js 專案裡，新增一個 <code>app/api/weather/route.ts</code>，實現上一課 Terminal Block 中的邏輯，並在前端頁面上顯示該城市的當前溫度與風速，觀察網路請求的 Request Headers 與 Response Body。</li>
+        <li style="padding: 0.5rem 0;">手動在瀏覽器 DevTools 的 Network 面板中，找到你剛剛呼叫的 <code>/api/weather</code> 請求，確認它的 Status Code 是 200、Content-Type 是 application/json，並把 Response 的完整 JSON 結構抄寫下來，理解 <code>current</code> 欄位的巢狀結構。</li>
+        <li style="padding: 0.5rem 0;">將剛才的 Client Component 裡的 fetch 改為呼叫你自己的 Server Route（<code>/api/weather</code>），而不是直接呼叫 Open-Meteo，思考並寫下兩者的差別：安全性、CORS、以及未來換用需要 Key 的 API 時哪個更方便擴充。</li>
+        <li style="padding: 0.5rem 0;">實作一個簡單的 Webhook 接收端：在 <code>app/api/ping/route.ts</code> 中寫一個 POST handler，只回傳 <code>NextResponse.json({ received: true, timestamp: Date.now() })</code>，然後用 <code>curl -X POST http://localhost:3000/api/ping -H "Content-Type: application/json" -d '{"event":"test"}'</code> 從終端機發送請求，觀察伺服器端收到的 payload 與成功回傳的 200 狀態。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 24 · API 通訊與第三方整合</p>
+    <p style="margin-top: 0.3rem;">下一課預告：身份驗證（Better Auth）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
