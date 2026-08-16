@@ -24,6 +24,8 @@ function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+let refreshLearnedBtn = null;
+
 async function init() {
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
@@ -38,19 +40,26 @@ async function init() {
   document.getElementById("course-frame").src = course.path;
 
   const btn = document.getElementById("learned-btn");
-  const refreshBtn = () => {
+  refreshLearnedBtn = () => {
     const done = Progress.isReadState(course.id);
     btn.textContent = done ? "✓" : "○";
     btn.style.color = done ? "var(--success)" : "var(--accent)";
   };
-  refreshBtn();
+  refreshLearnedBtn();
   btn.addEventListener("click", () => {
     Progress.toggleLearned(course.id);
-    refreshBtn();
+    refreshLearnedBtn();
   });
 }
 
 init();
+
+// See the matching pageshow handler in js/app.js: a bfcache restore of this
+// page would otherwise show whatever "已完成" state was true before the user
+// left, even if it's since changed (e.g. toggled from another tab).
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted && refreshLearnedBtn) refreshLearnedBtn();
+});
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");

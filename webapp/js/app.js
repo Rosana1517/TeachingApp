@@ -155,6 +155,16 @@ document.addEventListener("DOMContentLoaded", () => {
   checkDailyReminder();
 });
 
+// iOS/Android back-navigation (system back gesture or button) can restore this
+// page from the browser's bfcache instead of reloading it, which replays the
+// exact DOM from before the user left — including a course that was since
+// marked as learned on course.html still showing as unlearned here, because
+// no script re-runs on a bfcache restore. Re-render from localStorage
+// (already up to date) whenever that happens.
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) render();
+});
+
 function setupInstallBanner() {
   const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   if (isStandalone) return;
