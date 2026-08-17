@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 58 — 第 58 課：法語關係代名詞 dont 的應用與綜合練習</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 58</span>
+    <h1 class="lesson-title">第 58 課：法語關係代名詞 dont 的應用與綜合練習</h1>
+    <p class="lesson-subtitle">學會用 dont 代替「de + 先行詞」，完成 qui / que / où / dont 的完整綜合複習</p>
+  </div>
+
+  <!-- Section 1: dont 的基本概念 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> dont 的基本概念</div>
+    <p>dont 是用來代替「de + 先行詞」的關係代名詞，相當於英語的「whose / of which」。它常見的三大用法：<strong>① 代替屬有關係</strong>：le livre <strong>dont</strong> je parle（我所說的那本書）；<strong>② 代替動詞搭配 de 的動詞</strong>：j'ai besoin <strong>de</strong> ton aide → c'est l'aide <strong>dont</strong> j'ai besoin；<strong>③ 代替形容詞搭配 de</strong>：elle est fière <strong>de</strong> ses résultats → c'est une élève fière <strong>dont</strong> les résultats sont excellents。dont 不區分性別和單複數，前面不能有介詞。</p>
+  </div>
+
+  <!-- Section 2: dont 發音與拼法對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> dont 發音與拼法對照</div>
+    <p>dont 的拼法容易和 on / ont 混淆，發音上 dont 讀作 /dõ/，鼻化元音 /õ/ 與 on /ɔ̃/ 相近但更閉一些。下面列出 dont 與相關詞的發音對照：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">dont</div>
+        <div class="pron-ipa">關係代名詞，讀作 /dõ/</div>
+        <div class="pron-example"><em>C'est le film <strong>dont</strong> je t'ai parlé.</em>（這就是我跟你說的那部電影。）<button class="speak-btn" onclick='speakFrench("C&#39;est le film <strong>dont<")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">on</div>
+        <div class="pron-ipa">主格代名詞，讀作 /ɔ̃/</div>
+        <div class="pron-example"><em><strong>On</strong> va au cinéma.</em>（我們要去電影院。）<button class="speak-btn" onclick='speakFrench("<strong>On<")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ont</div>
+        <div class="pron-ipa">avoir 的第三人稱複數現在式，讀作 /ɔ̃/</div>
+        <div class="pron-example"><em>Ils <strong>ont</strong> raison.</em>（他們是對的。）<button class="speak-btn" onclick='speakFrench("Ils <strong>ont<")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">donc</div>
+        <div class="pron-ipa">副詞，讀作 /dɔ̃k/，尾音 /k/ 發音</div>
+        <div class="pron-example"><em>Il pleut, <strong>donc</strong> je reste.</em>（下雨了，所以我留在室內。）<button class="speak-btn" onclick='speakFrench("Il pleut, <strong>donc<")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>以下句子皆含 dont，請跟讀並注意鼻化元音 /õ/ 的穩定發音，同時感受 dont 與前面名詞的聯誦：</p>
+    <div class="follow-box">
+      <h4>以下句子皆含 dont，請跟讀並注意鼻化元音 /õ/ 的穩定發音，同時感受 dont 與前面名詞的聯誦：</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">dont il parle</span>
+          <span class="ipa">/dɔ̃.n‿il paʁl/</span>
+          <span class="meaning">—— 他所談論的（那個）</span>
+          <button class="speak-btn" onclick='speakFrench("dont il parle")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dont je suis fier</span>
+          <span class="ipa">/dɔ̃ ʒə syi fjeʁ/</span>
+          <span class="meaning">—— 我所驕傲的（那個）</span>
+          <button class="speak-btn" onclick='speakFrench("dont je suis fier")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dont nous avons besoin</span>
+          <span class="ipa">/dɔ̃ nu.za.vɔ̃ bɛ.zɛ̃/</span>
+          <span class="meaning">—— 我們所需要的（那個）</span>
+          <button class="speak-btn" onclick='speakFrench("dont nous avons besoin")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dont la mère est médecin</span>
+          <span class="ipa">/dɔ̃.la mɛʁ ɛ me.dɛ̃/</span>
+          <span class="meaning">—— 母親是醫生的（那個）</span>
+          <button class="speak-btn" onclick='speakFrench("dont la m\u00e8re est m\u00e9decin")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">c'est l'ami dont je te parle</span>
+          <span class="ipa">/sɛ.t‿a.mi dɔ̃ ʒə tə paʁl/</span>
+          <span class="meaning">—— 這就是我正在跟你說的那位朋友</span>
+          <button class="speak-btn" onclick='speakFrench("c&#39;est l&#39;ami dont je te parle")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：dont 後面若接元音或 h 開頭字母，務必進行聯誦：dont + il → /dɔ̃.n‿il/</p>
+  </div>
+
+  <!-- Section ⚡: dont 與 qui / que / où 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> dont 與 qui / que / où 重點對照</div>
+    <p>學習關係代名詞時，最關鍵的是判斷先行詞在關係子句中所扮演的角色——是主詞、直接受詞、間接受詞，還是表示時間、地點或屬有關係。以下表格幫助你快速分辨：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">qui</div>
+        <div class="pron-ipa">代替關係子句中的<strong>主詞</strong></div>
+        <div class="pron-example">L'homme <strong>qui</strong> parle est mon professeur.<button class="speak-btn" onclick='speakFrench("L&#39;homme <strong>qui<")' aria-label="播放發音">🔊</button><br>qui 後必須接動詞，不可接名詞或代名詞。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">que</div>
+        <div class="pron-ipa">代替關係子句中的<strong>直接受詞</strong></div>
+        <div class="pron-example">Le livre <strong>que</strong> j'ai lu est intéressant.<button class="speak-btn" onclick='speakFrench("Le livre <strong>que<")' aria-label="播放發音">🔊</button><br>que 後必須接主詞 + 動詞，若後接元音則變為 qu'。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">où</div>
+        <div class="pron-ipa">代替<strong>地點</strong>或<strong>時間</strong></div>
+        <div class="pron-example">La ville <strong>où</strong> je vis est calme.<button class="speak-btn" onclick='speakFrench("La ville <strong>o\u00f9<")' aria-label="播放發音">🔊</button><br>注意区分 où（關係代名詞）與 ou（選擇連詞，無重音符）。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">dont</div>
+        <div class="pron-ipa">代替<strong>de + 先行詞</strong>（屬有、動詞搭配 de、形容詞搭配 de）</div>
+        <div class="pron-example">Le sujet <strong>dont</strong> nous parlons est difficile.<button class="speak-btn" onclick='speakFrench("Le sujet <strong>dont<")' aria-label="播放發音">🔊</button><br>dont 前不能加介詞，本身已包含 de 的語法功能。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「C'est l'ami ________ je t'ai parlé hier.」空格處應填入哪個關係代名詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. que</li>
+          <li onclick="checkAnswer(this, true)">B. dont</li>
+          <li onclick="checkAnswer(this, false)">C. où</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案為 B. dont。因為 parler de qqn（談論某人）搭配介系詞 de，所以要用 dont 來代替「de + l'ami」。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「Voici le livre ________ je t'ai parlé.」空格處應填入哪個關係代名詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. que</li>
+          <li onclick="checkAnswer(this, false)">B. qui</li>
+          <li onclick="checkAnswer(this, true)">C. dont</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案為 C. dont。parler de qch（談論某事）搭配介系詞 de，因此用 dont。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 下列哪一句的 dont 表示<strong>屬有關係</strong>（whose）？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. C'est la solution dont nous avons besoin.</li>
+          <li onclick="checkAnswer(this, true)">B. C'est l'étudiante dont les parents sont médecins.</li>
+          <li onclick="checkAnswer(this, false)">C. C'est le film dont je me souviens.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 正確答案為 B. dont les parents = 那位學生的父母， dont 在此代替「de + l'étudiante」表示屬有關係。A 和 C 中的 dont 則是動詞搭配 de（avoir besoin de / se souvenir de）。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀跟練時間中的五個 dont 短語各三遍，並錄音自己發音與標準音標對照。</li>
+        <li style="padding: 0.5rem 0;">用 dont 改寫以下三個句子：① J'ai besoin de ton conseil. ② Je me souviens de ce film. ③ Elle est fière de son fils. 將每個句子改寫為包含 dont 的關係子句結構。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 58 · 第 58 課：法語關係代名詞 dont 的應用與綜合練習 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 59 課：法語被動語態（Voix Passive）入門</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
