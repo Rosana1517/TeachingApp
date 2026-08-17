@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 25 — 身份驗證（Better Auth）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 5: The Money</span>
+    <h1 class="lesson-title">身份驗證（Better Auth）</h1>
+    <p class="lesson-subtitle">用 AI 快速架起 OAuth 與會話管理，讓 Vibe Coding 也能有企業級的安全認證</p>
+  </div>
+
+  <!-- Section: 為什麼 Vibe Coding 需要獨立學身份驗證 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼 Vibe Coding 需要獨立學「身份驗證」？</div>
+    <p>在前面的課程中，我們已經用 AI 把資料庫（Supabase）、快取（Redis）、後端 API（Next.js）都串好了，但還有一個關鍵環節一直沒碰——<strong>「誰在用這個系統？」</strong>。Vibe Coding 的強大來自 AI 能迅速把程式碼生成出來，但如果認證層是錯的，前面做的所有功能都會變成公開的、任何人都能存取的東西。
+
+<strong>Better Auth</strong> 是 2024 年開始迅速走紅的 TypeScript 型別安全認證庫，它可以獨立於 NextAuth 運作，支援 OAuth（Google、GitHub 等）、Email/Password、OTP 驗證、甚至 2FA。對 Vibe Coding 來說，Better Auth 的好處在於：AI Agent 在生成認證相關的程式碼時，Better Auth 的 TypeScript 型別系統能提供非常具體的提示，讓 AI 不容易「胡亂猜」出錯誤的設定。
+
+在 Vibe Coding 的脈絡中，身份驗證的「角色」是：<strong>它既是安全機制，也是資料所有權的界線</strong>。沒有它，你的 Vibe 產物就只是玩具；有了它，你才能真正把產品賣出去（所以這門課排在 Phase 5: The Money）。</p>
+  </div>
+
+  <!-- Section: Better Auth 的基本架構與 AI 如何調用它 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Better Auth 的基本架構與 AI 如何調用它</div>
+    <p>Better Auth 的核心設計哲學是「零依賴後端、全型別安全」。當你對 AI Agent（比如 Claude Code 或 Cursor）說「幫我加一個 Google OAuth 登入」，Better Auth 的 API 結構會讓 AI 產生出非常有意義的程式碼，而不是憑空猜一個 OAuth 流程。
+
+基本用法很簡單：
+<code>import { createAuthClient } from "better-auth/client";
+import { betterAuth } from "better-auth";
+
+const auth = betterAuth({
+  emailAndPassword: { enabled: true },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+});</code>
+
+AI Agent 在調用 Better Auth 時，會依賴它的 TypeScript 型別來推導出正確的設定結構。如果你寫了 <code>socialProviders: { google: {} }</code> 而忘記放 <code>clientId</code> 和 <code>clientSecret</code>，TypeScript 編譯器會直接报错——這不是軟性的警告，而是硬性的型別錯誤。這對 Vibe Coding 特別重要，因為 AI 生成的程式碼如果在型別上就錯了，後續所有邏輯都會跟著錯。
+
+在 Next.js App Router 中，Better Auth 提供了一套路線組件（Route Handlers），AI 通常會幫你生成一個 <code>api/auth/[...better_auth]/route.ts</code> 檔案來處理所有認證請求。這是 AI 在處理認證時最常見的輸出模式之一。</p>
+  </div>
+
+  <!-- Section: 實戰：讓 AI 幫你實現完整的登入登出功能 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：讓 AI 幫你實現完整的登入/登出功能</div>
+    <p>接著，在 <code>lib/auth.ts</code> 中建立 auth 實體：
+
+<code>import { betterAuth } from "better-auth";
+import { nextCookies } from "better-auth/next-cookies";
+
+export const auth = betterAuth({
+  database: process.env.DATABASE_URL as string,
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+  },
+  plugins: [nextCookies()],
+});</code>
+
+然後在 <code>app/api/auth/[...better_auth]/route.ts</code> 建立 API 路由：
+
+<code>import { auth } from "@/lib/auth";
+import { toNextJsHandler } from "better-auth/next-js";
+
+export const { GET, POST } = toNextJsHandler(auth);</code>
+
+最後在前端使用 <code>@better-auth/client</code> 提供的鉤子：
+
+<code>"use client";
+import { createAuthClient } from "better-auth/client";
+import { useSession } from "better-auth/react";
+
+const client = createAuthClient();
+
+export function LoginPage() {
+  const { data: session } = useSession();
+
+  if (session) {
+    return &lt;button onClick={() =&gt; client.signOut()}&gt;登出&lt;/button&gt;;
+  }
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; client.socialSignIn({ provider: "google" })}&gt;
+        Google 登入
+      &lt;/button&gt;
+      &lt;button onClick={() =&gt; client.socialSignIn({ provider: "github" })}&gt;
+        GitHub 登入
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code>
+
+<strong>Vibe 破裂診斷：</strong>如果點擊 OAuth 按鈕後沒有跳轉，或跳轉後直接回跳且沒有登入成功，最常見的原因有三個：
+1. OAuth 憑證（clientId / clientSecret）沒有設定或設定錯誤。檢查 <code>.env</code> 檔案，確認值存在。
+2. 在 Google OAuth 控制台的「授權的 JavaScript 來源」中沒有加入你的開發域名（例如 <code>http://localhost:3000</code>）。
+3. Better Auth 的 <code>callbackURL</code> 設定與實際路由不符。Better Auth 預設會把 OAuth 完成後導回 <code>/api/auth/callback/{provider}</code>，如果你的路由結構不同，需要在設定中調整。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm install better-auth</span>
+<span class="output">added 12 packages in 2.3s</span>
+
+<span class="comment"># 如果你用的是 Bun：</span>
+<span class="prompt">$</span> <span class="cmd">bun add better-auth</span>
+<span class="comment"># 同理可以安裝 better-auth/client 和 better-auth/react</span>
+<span class="prompt">$</span> <span class="cmd">npm install @better-auth/client @better-auth/react</span>
+    </div>
+  </div>
+
+  <!-- Section: OAuth 跳轉與權限邏輯AI 如何理解它 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> OAuth 跳轉與權限邏輯——AI 如何理解它</div>
+    <p>OAuth 的流程對 AI 來說其實很好理解，因為它的步驟非常線性：
+
+<strong>步驟 1：</strong>使用者點擊「用 Google 登入」按鈕，前端呼叫 <code>client.socialSignIn({ provider: "google" })</code>。
+
+<strong>步驟 2：</strong>API 路由收到請求後，Better Auth 會導向使用者到 Google 的授權頁面（<code>accounts.google.com/o/oauth2/auth</code>），並附上 <code>client_id</code>、<code>redirect_uri</code>（你的回調地址）、<code>scope</code>（請求的權限範圍，例如 <code>openid email profile</code>）。
+
+<strong>步驟 3：</strong>使用者在 Google 頁面同意授權，Google 會把瀏覽器導回你的 <code>redirect_uri</code>，帶上一個 <code>code</code> 查詢參數。
+
+<strong>步驟 4：</strong>Better Auth 的 <code>/api/auth/callback/google</code> 路由收到這個 <code>code</code>，後端用你的 <code>client_secret</code> 向 Google 換取 <code>access_token</code> 和 <code>refresh_token</code>，然後用 <code>access_token</code> 向 Google 的人員資訊 API 抓取使用者的 email、名字等基本資料，最後在資料庫中建立或更新 <code>user</code> 和 <code>account&lt;/a&gt; 記錄，並建立會話（Session）。
+
+AI Agent 在生成 OAuth 相關程式碼時，會依賴 Better Auth 的 TypeScript 型別來推導出正確的 OAuth 配置。如果你告訴 AI「要加 GitHub OAuth」，它會生成類似以下的設定：
+
+<code>socialProviders: {
+  github: {
+    clientId: process.env.GITHUB_CLIENT_ID!,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    scope: "read:user user:email",
+  },
+}</code>
+
+GitHub OAuth 的 <code>scope</code> 特別重要——如果你只請求 <code>read:user</code>，GitHub 就不會回傳使用者的 email 地址，這會導致某些依賴 email 來建立帳號的邏輯失敗。AI 有時會忽略這一點，需要你明確指出。
+
+<strong>Vibe 破裂診斷：</strong>如果 OAuth 跳轉後回跳但顯示「找不到使用者」或「email 未驗證」錯誤，檢查：
+- GitHub 或 Google 控制台中的 App 設定是否開啟了對應的 API 權限。
+- 你是否正確設定了 <code>redirectUri</code>（ OAuth 設定頁面中的回調 URL 必須與你的應用程式實際使用的 URL 完全一致，包括 <code>http</code> vs <code>https</code> 和結尾斜線）。
+- 在開發環境中，Google OAuth 通常需要將 <code>http://localhost:3000</code> 加入「授權的 JavaScript 來源」白名單，否則 OAuth 流程會直接失敗。</p>
+  </div>
+
+  <!-- Section: 深入解析：Better Auth 的型別安全為什麼重要 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：Better Auth 的型別安全為什麼重要</div>
+    <details class="deep-dive">
+      <summary>為什麼 Vibe Coding 中「型別錯誤」比「執行時錯誤」更早發現問題更好？</summary>
+      <div class="deep-dive-content">
+        <p>Better Auth 最大的賣點是「零依賴後端 + 全型別安全」。當你對 AI 說「幫我加一個 GitHub OAuth」，AI 生成的程式碼會經過 TypeScript 編譯器驗證。如果 AI 錯寫了 <code>clientId: process.env.WRONG_VAR_NAME</code>，編譯器會在開發階段直接报错，而你根本不需要部署到生產環境才發現問題。
+
+這種「型別安全」在 Vibe Coding 中特別關鍵，原因如下：
+
+第一，AI 生成的程式碼本質上是「猜」出來的，不是經過人工審視的。型別系統是阻止 AI 猜錯的第一道防線——它強制 AI 在生成程式碼時符合 API 的結構，而不是憑感覺寫出看起來像但實際上錯的程式碼。
+
+第二，Better Auth 的 <code>createAuthClient()</code> 和 <code>useSession()</code> 等 API 都有完整的 TypeScript 型別定義。當你呼叫 <code>client.socialSignIn()</code> 時，TypeScript 會要求你傳入合法的 <code>provider</code> 值（例如 <code>"google"</code> 或 <code>"github"</code>），如果你傳了 <code>"google123"</code>，編譯器會直接拒絕。這避免了「AI 以為自己在用 OAuth 但其實在用一個不存在的 provider」這種荒謬但常見的錯誤。
+
+第三，Better Auth 的 <code>betterAuth()</code> 函數的回傳型別是 <code>Auth</code>，它包含了所有已註冊的 API 端點、路由、事件處理器等的完整型別資訊。AI 在生成路由處理器或前端元件時，可以從這個型別中推導出正確的 import 路徑和參數型別，大大降低生成錯誤程式碼的機率。
+
+換句話說，Better Auth 的型別安全不是在「防止 AI 犯錯」，而是在「讓 AI 的錯誤在早期就被發現」。這對 Vibe Coding 的工作流程尤為重要——你希望 Vibe 持續穩定（vibe stable），而不是等到部署後才發現認證邏輯有問題。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下關於 Better Auth 的描述，哪一個是正確的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">Better Auth 只能在 NextAuth 中使用，不能獨立運作</li>
+          <li onclick="checkAnswer(this, true)">Better Auth 是 TypeScript 型別安全的認證庫，可獨立於 NextAuth 使用，並支援 OAuth、Email/Password、2FA 等驗證方式</li>
+          <li onclick="checkAnswer(this, false)">Better Auth 不支援型別安全，因為它完全依賴 JavaScript 運行</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Better Auth 是一個獨立的 TypeScript 認證庫，它可以與 Next.js、Express、Hono 等後端框架搭配使用，而不僅限於 NextAuth。它提供完整的型別安全，包括 <code>socialProviders</code> 的設定結構、<code>useSession()</code> 的回傳值型別、以及 <code>createAuthClient()</code> 的方法簽章，這些都能在編譯階段幫助開發者（和 AI Agent）發現錯誤。選項 A 錯誤，因為 Better Auth 不依賴 NextAuth；選項 C 錯誤，因為 Better Auth 是 TypeScript 程式庫，完全支援型別安全。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 在 Google OAuth 設定中，哪個步驟最容易導致「OAuth 跳轉後立即失敗」的 Vibe 破裂問題？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">使用者在瀏覽器中關閉了第三方 Cookie</li>
+          <li onclick="checkAnswer(this, true)">在 Google Cloud Console 的「授權的 JavaScript 來源」中沒有加入開發環境的域名（如 <code>http://localhost:3000</code>）</li>
+          <li onclick="checkAnswer(this, false)">網路頻寬不足導致 OAuth 回應傳輸緩慢</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 是正確答案。Google OAuth 的「授權的 JavaScript 來源」白名單機制是為了防止跨網站請求偽造（CSRF）和跨來源資源共享（CORS）攻擊。如果開發環境的 URL（如 <code>http://localhost:3000</code>）沒有被加入白名單，Google 會在 OAuth 授權同意畫面之前直接拒絕請求，導致 Vibe 破裂。選項 A 雖然可能影響部分 OAuth 流程（特別是在某些瀏覽器設定下），但 Google OAuth 主要依賴 redirect 而非 cookie 來維持狀態，所以影響較小；選項 C 與 OAuth 流程的正確性無關，只影響體驗速度。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：在終端機安裝 Better Auth 相關套件
+$ npm install better-auth @better-auth/client @better-auth/react
+# 如果使用 Bun：
+$ bun add better-auth @better-auth/client @better-auth/react
+確認安裝成功後，在 <code>package.json</code> 的 <code>dependencies</code> 中檢查是否出現 <code>better-auth</code>、<code>@better-auth/client</code>、<code>@better-auth/react</code>。</li>
+        <li style="padding: 0.5rem 0;">任務二：使用 AI Agent（Cursor 或 Claude Code）生成完整的登入/登出頁面
+打開 Cursor 或 Claude Code，在聊天視窗中輸入：「在 Next.js App Router 中，使用 Better Auth 實作一個登入頁面，支援 Google 和 GitHub OAuth，並顯示目前登入狀態（使用者名稱和登出按鈕）。請生成 <code>app/(auth)/login/page.tsx</code> 和相關的路由處理器。」
+觀察 AI 生成的程式碼，檢查它是否正確使用了 <code>createAuthClient</code>、<code>useSession</code>，以及路由處理器是否使用了 <code>toNextJsHandler</code>。</li>
+        <li style="padding: 0.5rem 0;">任務三：在 Google Cloud Console 建立 OAuth 憑證並設定 <code>.env</code>
+前往 <code>console.cloud.google.com</code>，建立一個 OAuth 2.0 Client ID，將 <code>http://localhost:3000</code> 加入「授權的 JavaScript 來源」，將 <code>http://localhost:3000/api/auth/callback/google</code> 加入「授權的重新導向 URI」。然後在專案根目錄建立或編輯 <code>.env</code> 檔案，加入：
+<code>GOOGLE_CLIENT_ID=你的_client_id
+GOOGLE_CLIENT_SECRET=你的_client_secret</code>
+確認 <code>.env</code> 檔案已被加入 <code>.gitignore</code>，避免憑證意外提交到 Git。</li>
+        <li style="padding: 0.5rem 0;">任務四：除錯挑戰——手動製造並修復一個 OAuth 設定錯誤
+在 <code>.env</code> 中故意把 <code>GOOGLE_CLIENT_ID</code> 的値設錯（例如少一個字元），然後運行 <code>npm run dev</code>，點擊 Google 登入按鈕，觀察錯誤訊息。然後修正 <code>GOOGLE_CLIENT_ID</code>，確認 OAuth 流程恢復正常。記錄下這個過程中的錯誤訊息和修復步驟，這能幫助你在未來 Vibe 破裂時更快診斷問題。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 25 · 身份驗證（Better Auth）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：支付系統（Stripe）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
