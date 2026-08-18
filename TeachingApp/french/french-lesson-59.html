@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 59 — 第 59 課：法語分詞入門——現在分詞與過去分詞的差別與用法</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 59</span>
+    <h1 class="lesson-title">第 59 課：法語分詞入門——現在分詞與過去分詞的差別與用法</h1>
+    <p class="lesson-subtitle">掌握 -ant 與 -é 詞尾，開始表達正在進行的動作與完成的狀態</p>
+  </div>
+
+  <!-- Section 1: 什麼是分詞？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是分詞？</div>
+    <p>法語中有兩種分詞：<strong>現在分詞（participe présent）</strong>與<strong>過去分詞（participe passé）</strong>。現在分詞用來描述「正在發生的動作」或作為形容詞；過去分詞用來構成複合時態、被動語態，也可作形容詞使用。這課先認識它們的形狀與基本區別。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>現在分詞一律以 -ant 結尾，發音為 /ɑ̃/；過去分詞視動詞群組而定，常見發音如下。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">-ant</div>
+        <div class="pron-ipa">現在分詞詞尾，發音為鼻化元音 /ɑ̃/，類似漢語「安」但鼻腔共鳴</div>
+        <div class="pron-example"><em>parlant（說話）</em>（正在說話）<button class="speak-btn" onclick='speakFrench("parlant\uff08\u8aaa\u8a71\uff09")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-é</div>
+        <div class="pron-ipa">第一群動詞（-er）的過去分詞詞尾，發音為閉口 /e/</div>
+        <div class="pron-example"><em>parlé（說過）</em>（已說過）<button class="speak-btn" onclick='speakFrench("parl\u00e9\uff08\u8aaa\u904e\uff09")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-i</div>
+        <div class="pron-ipa">第二群動詞（-ir）的過去分詞詞尾，發音為 /i/</div>
+        <div class="pron-example"><em>fini（已完成）</em>（已完成的）<button class="speak-btn" onclick='speakFrench("fini\uff08\u5df2\u5b8c\u6210\uff09")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-u</div>
+        <div class="pron-ipa">第三群動詞常見過去分詞詞尾，發音為 /y/</div>
+        <div class="pron-example"><em>bu（喝過）</em>（已喝過）<button class="speak-btn" onclick='speakFrench("bu\uff08\u559d\u904e\uff09")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-ert</div>
+        <div class="pron-ipa">第三群動詞的過去分詞詞尾，發音為 /ɛʁ/，t 不發音</div>
+        <div class="pron-example"><em>ouvert（打開的）</em>（打開的）<button class="speak-btn" onclick='speakFrench("ouvert\uff08\u6253\u958b\u7684\uff09")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ⚡: 現在分詞 vs 過去分詞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 現在分詞 vs 過去分詞</div>
+    <p>這兩個分詞的用法完全不同，以下是核心對照：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">現在分詞 -ant</div>
+        <div class="pron-ipa">描述進行中的動作，不可與助動詞 avoir/être 搭配构成完成時態</div>
+        <div class="pron-example">Je suis en train de parlant ?（❌ 錯誤）<button class="speak-btn" onclick='speakFrench("Je suis en train de parlant ?\uff08\u274c \u932f\u8aa4\uff09")' aria-label="播放發音">🔊</button><br>現在進行式應使用「être en train de + 動詞原形」，不用現在分詞</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">過去分詞 -é/-i/-u/-ert</div>
+        <div class="pron-ipa">與助動詞搭配表示已完成，或作為形容詞修飾名詞</div>
+        <div class="pron-example">J'ai mangé une pomme. / La porte est ouverte.<button class="speak-btn" onclick='speakFrench("J&#39;ai mang\u00e9 une pomme.")' aria-label="播放發音">🔊</button><br>過去分詞可與名詞配合性數（加 -e、-s）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">現在分詞作形容詞</div>
+        <div class="pron-ipa">固定詞彙可作形容詞，但需記住它們是變化的（無性數配合）</div>
+        <div class="pron-example">Un film captivant / Une histoire captivante<button class="speak-btn" onclick='speakFrench("Un film captivant")' aria-label="播放發音">🔊</button><br>注意：captivant 是現在分詞作形容詞的用法，性數需配合名詞</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">過去分詞作形容詞</div>
+        <div class="pron-ipa">許多過去分詞已完全形容詞化，需與名詞做性數配合</div>
+        <div class="pron-example">une femme aimée / des cadeaux offerts<button class="speak-btn" onclick='speakFrench("une femme aim\u00e9e")' aria-label="播放發音">🔊</button><br>過去分詞作形容詞時，加 -e（陰性）和 -s（複數）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>跟讀以下詞彙，注意 -ant 與 -é/-i 的發音差異。</p>
+    <div class="follow-box">
+      <h4>跟讀以下詞彙，注意 -ant 與 -é/-i 的發音差異。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">mangeant</span>
+          <span class="ipa">/mɑ̃.ʒɑ̃/</span>
+          <span class="meaning">—— 正在吃</span>
+          <button class="speak-btn" onclick='speakFrench("mangeant")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">mangé</span>
+          <span class="ipa">/mɑ̃.ʒe/</span>
+          <span class="meaning">—— 吃過的</span>
+          <button class="speak-btn" onclick='speakFrench("mang\u00e9")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">finissant</span>
+          <span class="ipa">/fi.ni.sɑ̃/</span>
+          <span class="meaning">—— 正在完成</span>
+          <button class="speak-btn" onclick='speakFrench("finissant")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">fini</span>
+          <span class="ipa">/fi.ni/</span>
+          <span class="meaning">—— 已完成的</span>
+          <button class="speak-btn" onclick='speakFrench("fini")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dormant</span>
+          <span class="ipa">/dɔʁ.mɑ̃/</span>
+          <span class="meaning">—— 正在睡覺</span>
+          <button class="speak-btn" onclick='speakFrench("dormant")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dormi</span>
+          <span class="ipa">/dɔʁ.mi/</span>
+          <span class="meaning">—— 睡過的</span>
+          <button class="speak-btn" onclick='speakFrench("dormi")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">prenant</span>
+          <span class="ipa">/pʁə.nɑ̃/</span>
+          <span class="meaning">—— 正在拿取</span>
+          <button class="speak-btn" onclick='speakFrench("prenant")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">pris</span>
+          <span class="ipa">/pʁi/</span>
+          <span class="meaning">—— 已拿過的</span>
+          <button class="speak-btn" onclick='speakFrench("pris")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">écrivant</span>
+          <span class="ipa">/e.kʁi.vɑ̃/</span>
+          <span class="meaning">—— 正在寫</span>
+          <button class="speak-btn" onclick='speakFrench("\u00e9crivant")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">écrit</span>
+          <span class="ipa">/e.kʁi/</span>
+          <span class="meaning">—— 已寫的</span>
+          <button class="speak-btn" onclick='speakFrench("\u00e9crit")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：現在分詞的 -ant 要發得像鼻化的「安」，口腔打開；過去分詞 -é 嘴巴要閉緊發 /e/，不要讀成 /ɛ/。</p>
+  </div>
+
+  <!-- Section 📖: 常見動詞分詞對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📖</span> 常見動詞分詞對照</div>
+    <p>以下列出常用動詞的現在分詞與過去分詞形式，熟記它們有助於辨別時態與語意。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">être → étant / été</div>
+        <div class="pron-ipa">在 / 曾經在（助動詞用法最常見）</div>
+        <div class="pron-example"><em>Il est étant parti ?（❌ 錯誤用法）→ Il a été malade.</em>（ être 的過去分詞 être 作形容詞時不常用）<button class="speak-btn" onclick='speakFrench("Il est \u00e9tant parti ?\uff08\u274c \u932f\u8aa4\u7528\u6cd5\uff09\u2192 Il a \u00e9t\u00e9 malade.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">avoir → ayant / eu</div>
+        <div class="pron-ipa">有 / 曾有</div>
+        <div class="pron-example"><em>Ayant finí, il est parti.</em>（既然已完成，他就離開了。）<button class="speak-btn" onclick='speakFrench("Ayant fin\u00ed, il est parti.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">faire → faisant / fait</div>
+        <div class="pron-ipa">在做 / 已做</div>
+        <div class="pron-example"><em>Il fait ses devoirs. → Il a fait ses devoirs.</em>（他在做作业。／他已做完作業。）<button class="speak-btn" onclick='speakFrench("Il fait ses devoirs. \u2192 Il a fait ses devoirs.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">dire → disant / dit</div>
+        <div class="pron-ipa">在說 / 已說</div>
+        <div class="pron-example"><em>Ce qu'il dit est vrai.</em>（他所說的是真的。）<button class="speak-btn" onclick='speakFrench("Ce qu&#39;il dit est vrai.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">voir → voyant / vu</div>
+        <div class="pron-ipa">在看 / 已看見</div>
+        <div class="pron-example"><em>J'ai vu ce film hier.</em>（我昨天看了這部電影。）<button class="speak-btn" onclick='speakFrench("J&#39;ai vu ce film hier.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">pouvoir → pouvant / pu</div>
+        <div class="pron-ipa">能夠（進行中）／能夠（已實現）</div>
+        <div class="pron-example"><em>Je n'ai pas pu venir.</em>（我無法來。）<button class="speak-btn" onclick='speakFrench("Je n&#39;ai pas pu venir.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「J'ai mangé une pomme.」中的 mangé 是什麼形式？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 現在分詞</li>
+          <li onclick="checkAnswer(this, true)">B. 過去分詞</li>
+          <li onclick="checkAnswer(this, false)">C. 動詞原形</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ mangé 是 mang er 的過去分詞，與助動詞 ai 搭配構成複合過去時。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪一個是正確的現在分詞形式？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. je parle → parllant</li>
+          <li onclick="checkAnswer(this, true)">B. je parle → parlant</li>
+          <li onclick="checkAnswer(this, false)">C. je parle → parlez</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 第一群動詞的現在分詞由 nous 現在式詞幹加 -ant：parl + ant = parlant。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「La fenêtre est ouverte.」中 ouverte 的性數配合為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 陰性單數</li>
+          <li onclick="checkAnswer(this, false)">B. 陰性複數</li>
+          <li onclick="checkAnswer(this, false)">C. 陽性單數</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ ouverte 是 ouvrir 的過去分詞作形容詞，配合陰性名詞 fenêtre 加 -e。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">4. 「C'est un film captivant.」中 captivant 的詞性是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 過去分詞</li>
+          <li onclick="checkAnswer(this, true)">B. 現在分詞作形容詞</li>
+          <li onclick="checkAnswer(this, false)">C. 動詞原形</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ captivant 來自 capter（吸引）的現在分詞，此處已形容詞化，修飾陽性名詞 film。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">將以下動詞寫出現在分詞與過去分詞：parler, finir, prendre, écrire, voir</li>
+        <li style="padding: 0.5rem 0;">用過去分詞造句：五個句子，包含不同動詞的過去分詞作形容詞（需配合性數）</li>
+        <li style="padding: 0.5rem 0;">聽寫練習：請一位夥伴說出法語句子，你判斷其中的分詞是現在分詞還是過去分詞</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 59 · 第 59 課：法語分詞入門——現在分詞與過去分詞的差別與用法 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 60 課：法語被動語態的構造與應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
