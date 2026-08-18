@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 26 — 支付系統（Stripe）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 5: The Money</span>
+    <h1 class="lesson-title">支付系統（Stripe）</h1>
+    <p class="lesson-subtitle">掌握非同步 Webhook 與結帳流程，讓 AI Agent 安全處理金流</p>
+  </div>
+
+  <!-- Section: Stripe 在 Vibe Coding 變現路線中的角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> Stripe 在 Vibe Coding 變現路線中的角色</div>
+    <p>在獨立開發者以訂閱制或一次性付費變現的產品中，支付系統是將使用者參與轉化為收入的核心基礎設施。Stripe 提供了一套完整的 API 與工具鏈，讓開發者能處理一次性付款、訂閱制、發票與退款，同時內建合規與安全檢查。在 Vibe Coding 的 AI Agent 工作流中，支付模組通常以「工具」形式被調用：AI 生成建立 Checkout Session 的程式碼、設定 Webhook 端點來處理付款成功或訂閱更新，並把狀態同步到資料庫（如 Supabase）。若你熟悉之前課程的 AI 協作模式，這裡的 Stripe 整合就類似於「工具設計與 Function Calling」章節：你把支付邏輯封裝成一個可被 Agent 呼叫的函式或 API 路由，讓 Agent 能根據使用者意圖自動觸發。當 Vibe 破裂（例如訂單狀態不一致、Webhook 未觸發）時，診斷步驟往往指向三個地方：API 金鑰是否正確、Webhook 端點是否公開可達、簽名驗證邏輯是否完整。記住，支付相關錯誤通常會在 Stripe Dashboard 的「Logs」與「Webhooks」頁面留下明確線索。</p>
+  </div>
+
+  <!-- Section: AI Agent 如何調用 Stripe Checkout 與 Webhook -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI Agent 如何調用 Stripe Checkout 與 Webhook</div>
+    <p>AI Agent（如 Claude Code、Cursor 或自訂的 Coding Agent）在整合 Stripe 時，通常會分兩階段操作：第一階段生成「建立 Checkout Session」的前後端程式碼，第二階段生成「處理 Webhook 事件」的伺服器端邏輯。Stripe Checkout 是官方提供的-hosted 結帳頁面，使用者點擊後被導向 Stripe 的安全付款流程，付款完成後 Stripe 會透過 HTTP POST 發送事件到你的 Webhook 端點。Agent 在生成這段程式碼時，會呼叫 Stripe Node.js SDK（或 Python、Go 等官方套件），設定 product_id、price_id、success_url、cancel_url，並特別標記 metadata 欄位以便後續關聯使用者與訂單。Webhook 端點則是一個公開的 API 路由（例如 Next.js 的 /api/webhooks/stripe），負責接收事件、驗證簽名、並根據事件類型（如 checkout.session.completed、invoice.paid）更新資料庫中的訂閱狀態。若 Agent 忽略簽名驗證，攻擊者可能偽造 Webhook 請求；若忽略非同步特性，可能誤以為付款立即完成。因此，Agent 生成的程式碼必須包含重試邏輯與狀態檢查，而不是假設一次請求就能成功。</p>
+  </div>
+
+  <!-- Section: 實戰任務：在測試模式下完成一筆虛擬訂單 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰任務：在測試模式下完成一筆虛擬訂單</div>
+    <p>本節任務目標是讓你在本地環境中完整走訪一次 Stripe 測試模式的結帳流程，理解非同步通知的實際行為。請先安裝 Stripe CLI 並登入，接著在 Stripe Dashboard 的測試模式下建立一個測試產品與測試價格，記錄 price_id。然後讓 AI Agent 生成一個 Next.js API 路由（/api/checkout），該路由使用 Stripe SDK 建立 Checkout Session，回傳 sessionId 給前端。前端使用 stripe.redirectToCheckout 進行跳轉。完成後，開啟 Stripe CLI 監聽 Webhook 事件，並在測試模式下完成一筆付款（使用測試卡號 4242 4242 4242 4242）。觀察終端機中收到的 checkout.session.completed 事件，確認你的伺服器是否正確處理了該事件並更新資料庫。這套流程能幫助你區分「同步的 HTTP 回應」與「非同步的 Webhook 通知」，並熟悉測試模式下的常见錯誤（如 price_id 錯誤、Webhook 端點未公開）。</p>
+  </div>
+
+  <!-- Section: 測試環境指令與輸出範例 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 測試環境指令與輸出範例</div>
+    <p>以下是在本地開發環境中常用的 Stripe 相關指令與真實輸出範例，可幫助你快速驗證設定是否正確。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">stripe login</span>
+<span class="comment"># 使用瀏覽器完成 OAuth 授權，終端機會顯示已連結的帳號</span>
+<span class="prompt">$</span> <span class="cmd">stripe listen --forward-to localhost:3000/api/webhooks/stripe</span>
+<span class="output">Ready! Your webhook signing secret is whsec_xxxxxxx</span>
+<span class="error">⚠️  WARNING: Your listen URL (http://localhost:3000/api/webhooks/stripe) is not publicly accessible.</span>
+<span class="error">   Webhooks will fail when triggered by Stripe.</span>
+<span class="comment"># 此警告表示你的本地端點未透過 ngrok 或類似工具對外開放，但測試模式下仍可使用 stripe trigger 命令模擬事件。</span>
+<span class="prompt">$</span> <span class="cmd">stripe trigger checkout.session.completed</span>
+<span class="output">Event sent to localhost:3000/api/webhooks/stripe</span>
+<span class="comment"># 手動觸發測試事件，觀察你的伺服器是否正確處理</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：非同步 Webhook 的本質與容錯設計 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：非同步 Webhook 的本質與容錯設計</div>
+    <details class="deep-dive">
+      <summary>為什麼 Stripe 要透過 Webhook 而非輪詢來傳遞付款狀態？</summary>
+      <div class="deep-dive-content">
+        <p>Webhook 的本質是「事件驅動架構」中的一種推送機制：Stripe 在發生特定事件（如付款成功、訂閱更新、退款）時，主動發送 HTTP POST 請求到你的端點，而不是由你的伺服器定期詢問 Stripe 的狀態。這種設計有幾個關鍵優勢。第一，即時性：付款完成後幾秒內 Webhook 就會觸發，適合需要即時啟用功能的訂閱服務。第二，效率：輪詢會產生大量無謂的 HTTP 請求，而 Webhook 只在事件發生時才通訊，減輕伺服器負擔。第三，可靠性：Stripe 會在失敗時重試（最多 3 次，指數退避），並提供事件 ID 供你檢查重複或遺漏。然而，非同步特性也帶來挑戰：你的伺服器可能因為重啟、網路問題或資料庫鎖定而無法即時處理 Webhook，導致狀態不一致。因此，可靠的設計需要包含「最終一致性」思維：接受短期狀態落後，但透過定期同步（如每日對帳）或 Webhook 重試機制確保最終正確。同時，簽名驗證不可省略，因為未經驗證的 Webhook 可能包含惡意數據，直接更新資料庫會造成安全漏洞。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 情境對照：同步 API 呼叫 vs 非同步 Webhook -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> 情境對照：同步 API 呼叫 vs 非同步 Webhook</div>
+    <p>在支付流程中，開發者常混淆「同步的 HTTP 請求」與「非同步的 Webhook 通知」，以下對照兩者差異與適用時機。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">同步 API 呼叫（建立 Checkout Session）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// 前端呼叫後端 API，立即取得 sessionId
+const { sessionId } = await fetch(&#x27;/api/checkout&#x27;, {
+  method: &#x27;POST&#x27;,
+  body: JSON.stringify({ priceId }),
+}).then(r =&gt; r.json());
+// 接著導向 Stripe 結帳頁面
+stripe.redirectToCheckout({ sessionId });</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">非同步 Webhook 通知（付款完成後）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// 伺服器端路徑，接收 Stripe 推送的事件
+export async function POST(request) {
+  const sig = request.headers.get(&#x27;stripe-signature&#x27;);
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+  } catch (err) {
+    return new Response(&#x27;Webhook Error&#x27;, { status: 400 });
+  }
+  // 根據事件類型更新資料庫
+  if (event.type === &#x27;checkout.session.completed&#x27;) {
+    const session = event.data.object;
+    await updateSubscriptionInDb(session.metadata.userId, &#x27;active&#x27;);
+  }
+  return new Response(&#x27;Webhook received&#x27;);
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Stripe 測試模式下，下列哪個測試卡號可用來模擬成功的信用卡付款？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">4000 0000 0000 0002</li>
+          <li onclick="checkAnswer(this, true)">4242 4242 4242 4242</li>
+          <li onclick="checkAnswer(this, false)">0000 0000 0000 0000</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Stripe 官方測試文件中，4242 4242 4242 4242 是用來模擬成功付款的標準測試卡號。選項 A 和 C 分別用於模擬卡片拒絕與无效卡號，不符合「成功付款」的情境。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 關於 Stripe Webhook 的簽名驗證，下列敘述何者正確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">簽名驗證可選，因為測試模式下不需要安全性。</li>
+          <li onclick="checkAnswer(this, true)">簽名驗證用於確保 Webhook 請求確實來自 Stripe，防止偽造請求。</li>
+          <li onclick="checkAnswer(this, false)">簽名驗證會在 Stripe Dashboard 自動完成，不需在程式碼中處理。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 簽名驗證是安全最佳實踐，透過檢查請求標頭中的 Stripe-Signature，可確認資料未被篡改且來源為 Stripe。選項 A 錯誤，因為即使在測試模式，攻擊者仍可掃描並發送偽造請求；選項 C 錯誤，因為驗證邏輯必須在伺服器端程式碼中實現，Stripe 不會代為驗證。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">安裝 Stripe CLI 並完成登入，記錄你的 webhook signing secret。</li>
+        <li style="padding: 0.5rem 0;">使用 AI Agent（如 Claude Code 或 Cursor）生成一個 Next.js API 路由，該路由能接收 Stripe Webhook 並處理 checkout.session.completed 事件，將訂單狀態寫入 Supabase 資料庫。</li>
+        <li style="padding: 0.5rem 0;">在本地環境執行 stripe listen --forward-to localhost:3000/api/webhooks/stripe，並使用 stripe trigger checkout.session.completed 模擬事件，觀察終端機輸出與資料庫更新是否一致。</li>
+        <li style="padding: 0.5rem 0;">修復一個常見錯誤：若 Webhook 端點返回 400 錯誤，檢查是否遺漏了簽名驗證步驟或未正確讀取原始請求體（raw body），並說明你如何診斷與修復。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 26 · 支付系統（Stripe）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：郵件通訊（Resend）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
