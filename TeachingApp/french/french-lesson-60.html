@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 60 — 第 60 課：法語副動詞（Gérondif）的用法與實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 60</span>
+    <h1 class="lesson-title">第 60 課：法語副動詞（Gérondif）的用法與實戰</h1>
+    <p class="lesson-subtitle">掌握 en + 現在分詞，精準表達方式、同時性與原因</p>
+  </div>
+
+  <!-- Section 1: 副動詞的結構與核心用法 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 副動詞的結構與核心用法</div>
+    <p>副動詞由 <strong>en + 現在分詞</strong> 構成，用於描述主句動作的<strong>方式、同時性</strong>或<strong>原因</strong>。其主語必須與主句相同，常見於口語與書面語中，讓句子更流暢。例如：「en marchant」（步行時）、「en écoutant」（聽著）、「en travaillant」（因工作）。</p>
+  </div>
+
+  <!-- Section 2: 現在分詞詞尾 -ant 的發音 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 現在分詞詞尾 -ant 的發音</div>
+    <p>現在分詞以 -ant 結尾，發音為鼻化元音 <strong>/ɑ̃/</strong>，與「an」「en」鼻化音相似。注意與形容詞 -ant 的發音區別（形容詞 -ant 發 /ɑ̃/，但語境不同）。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">-ant</div>
+        <div class="pron-ipa">發音為鼻化元音 /ɑ̃/</div>
+        <div class="pron-example"><em>mangeant</em>（吃著）<button class="speak-btn" onclick='speakFrench("mangeant")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">-ant</div>
+        <div class="pron-ipa">發音為鼻化元音 /ɑ̃/</div>
+        <div class="pron-example"><em>parlant</em>（說著）<button class="speak-btn" onclick='speakFrench("parlant")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>朗讀以下副動詞句子，注意 en 與現在分詞的連音，以及 -ant 的鼻化音發音。</p>
+    <div class="follow-box">
+      <h4>朗讀以下副動詞句子，注意 en 與現在分詞的連音，以及 -ant 的鼻化音發音。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">En écoutant de la musique, je me détends.</span>
+          <span class="ipa">[ɑ̃.n‿e.ku.tɑ̃ də la mi.zɪk ʒə mə de.tɑ̃]</span>
+          <span class="meaning">—— 聽著音樂，我放鬆。</span>
+          <button class="speak-btn" onclick='speakFrench("En \u00e9coutant de la musique, je me d\u00e9tends.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il apprend le français en regardant des films.</span>
+          <span class="ipa">[il ɑ̃.pʁɑ̃ də fʁɑ̃.sɛ ɑ̃ ʁa.ɡaʁ de film]</span>
+          <span class="meaning">—— 他透過看電影學法語。</span>
+          <button class="speak-btn" onclick='speakFrench("Il apprend le fran\u00e7ais en regardant des films.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：連音時 en 與分詞首音節緊密連接，例如 en allant → [ɑ̃.nɑ̃]。</p>
+  </div>
+
+  <!-- Section ⚡: 副動詞與現在分詞的關鍵區別 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 副動詞與現在分詞的關鍵區別</div>
+    <p>副動詞（en + 現在分詞）強調<strong>主語一致</strong>的同時性動作，而現在分詞可獨立使用，主語不一定相同。此外，副動詞的 en 不可省略。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">副動詞</div>
+        <div class="pron-ipa">en + 現在分詞，主語一致</div>
+        <div class="pron-example">En courant, il attrape le bus.<button class="speak-btn" onclick='speakFrench("En courant, il attrape le bus.")' aria-label="播放發音">🔊</button><br>「跑步時」他趕上公車。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">現在分詞</div>
+        <div class="pron-ipa">可獨立，主語可不同</div>
+        <div class="pron-example">Il est passé, courant vite.<button class="speak-btn" onclick='speakFrench("Il est pass\u00e9, courant vite.")' aria-label="播放發音">🔊</button><br>他跑過，速度很快。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪句正確使用副動詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. Il lit le livre en mangeant une pomme.</li>
+          <li onclick="checkAnswer(this, false)">B. Il lit le livre, mangeant une pomme.</li>
+          <li onclick="checkAnswer(this, false)">C. Il lit le livre en a mangé une pomme.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 正確：副動詞 en mangeant 與主語 il 一致，表達同時性動作。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 副動詞 en + 現在分詞的發音中，-ant 發音為？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. /a/</li>
+          <li onclick="checkAnswer(this, true)">B. /ɑ̃/</li>
+          <li onclick="checkAnswer(this, false)">C. /ã/</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確：-ant 發鼻化元音 /ɑ̃/。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用副動詞造句：描述你通常如何學習法語（例如：en regardant des séries, en parlant avec des amis）。</li>
+        <li style="padding: 0.5rem 0;">聽力練習：找一段法語 Podcast，標記出副動詞結構並複誦。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 60 · 第 60 課：法語副動詞（Gérondif）的用法與實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語被動語態的基礎應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
