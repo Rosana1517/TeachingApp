@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 27 — 郵件通訊（Resend）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 5: The Money</span>
+    <h1 class="lesson-title">郵件通訊（Resend）</h1>
+    <p class="lesson-subtitle">用交易性郵件打通使用者旅程的最後一哩路</p>
+  </div>
+
+  <!-- Section: 為什麼是 Resend -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📧</span> 為什麼是 Resend？</div>
+    <p>在 Vibe Coding 的實作流程裡，當你的 AI Agent 需要「主動聯繫使用者」時，Resend 是目前最常被推薦的第三方整合選項。它和其他郵件服務（例如 SendGrid、Mailgun）最大的差異不在功能，而在<strong>開發者體驗</strong>：Resend 提供了一個非常清晰的 REST API，以及一份極度易讀的文件站，讓 AI 在生成程式碼時的猜測成本最低。&lt;br&gt;&lt;br&gt;從 Vibe Coding 的角度來看，「交易性郵件」指的是系統自動觸發、與使用者行為直接相關的郵件，例如：<code>歡迎新使用者</code>、<code>密碼重設</code>、<code>訂單確認</code>。這些郵件不是行銷信件，所以不需要複雜的清單管理，你只需要一個能「發就送」的通道。&lt;br&gt;&lt;br&gt;AI Agent 之所以偏好 Resend 而不是自己去配 SMTP，有三個實際原因：第一，Resend 的 API key 機制簡單，只需要一個 <code>api_key</code> 環境變數；第二，它內建了網域驗證（Domain Verification）的導引流程，讓開發者不會踩到收件箱被標成垃圾信的坑；第三，Resend 提供了一個 Webhook 機制，讓你可以追蹤郵件的狀態（已送達、已開啟、已退信），這個功能對後續的除錯至關重要。</p>
+  </div>
+
+  <!-- Section: Resend vs 傳統 SMTP -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> Resend vs 傳統 SMTP</div>
+    <p>當你在 Vibe Coding 中遇到需要發送郵件的需求時，AI Agent 通常會在兩個方案中選擇：直接用 SMTP 協議發送，或是透過 Resend 這類專用的交易性郵件 API。這兩個方案的差異不在「能不能發信」，而在<strong>可靠性</strong>與<strong>可維護性</strong>。&lt;br&gt;&lt;br&gt;SMTP 是一個底層通訊協定，你需要自己處理連線、身份驗證、資料流控制，以及最重要的「錯誤重試」。當你直接用 Node.js 的 <code>nodemailer</code> 搭配 Gmail 的 SMTP 發送郵件時，你會發現 Gmail 需要你用「應用程式密碼」，而不是你的真實密碼，而且 Gmail 每天對免費帳號的發送量有嚴格限制。這些細節在 Vibe Coding 的初學階段很容易讓 AI Agent 產生不符合現實的程式碼，導致「看起來能跑，但實際上會失敗」的微妙錯誤。&lt;br&gt;&lt;br&gt;Resend 把這些複雜性都 abstraction 掉了。你只需要一個 API key，然後呼叫一個簡單的 POST 請求，Resend 會處理所有與郵件伺服器相關的細節，包括退信處理、速率限制、以及收件箱的 Deliverability 優化。對 Vibe Coding 來說，這意味著 AI Agent 生成的程式碼更可靠、更少需要手動調整。</p>
+  </div>
+
+  <!-- Section: 實作環境設定 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> 實作環境設定</div>
+    <p>要在你的 Next.js 專案中啟用 Resend，首先需要在 Resend 官方網站（resend.com）註冊帳號，並建立一個新的 API key。這個 key 應該被存放在 <code>.env.local</code> 檔案中，變數名稱建議使用 <code>RESEND_API_KEY</code>，這是 Resend Node.js SDK 預設會讀取的環境變數名稱。&lt;br&gt;&lt;br&gt;接著，你需要安裝 Resend 的官方 SDK：<code>npm install resend</code>。安裝完成後，在你的 Next.js 專案中建立一個 API Route，路徑可以設為 <code>app/api/send/route.ts</code>，這個 route 會負責處理郵件發送的邏輯。&lt;br&gt;&lt;br&gt;非常重要的一點是：Resend 要求你先驗證一個網域（Domain Verification），才能在正式環境中發送郵件。如果你只是想測試功能，Resend 提供了一個 <code>test-domain</code>，這個測試網域發送的郵件不會真的傳給收件者，而是會被 Resend 內部攔截並顯示在 Dashboard 中。這個功能對於 Vibe Coding 的實作階段非常有用，因為你可以快速驗證整個流程是否正確，而不需要擔心測試郵件會真的跑到別人的信箱裡。</p>
+  </div>
+
+  <!-- Section: 發送歡迎郵件的實作 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 發送歡迎郵件的實作</div>
+    <p>以下是一個完整的實作範例，展示如何用 Next.js 的 API Route 搭配 Resend SDK 發送一封包含動態內容的歡迎郵件。這段程式碼是 AI Agent 在 Vibe Coding 流程中應該能穩定生成的水平。&lt;br&gt;&lt;br&gt;在 <code>app/api/welcome/route.ts</code> 中：首先匯入 <code>Resend</code>，然後從請求體中解構出 <code>email</code> 和 <code>name</code>。接著建立一個 <code>Resend</code> 實例，並呼叫 <code>.emails.send()</code> 方法。這個方法接受一個物件，其中 <code>from</code> 欄位必須是你已經驗證過的網域，<code>to</code> 欄位是收件者的電子郵件，<code>subject</code> 是郵件主旨，<code>html</code> 是郵件的 HTML 內容。&lt;br&gt;&lt;br&gt;關鍵在於 <code>html</code> 欄位：你可以使用普通的 HTML 標籤，也可以嵌入 JavaScript 變數來動態生成內容。例如，<code>&amp;lt;h1&amp;gt;歡迎，{name}！&amp;lt;/h1&amp;gt;</code> 會把使用者的名字嵌入郵件主旨中。這種動態內容的生成是 Vibe Coding 的核心能力之一——AI Agent 能夠根據不同的使用者資料自動調整郵件內容，而不需要手動編寫多個模板。&lt;br&gt;&lt;br&gt;在測試階段，建議你先使用 Resend 的 <code>test-domain</code>（格式為 <code>resend@resend.test</code>），這樣可以確保整個流程沒有問題，而不需要擔心真實郵件的發送。</p>
+  </div>
+
+  <!-- Section: 深度解析：為什麼用 API 而不是 SMTP -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深度解析：為什麼用 API 而不是 SMTP？</div>
+    <details class="deep-dive">
+      <summary>為什麼 Vibe Coding 偏好 Resend API 而不是直接配 SMTP？</summary>
+      <div class="deep-dive-content">
+        <p>從技術架構的角度來看，SMTP（Simple Mail Transfer Protocol）是一個建立於 1980 年代的通訊協定，它設計於一個「網路環境比較單純」的時代。當時的郵件伺服器主要是機構內部使用，不需要處理大量的垃圾郵件過濾、需要複雜的身份驗證機制，也不需要追蹤每一封郵件的送達狀態。&lt;br&gt;&lt;br&gt;現代的使用者收件匣已經變成了一個高度商業化的戰場：Google 的 Gmail、Apple 的 iCloud Mail、Microsoft 的 Outlook，每個郵件提供者都有自己的垃圾郵件過濾演算法。這些演算法會檢查許多指標，包括發件網域的 DKIM 簽名、SPF 記錄、DMARC 設定，以及發送者的行為模式（例如是否突然大量發送郵件）。如果你直接用 SMTP 發送郵件，這些細節全部需要你自己處理，而這些處理過程非常複雜，並且隨著郵件提供者的演算法更新而不斷變化。&lt;br&gt;&lt;br&gt;Resend 這類現代郵件 API 的價值，正在於它把這些複雜性抽象化。當你使用 Resend 的 API 時，Resend 已經替你處理了網域驗證、DKIM 簽名、SPF 配置建議，以及最重要的「發送速率控制」（Sending Rate Limiting）。這些機制確保你的郵件不會被收件者的垃圾郵件過濾器攔截。&lt;br&gt;&lt;br&gt;從 Vibe Coding 的角度來看，這意味著 AI Agent 生成的程式碼不需要包含這些複雜的網路層邏輯，只需要呼叫一個簡單的 API 呼叫即可。這降低了 AI 出錯的機率，也讓整個開發流程更加穩定。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 環境變數與安全性 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔐</span> 環境變數與安全性</div>
+    <p>在 Vibe Coding 的實作中，API key 的管理是一個容易被忽視但極其重要的環節。Resend 的 API key 擁有完全的控制權，可以發送郵件、查看 Send Log、甚至刪除你帳號中的所有資料。如果這個 key 被洩露，攻擊者可以利用你的帳號發送大量垃圾郵件，導致你的網域被加入黑名單。&lt;br&gt;&lt;br&gt;因此，永遠不要把 API key 硬編碼在你的程式碼中，也不要把它推送到 GitHub。正確的做法是使用環境變數：在專案根目錄建立 <code>.env.local</code> 檔案，內容為 <code>RESEND_API_KEY=re_xxxxxxxxxxxxx</code>，然後在 <code>.gitignore</code> 中加入 <code>.env.local</code>，確保這個檔案不會被版本控制。&lt;br&gt;&lt;br&gt;在 Next.js 中，你可以在伺服器端的程式碼（例如 API Route 或 Server Component）中直接讀取 <code>process.env.RESEND_API_KEY</code>，這個變數不會被暴露到客戶端。如果你需要在客戶端使用某些設定（例如預設的發件人地址），可以把它放在一個專門的 <code>config.ts</code> 檔案中，但不要包含任何敏感資訊。&lt;br&gt;&lt;br&gt;另一個實用的安全建議是：在 Resend Dashboard 中，你可以為不同的用途建立多個 API key，例如一個用於開發環境，一個用於生產環境。這樣即使開發環境的 key 洩露，也不會影響生產環境的運作。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂：常見錯誤與診斷 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🐛</span> 當 Vibe 破裂：常見錯誤與診斷</div>
+    <p>在 Vibe Coding 流程中，郵件功能的實作是最容易出現「微妙錯誤」的環節之一。這些錯誤通常不會導致程式立即崩潰，而是會讓郵件「看起來應該能發，但實際上收件者收不到」。以下是三個最常见的 Vibe 破裂情境，以及它們的診斷方法。&lt;br&gt;&lt;br&gt;第一個情境：<code>401 Unauthorized</code>。這表示你的 API key 無效或已過期。最常見的原因是你把 <code>RESEND_API_KEY</code> 的環境變數名寫錯了，或者你的 key 是從 Resend Dashboard 的舊版介面中複製的（舊版的 key 格式與新版的不一樣）。診斷方法：在 Resend Dashboard 中重新建立一個新的 API key，然後更新 <code>.env.local</code> 並重新啟動開發伺服器。&lt;br&gt;&lt;br&gt;第二個情境：<code>422 Unprocessable Entity</code>。這通常發生在你的請求體格式不正確時。例如，你忘了在 <code>from</code> 欄位中加入 <code>&amp;lt;name&amp;gt;@你的網域&amp;gt;</code> 的格式，或者你忘記在 Resend 中驗證你的網域。診斷方法：檢查 Resend 的錯誤訊息，它通常會清楚指出哪個欄位有問題。另一個檢查方法是登入 Resend Dashboard，確認你的網域狀態顯示為「Verified」。&lt;br&gt;&lt;br&gt;第三個情境：郵件發送了，但收件者在垃圾郵件匣中。這不是程式錯誤，而是 Deliverability 問題。最可能的原因是你的網域沒有正確設定 DKIM 和 SPF 記錄。診斷方法：使用 MXToolbox 等工具檢查你的網域記錄，或者暫時改用 Resend 的測試網域來驗證你的程式碼是否正確。</p>
+  </div>
+
+  <!-- Section: 指令範例 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 指令範例</div>
+    <p>以下是在終端機中操作 Resend 的常用指令範例。這些指令可以用來驗證你的環境設定是否正確，以及測試郵件發送功能。&lt;br&gt;&lt;br&gt;首先，確認 <code>.env.local</code> 檔案已經正確設定：&lt;br&gt;&lt;br&gt;接下來，使用 Resend 的 CLI 工具測試 API key 是否有效：&lt;br&gt;&lt;br&gt;最後，如果你想在 Node.js 中快速測試發送一封郵件，可以使用 <code>node -e</code> 搭配一行指令來測試。</p>
+    <div class="terminal-block">
+<span class="comment"># 檢查環境變數是否已設定</span>
+<span class="prompt">$</span> <span class="cmd">echo $RESEND_API_KEY</span>
+re_xxxxxxxxxxxxxxxxxxxxxxxx
+
+<span class="comment"># 安裝 Resend SDK</span>
+<span class="prompt">$</span> <span class="cmd">npm install resend</span>
+
+<span class="comment"># 測試 API key 是否有效（使用 Resend CLI）</span>
+<span class="prompt">$</span> <span class="cmd">npx resend tests</span>
+<span class="output">API key is valid</span>
+<span class="output">Account balance: 100.00 credits</span>
+
+<span class="comment"># 使用一行指令測試發送郵件（需要先在 .env.local 中設定 RESEND_API_KEY）</span>
+<span class="prompt">$</span> <span class="cmd">node -e &quot;</span>
+const { Resend } = require(&#x27;resend&#x27;);
+const resend = new Resend(process.env.RESEND_API_KEY);
+(async () =&gt; {
+  const { data, error } = await resend.emails.send({
+    from: &#x27;test@resend.test&#x27;,
+    to: &#x27;your-test-email@gmail.com&#x27;,
+    subject: &#x27;Test Email&#x27;,
+    html: &#x27;&lt;p&gt;This is a test email from Resend.&lt;/p&gt;&#x27;
+  });
+  if (error) {
+    console.error(&#x27;Error:&#x27;, error);
+  } else {
+    console.log(&#x27;Success:&#x27;, data);
+  }
+})();
+&quot;
+<span class="output">Success: { id: &#x27;email-id-here&#x27; }</span>
+
+<span class="comment"># 錯誤情境：API key 無效</span>
+<span class="prompt">$</span> <span class="cmd">node -e &quot;</span>
+const { Resend } = require(&#x27;resend&#x27;);
+const resend = new Resend(&#x27;invalid_key&#x27;);
+(async () =&gt; {
+  const { data, error } = await resend.emails.send({
+    from: &#x27;test@resend.test&#x27;,
+    to: &#x27;test@example.com&#x27;,
+    subject: &#x27;Test&#x27;,
+    html: &#x27;&lt;p&gt;Test&lt;/p&gt;&#x27;
+  });
+  if (error) console.error(&#x27;Error:&#x27;, error);
+})();
+&quot;
+<span class="error">Error: [401] Invalid API Key</span>
+
+<span class="comment"># 錯誤情境：網域未驗證</span>
+<span class="prompt">$</span> <span class="cmd">node -e &quot;</span>
+const { Resend } = require(&#x27;resend&#x27;);
+const resend = new Resend(process.env.RESEND_API_KEY);
+(async () =&gt; {
+  const { data, error } = await resend.emails.send({
+    from: &#x27;noreply@your-unverified-domain.com&#x27;,
+    to: &#x27;test@example.com&#x27;,
+    subject: &#x27;Test&#x27;,
+    html: &#x27;&lt;p&gt;Test&lt;/p&gt;&#x27;
+  });
+  if (error) console.error(&#x27;Error:&#x27;, error);
+})();
+&quot;
+<span class="error">Error: [422] Domain not verified</span>
+
+<span class="comment"># 檢查網域驗證狀態（在 Resend Dashboard 中）</span>
+<span class="prompt">$</span> <span class="cmd"># 登入 resend.com/dashboard/domains 查看網域狀態</span>
+<span class="error">如果狀態顯示 &quot;Pending&quot;，需要按照指引設定 DNS 記錄</span>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Vibe Coding 中使用 Resend 發送郵件時，下列哪個環境變數名稱是 Resend Node.js SDK 預設會讀取的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">RESEND_KEY</li>
+          <li onclick="checkAnswer(this, true)">RESEND_API_KEY</li>
+          <li onclick="checkAnswer(this, false)">RESEND_TOKEN</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Resend Node.js SDK 預設會讀取 <code>RESEND_API_KEY</code> 這個環境變數。選項 A 的 <code>RESEND_KEY</code> 和選項 C 的 <code>RESEND_TOKEN</code> 都不是 Resend SDK 預設讀取的變數名稱，如果使用了這兩個名稱，SDK 會無法取得 API key 而導致 401 錯誤。這是 Resend 官方文件明確規定的命名規範，AI Agent 在生成程式碼時會遵循這個標準。&lt;br&gt;&lt;br&gt;實際操作中，如果你發現 SDK 無法讀取到你的 API key，首先檢查 <code>.env.local</code> 中的變數名稱是否正確拼寫為 <code>RESEND_API_KEY</code>，然後確保開發伺服器已經重新啟動以載入新的環境變數。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當你在 Resend 中收到 422 Unprocessable Entity 錯誤時，最可能的原因是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">你的網路連線不穩定</li>
+          <li onclick="checkAnswer(this, true)">請求體格式不正確或網域未驗證</li>
+          <li onclick="checkAnswer(this, false)">你的 API key 已過期</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 422 Unprocessable Entity 是 HTTP 狀態碼，表示伺服器理解請求的內容，但無法處理其中的指令。在 Resend 的上下文中，這個錯誤最常見的原因是請求體格式不正確（例如 <code>from</code> 欄位的格式錯誤，應該使用 <code>&amp;lt;name&amp;gt;@domain&amp;gt;</code> 格式），或者你嘗試使用的網域還沒有在 Resend 中完成驗證。&lt;br&gt;&lt;br&gt;選項 A 的網路問題通常會導致連線超時或 503 錯誤，而不是 422。選項 C 的 API key 過期會導致 401 Unauthorized 錯誤。因此，當遇到 422 時，應該先檢查 Resend Dashboard 中的網域驗證狀態，以及你的請求體是否符合 API 的格式要求。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在 Resend 官方網站（resend.com）註冊帳號，建立一個新的 API key，並將其存入你現有 Next.js 專案的 <code>.env.local</code> 檔案中，變數名稱必須為 <code>RESEND_API_KEY</code>。</li>
+        <li style="padding: 0.5rem 0;">在你的 Next.js 專案中安裝 Resend SDK（<code>npm install resend</code>），並建立一個新的 API Route <code>app/api/welcome/route.ts</code>，實作一個能接收 <code>email</code> 和 <code>name</code> 參數，並發送歡迎郵件的功能。</li>
+        <li style="padding: 0.5rem 0;">使用 Resend 的測試網域（<code>resend@resend.test</code>）測試你的 API Route，確認郵件能在 Resend Dashboard 的 Test Log 中出現，而不是真的發送給真實的使用者。</li>
+        <li style="padding: 0.5rem 0;">將你的 AI Agent（Claude Code 或 Cursor）設定為能自動生成郵件發送功能：給它一個提示，描述你需要一個能發送動態歡迎郵件的 API Route，觀察 AI 生成的程式碼是否符合 Resend 的 API 格式，並實際測試是否能夠成功發送郵件。記錄 AI 在生成過程中是否有遺漏環境變數設定或網域驗證等細節。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 27 · 郵件通訊（Resend）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：容器化（Docker）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
