@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 28 — 容器化（Docker）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 6: The Shield</span>
+    <h1 class="lesson-title">容器化（Docker）</h1>
+    <p class="lesson-subtitle">一次構建，到處運行，杜絕「在我電腦上沒問題」的困境</p>
+  </div>
+
+  <!-- Section: 什麼是 Docker它在 Vibe Coding 裡的地位 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是 Docker？它在 Vibe Coding 裡的地位</div>
+    <p>Docker 是一種<strong>容器化技術</strong>，核心價值在於<strong>環境隔離</strong>與<strong>部署一致性</strong>。在 Vibe Coding 中，當你依賴 AI 生成代码時，環境變數、依賴版本、作業系統差異最容易導致「Vibe 破裂」。Docker 讓你能把整個運行環境（Node.js 版本、依賴套件、系統工具）封裝進一個 Image，確保無論在開發者電腦、測試伺服器還是生產環境，執行結果都完全相同。AI Agent（如 Cursor、Claude Code）現在能直接根據你的專案結構生成 Dokerfile，你只要提供上下文，它們就會自動處理環境定義，大幅降低配置錯誤的風險。</p>
+  </div>
+
+  <!-- Section: 從 zero 開始：建立第一個 Dockerfile -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 從 zero 開始：建立第一個 Dockerfile</div>
+    <p>讓我們用一個簡單的 Next.js 專案範例。先在專案根目錄建立名為 Dockerfile 的純文字檔案（無副檔名），然後請 AI 幫你生成基礎內容。核心指令包括 FROM（選取基礎鏡像）、WORKDIR（設定工作目錄）、COPY（複製檔案）、RUN（執行命令）、EXPOSE（宣告連接埠）、CMD（容器啟動時的預設指令）。</p>
+  </div>
+
+  <!-- Section: 實戰指令：建構與執行 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰指令：建構與執行</div>
+    <p>使用以下指令將專案打包成 Docker Image 並在本機執行。注意使用 bun 作為包管理器可加速依賴安裝。</p>
+    <div class="terminal-block">
+<span class="comment"># 建構 Docker 映像檔（假設使用 Node.js 20 與 Bun 基礎鏡像）</span>
+<span class="prompt">$</span> <span class="cmd">docker build -t my-nextjs-app .</span>
+<span class="output">Sending build context to Docker daemon  2.048kB</span>
+<span class="output">Step 1/8 : FROM oven/bun:1-alpine</span>
+<span class="output">...</span>
+<span class="output">Successfully tagged my-nextjs-app:latest</span>
+
+<span class="comment"># 啟動容器，將容器內 3000 port 對應到本機 3000</span>
+<span class="prompt">$</span> <span class="cmd">docker run -p 3000:3000 my-nextjs-app</span>
+<span class="output">[nextjs] ready - started server on 0.0.0.0:3000</span>
+<span class="output">[nextjs] URL: http://localhost:3000</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼容器能解決環境不一致 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼容器能解決環境不一致？</div>
+    <details class="deep-dive">
+      <summary>鏡像層（Layer）與寫時複製（Copy-on-Write）如何讓環境可重现？</summary>
+      <div class="deep-dive-content">
+        <p>Docker 的核心設計是<strong>分层架构</strong>與<strong>联合文件系统</strong>。每個 Dockerfile 指令（如 RUN、COPY）都會產生一個新的只讀層（Layer），這些層疊加起來形成最終的鏡像。當容器啟動時，會在最上層掛載一個可讀寫層（Container Layer），所有變更都寫在這裡。這種設計帶來三大優勢：第一，<strong>快取機制</strong>：若某層未改變，Docker 會直接復用快取，加速建構；第二，<strong>環境隔離</strong>：容器內的檔案系統、網絡、進程都與主機隔離，不會互相干擾；第三，<strong>可移植性</strong>：鏡像包含所有依賴，只要 Docker 運行環境存在，就能在任何地方執行相同版本。AI 調用 Dockerfile 時，本質是在定義一組<strong>環境狀態快照</strong>，確保代碼的「生存環境」可被精確描述與重建。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 對照：傳統部署 vs Docker 部署 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照：傳統部署 vs Docker 部署</div>
+    <p>傳統方式常因環境差異導致部署失敗，Docker 則提供一致性保證。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">傳統部署（無 Docker）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"># 開發機：Node 18 + npm 9
+# 伺服器：Node 20 + yarn 1
+# 結果：依賴版本衝突、編譯錯誤、運算結果不同</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">Docker 部署</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"># 開發機與伺服器使用同一個 Docker Image
+# Node 版本、依賴、系統庫完全一致
+# 結果：建構一次，到處運行，行為可預期</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Vibe 破裂診斷：容器啟動失敗怎麼查 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> Vibe 破裂診斷：容器啟動失敗怎麼查？</div>
+    <p>當容器啟動失敗（例如出現 Exit code 1 或無法連接），最常見的三個診斷步驟：第一，查看容器日誌：<code>docker logs &amp;lt;container_id&amp;gt;</code>，錯誤訊息通常會直接顯示；第二，檢查端口映射是否正確：<code>docker ps</code> 確認 <code>-p 3000:3000</code> 是否對應；第三，進入容器內部除錯：<code>docker exec -it &amp;lt;container_id&amp;gt; sh</code>，手動執行指令測試環境是否正常。AI Agent 可根據日誌輸出自動建議修復方案，例如替換錯誤的基礎鏡像或調整 COPY 路徑。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. Dockerfile 中「FROM」指令的主要作用是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">設定容器的網絡端口</li>
+          <li onclick="checkAnswer(this, true)">指定建構所用的基礎鏡像</li>
+          <li onclick="checkAnswer(this, false)">定義容器啟動時執行的命令</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「FROM」用於指定基礎鏡像（如 node:20-alpine），它是所有後續指令的起點。選項 A 是「EXPOSE」或「-p」參數的功能，選項 C 是「CMD」或「ENTRYPOINT」的作用。選擇錯誤會導致建構失敗，因為不知道從哪個環境開始層疊。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪個指令用於「進入正在運行的容器內部」？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">docker inspect</li>
+          <li onclick="checkAnswer(this, false)">docker attach</li>
+          <li onclick="checkAnswer(this, true)">docker exec -it</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「docker exec -it」會在容器內開啟一個互動式終端，適合除錯。選項 A 用於查看容器配置元數據，選項 B 用於附加到容器的標準輸入/輸出流，但無法執行新進程。錯誤使用會導致無法進行環境檢查或命令測試。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在任意純前端專案根目錄建立 Dockerfile，使用 Node 20 Alpine 鏡像，並完成建構與運行。</li>
+        <li style="padding: 0.5rem 0;">模擬 Vibe 破裂：故意在 Dockerfile 寫錯一個指令（如將 COPY 寫成 CYPY），觀察 Docker 建構時的錯誤訊息，並用 AI 協助修復。</li>
+        <li style="padding: 0.5rem 0;">使用 AI Agent（如 Cursor/Claude Code）生成一個支援 Bun 的 Dockerfile，比較手動撰寫與 AI 生成的差異，記錄它們如何處理依賴安裝與快取優化。</li>
+        <li style="padding: 0.5rem 0;">將你的專案推上 GitHub 後，嘗試在本機以外的環境（如本機 Docker Desktop）運行同一個 Image，驗證環境隔離效果。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 28 · 容器化（Docker）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：部署地圖（Vercel/CF）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
