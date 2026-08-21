@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 29 — 部署地圖（Vercel/CF）</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 6: The Shield</span>
+    <h1 class="lesson-title">部署地圖（Vercel/CF）</h1>
+    <p class="lesson-subtitle">理解 CDN、Edge Functions 與 Vercel/Cloudflare 如何把專案推送到世界</p>
+  </div>
+
+  <!-- Section: 為什麼需要部署地圖 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🌍</span> 為什麼需要部署地圖？</div>
+    <p>在本地開發時，你的 Next.js 專案跑在 `localhost:3000`，只有你自己能看到。一旦你把它部署到網際網路，全球使用者都會來存取你的 App。但這帶來了一個核心問題：如果你的伺服器在東京，美國東岸的使用者要等很长的網路延遲才能拿到第一張頁面。這就是「部署地圖」的概念——你需要把應用程式的靜態資源（JavaScript bundle、圖片、CSS）透過 <strong>CDN（Content Delivery Network）</strong> 分發到全球的邊緣節點，讓每個使用者都從離他最近的伺服器拿到資料。
+&lt;br&gt;&lt;br&gt;
+在 Vibe Coding 中，部署地圖不是部署完就結束的事情，而是你與 AI Agent 協作時需要持續關心的架構概念。當你的 Agent 生成了一個新的 API 路由，你必須理解這個路由會在哪裡執行——是在某個特定的 Region 的 Function，還是在全球 Edge 上同步運作？這會影響 AI Agent 在除錯時的診斷方向。
+&lt;br&gt;&lt;br&gt;
+<strong>Vercel</strong> 與 <strong>Cloudflare Pages/Workers</strong> 是目前獨立開發者最常用的兩個部署平台。Vercel 對 Next.js 有原生支援，自動處理 SSR、ISR、Edge Functions 的配置；Cloudflare 則提供更低層级的控制，讓你能精確指定每個 Function 的執行位置與邏輯。理解這兩者的差異，是你建立「部署地圖」思維的起點。</p>
+  </div>
+
+  <!-- Section: CDN 與 Edge Functions 的執行位置 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🖥️</span> CDN 與 Edge Functions 的執行位置</div>
+    <p>CDN 的本質是一個全球分佈的快取網路。當你部署一個靜態 Next.js 專案到 Vercel 時，Vercel 會把產出的 HTML、JS、CSS 檔案自動上傳到他們的全球 CDN 節點（Vercel 稱為「Edge Network」）。當使用者造訪你的網站時，CDN 會根據使用者的 IP 位置，將請求路由到最近的節點。這就是為什麼你在台灣能秒開一個部署在 Vercel 上的 React 網站，即使原始的構建伺服器可能在美國。
+&lt;br&gt;&lt;br&gt;
+<strong>Edge Functions</strong> 則是另一種概念。與傳統的 SSR（在一個或幾個特定的伺服器上渲染頁面）不同，Edge Functions 會在全球的邊緣節點上<strong>同時執行</strong>。每一個邊緣節點都有一份你的 Function 程式碼的副本。當使用者請求一個需要伺服器端運算的頁面時，這個請求會在離他最近的邊緣節點上執行渲染，然後把結果回傳給使用者。這種架構大幅減少了網路延遲，但也帶來了新的限制——Edge Runtime 不支援所有 Node.js API（例如 <code>fs</code>、<code>net</code> 模組），因為這些操作在邊緣節點上沒有意義也不安全。
+&lt;br&gt;&lt;br&gt;
+在 Vibe Coding 流程中，當你讓 AI Agent 生成一個需要讀取資料庫的 API 路由時，Agent 會自動判斷這個路由應該部署在「Region Functions」（需要完整 Node.js 環境，例如呼叫 Supabase）還是「Edge Functions」（僅做輕量轉發或認證）。理解這個判斷邏輯，能讓你更快地診斷為什麼某個 Function 在本地正常、上線卻報錯。</p>
+  </div>
+
+  <!-- Section: 部署到 Vercel 的完整流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 部署到 Vercel 的完整流程</div>
+    <p>Vercel 的部署流程對 Next.js 專案來說是目前所有平台中最簡潔的。它的核心優勢在於「Git 統合」：你只要把程式碼推到 GitHub，Vercel 就會自動偵測變更、自動構建、自動部署。你不需要手動執行 `npm run build` 或上傳任何檔案。
+&lt;br&gt;&lt;br&gt;
+部署的第一步是安裝 Vercel CLI（`npm i -g vercel`），然後在專案根目錄執行 `vercel` 指令。這會啟動一個互動式設定流程，詢問你專案的名稱、目錄、構建命令等。對於 Next.js 專案，Vercel 幾乎可以自動偵測所有設定，所以你通常只需要按 Enter 確認即可。部署完成後，Vercel 會給你一個隨機網域（例如 <code>your-project.vercel.app</code>），你可以透過 Vercel Dashboard 設定自定義域名。
+&lt;br&gt;&lt;br&gt;
+當你在 Vercel Dashboard 中設定自定義域名時，需要到你的 DNS 供應商（例如 Cloudflare、Namecheap、GoDaddy）新增兩條 CNAME 記錄：一條指向 <code>cname.vercel-dns.com</code>，另一條是 Vercel 自動生成的 ALIAS 記錄。這個過程通常需要幾分鐘到幾小時的 DNS 傳播時間。一旦域名設定完成，所有到訪你域名的請求都會被 Vercel 的 CDN 路由到最近的邊緣節點。
+&lt;br&gt;&lt;br&gt;
+<strong>重要觀念：</strong>Vercel 的免費方案（Hobby）提供 100GB 頻寬/月與 100GB 構建快取/月，對個人專案或小型產品來說通常足夠。當你進入生產階段，需要考慮的升級項目包含：自動 HTTPS、自定義域名支援、以及更高的併發限制。</p>
+  </div>
+
+  <!-- Section: 帶指令範例的部署實戰 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 帶指令範例的部署實戰</div>
+    <p>以下是最常用的 Vercel 部署指令序列。請注意，<code>vercel</code> 指令本身是互動式的，以下顯示的是非互動式（CI/CD）模式下的用法，這在自動化流程中更常見：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">vercel login</span>
+<span class="comment"># 首次使用時會開啟瀏覽器進行 Vercel 帳號登入</span>
+
+<span class="prompt">$</span> <span class="cmd">vercel link</span>
+<span class="comment"># 將當前專案目錄與 Vercel 上的專案關聯</span>
+<span class="comment"># 輸出：Linked to vercel-hk-username/your-project (created in xxx)</span>
+
+<span class="prompt">$</span> <span class="cmd">vercel env add</span>
+<span class="comment"># 新增環境變數（例如 DATABASE_URL、NEXT_PUBLIC_SUPABASE_URL）</span>
+<span class="comment"># 互動式選擇要設定的環境（production / preview / development）</span>
+
+<span class="prompt">$</span> <span class="cmd">vercel --prod</span>
+<span class="comment"># 部署到生產環境（--prod 也可簡寫為 -e production）</span>
+<span class="comment"># 輸出：✓ Prepared in Xs | Deployed to your-project.vercel.app</span>
+
+<span class="prompt">$</span> <span class="cmd">vercel domains add yourdomain.com</span>
+<span class="comment"># 設定自定義域名（需要先完成 DNS 設定）</span>
+<span class="error">Error: Domain verification failed. Please add the CNAME records first.</span>
+<span class="comment"># 如果看到這個錯誤，表示 DNS 還沒有正確設定完成</span>
+
+<span class="prompt">$</span> <span class="cmd">vercel logs</span>
+<span class="comment"># 查看最近的部署日誌（包含每個 Function 的執行時間與錯誤）</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 Edge Function 不支援 fs 模組 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 Edge Function 不支援 fs 模組？</div>
+    <details class="deep-dive">
+      <summary>邊緣節點的「無狀態」設計，背後是什麼架構考量？</summary>
+      <div class="deep-dive-content">
+        <p>Edge Functions 的執行環境與傳統的 Node.js 伺服器有根本性的差異。傳統伺服器是「有狀態」的——它們通常運行在固定的硬體上，可以讀取本地檔案系統、維持持久連線、並在各請求之間共享記憶體。但 Edge Functions 運行在全球數百個邊緣節點上，每個節點都是一台輕量級的、短暂的容器。
+&lt;br&gt;&lt;br&gt;
+這種設計的關鍵原因是<strong>「一致性」與「可預測性」</strong>。如果 Edge Function 可以讀取本地檔案系統，那麼同一個 Function 在東京節點與紐約節點上可能會讀取到不同的檔案版本（因為檔案更新需要時間同步到所有節點）。這會導致同一個請求在不同地區得到不同的結果，破壞了 Edge 架構的核心承諾：無論使用者在哪裡，行為都是一致的。
+&lt;br&gt;&lt;br&gt;
+另一個原因是<strong>「啟動速度」</strong>。Edge Functions 需要在毫秒級別內啟動並處理請求，因為它們要應對全球範圍的流量突擊。如果每個 Function 都需要載入檔案系統、初始化資料庫連線池等重量級操作，啟動延遲會急劇增加。因此，Vercel 選擇在 Edge Runtime 中移除了 <code>fs</code>、<code>net</code>、<code>child_process</code> 等模組，只保留與 HTTP 請求相關的 API（<code>request</code>、<code>response</code>、<code>cookies</code> 等）。
+&lt;br&gt;&lt;br&gt;
+這也解釋了為什麼當你的 AI Agent 生成了一個使用 <code>fs.readdir()</code> 的 API 路由並嘗試部署到 Edge 時會報錯——這個 Function 必須被標記為使用「Node.js Runtime」而非「Edge Runtime」，或者你需要將檔案讀取的邏輯改為從物件儲存（例如 Vercel Blob Storage 或 R2）中讀取。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: Vibe 破裂時的部署除錯 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> Vibe 破裂時的部署除錯</div>
+    <p>當你的 Vibe Coding 專案部署到 Vercel 後出現異常， most common 的問題可以歸納為三大類：<strong>構建失敗、環境變數遺漏、以及 Edge Runtime 限制</strong>。
+&lt;br&gt;&lt;br&gt;
+<strong>構建失敗</strong>是最常見的 Vibe 破裂原因。當 Vercel 嘗試構建你的專案時，如果依賴某個本地才有的模組（例如 <code>sharp</code> 圖片處理套件在 ARM 架構的構建伺服器上報錯），或某個環境變數在構建階段被讀取但沒有設定，Vercel 會直接中斷構建並顯示錯誤。此時你需要到 Vercel Dashboard 的「Deployments」頁面查看錯誤日誌，或使用 <code>vercel logs --last 1</code> 指令查看最後一次構建的詳細輸出。
+&lt;br&gt;&lt;br&gt;
+<strong>環境變數遺漏</strong>是第二常見的問題。很多開發者在本地使用 <code>.env.local</code> 檔案設定變數，但忘記在 Vercel Dashboard 的「Settings → Environment Variables」中同步設定。這會導致生產環境的 API 呼叫失敗（例如 Supabase 連線失敗、Stripe 金鑰錯誤）。記住：<code>.env.local</code> 永遠不會被上傳到 Git，也永遠不會自動同步到 Vercel——你必須手動在 Dashboard 中設定。
+&lt;br&gt;&lt;br&gt;
+<strong>Edge Runtime 限制</strong>則是第三個常見問題。當你的 Agent 生成的 Function 使用了不支援的 Node.js API 時，Vercel 會在部署時直接報錯（例如 <code>Module not found: Can't resolve 'fs'</code>）。此時你需要修改 Function 的部署設定，在 <code>vercel.json</code> 中指定 <code>"functions": { "app/api/xxx/route.js": { "runtime": "nodejs18.x" } }</code>，強制該 Function 使用完整的 Node.js Runtime 而非 Edge Runtime。</p>
+  </div>
+
+  <!-- Section: Cloudflare Pages vs Vercel 的架構對比 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Cloudflare Pages vs Vercel 的架構對比</div>
+    <p>這兩者都支援 Edge 部署，但架構哲學不同：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">Vercel（Next.js 原生）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">- 自動偵測 Next.js 設定
+- Edge Functions 預設使用 V8 Isolates
+- 構建環境：專屬的 Node.js 容器
+- 免費方案：100GB 頻寬 / 月
+- 自定義域名：免費 HTTPS 自動簽發</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">Cloudflare Pages</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">- 需要手動配置 next.config.js
+- Edge Functions 使用 Cloudflare Workers（V8）
+- 構建環境：與 Workers 共享的 Edge 網路
+- 免費方案：100GB 頻寬 / 月，無限請求
+- 自定義域名：免費 HTTPS，需手動設定 CAA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當你在 Vercel 上部署的 Next.js API 路由出現 "Can't resolve 'fs'" 錯誤，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">你的電腦上沒有安裝 Node.js 的 fs 模組</li>
+          <li onclick="checkAnswer(this, true)">該路由被預設部署為 Edge Function，而 Edge Runtime 不支援 fs 模組</li>
+          <li onclick="checkAnswer(this, false)">Vercel 的免費方案不允許使用任何 Node.js 核心模組</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 錯誤訊息 "Can't resolve 'fs'" 表示 Vercel 在構建或執行階段找不到 fs 模組。這不是因為你電腦上沒有安裝（Node.js 的 fs 是內建模組，不需要 npm install），也不是因為免費方案的限制。真正的原因是：Vercel 預設將 Next.js 的 API 路由部署為 Edge Functions，而 Edge Runtime 刻意移除了 fs、net、child_process 等模組，以確保邊緣節點的無狀態性與快速啟動。解決方法是修改 vercel.json，將該路由的 runtime 設為 nodejs18.x。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 為什麼 Edge Function 在東京和紐約執行時，結果必須保持一致？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">因為 Vercel 的合約規定，如果不一致會扣款</li>
+          <li onclick="checkAnswer(this, false)">因為 Edge Functions 使用相同的 V8 虛擬機，物理上無法產生不同結果</li>
+          <li onclick="checkAnswer(this, true)">因為檔案系統與狀態需要在所有節點間即時同步，而這種同步在架構上不可行，所以設計上禁止了這些操作</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Edge Functions 的核心設計原則是「一致性」與「可預測性」。如果允許讀取本地檔案系統，不同節點可能在檔案更新的不同階段讀取到不同版本的內容，導致同一個 Function 在不同地區產生不同結果。為了避免這種不一致，Vercel 在 Edge Runtime 中完全移除了檔案系統存取能力。這不是一個技術限制（物理上可以做到），而是一個架構選擇——用功能限制換取全域一致性。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：將現有 Next.js 專案部署到 Vercel</li>
+        <li style="padding: 0.5rem 0;">任務二：在 Vercel Dashboard 中設定至少一個環境變數（例如 NEXT_PUBLIC_APP_NAME）</li>
+        <li style="padding: 0.5rem 0;">任務三：在 vercel.json 中新增一個配置，強制某個 API 路由使用 nodejs18.x runtime，並部署驗證</li>
+        <li style="padding: 0.5rem 0;">任務四：使用 Claude Code 或 Cursor 的 Agent 模式，讓它幫你生成一個使用 Edge Runtime 的簡單 API 路由（例如回傳使用者 IP 與請求時間），部署後觀察輸出結果，並用 vercel logs 查看該 Function 的執行時間與效能數據</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 29 · 部署地圖（Vercel/CF）</p>
+    <p style="margin-top: 0.3rem;">下一課預告：監控與分析（PostHog）</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
