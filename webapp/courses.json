@@ -610,6 +610,16 @@
     "generatedDate": "2026-08-21"
   },
   {
+    "id": "french-lesson-62",
+    "title": "French Lesson 62",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-62.html",
+    "path": "lessons/french/french-lesson-62.html",
+    "number": 62,
+    "generatedDate": "2026-08-22"
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
