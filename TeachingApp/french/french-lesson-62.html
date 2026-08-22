@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 62 — 第 62 課：法語命令式中的代名詞連用實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 62</span>
+    <h1 class="lesson-title">第 62 課：法語命令式中的代名詞連用實戰</h1>
+    <p class="lesson-subtitle">掌握肯定與否定命令式中代名詞的位置、連讀與口語流暢度</p>
+  </div>
+
+  <!-- Section 1: 命令式中的代名詞位置規則 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 命令式中的代名詞位置規則</div>
+    <p>在肯定命令式中，直接受詞代名詞（le/la/les）和間接受詞代名詞（me/te/lui/nous/vous/leur）需放在動詞後方，並以連字號連接；否定命令式則維持代名詞在動詞前的語序。本課將針對「雙重代名詞」在命令式中的排序與連讀做系統性練習。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下例句展示肯定與否定命令式中代名詞連用時的連讀規則，請注意聯誦與重音落點。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter"> Donne-le-moi !</div>
+        <div class="pron-ipa">肯定命令式：雙重代名詞 le + moi 後置，中間需聯誦 /nɔ̃.lə.mwa/</div>
+        <div class="pron-example"><em>「把那個給我！」</em>（請求遞送物品）<button class="speak-btn" onclick='speakFrench("\u300c\u628a\u90a3\u500b\u7d66\u6211\uff01\u300d")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter"> Ne me le donne pas.</div>
+        <div class="pron-ipa">否定命令式：代名詞 me + le 前置，無聯誦 /ən mǝ lɔn dɔn pɑ/</div>
+        <div class="pron-example"><em>「別把那給我。」</em>（拒絕請求）<button class="speak-btn" onclick='speakFrench("\u300c\u5225\u628a\u90a3\u7d66\u6211\u3002\u300d")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter"> Voyons-le-y !</div>
+        <div class="pron-ipa"> avan代名詞 y 置於動詞後時需保留，聯誦 /vwajɔ̃.lə.ji/</div>
+        <div class="pron-example"><em>「我們去那裡看它吧！」</em>（口語指令）<button class="speak-btn" onclick='speakFrench("\u300c\u6211\u5011\u53bb\u90a3\u88e1\u770b\u5b83\u5427\uff01\u300d")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下句子，注意肯定與否定命令式中代名詞的連讀差異，並模仿法語的節奏群分節。</p>
+    <div class="follow-box">
+      <h4>請跟讀以下句子，注意肯定與否定命令式中代名詞的連讀差異，並模仿法語的節奏群分節。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Prends-le-moi.</span>
+          <span class="ipa">/pʁɑ̃.lǝ.mwa/</span>
+          <span class="meaning">—— 把那拿給我。</span>
+          <button class="speak-btn" onclick='speakFrench("Prends-le-moi.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ne la lui montre pas.</span>
+          <span class="ipa">/ nə la lɥi mɔ̃tʁ pɑ/</span>
+          <span class="meaning">—— 別把那給他看。</span>
+          <button class="speak-btn" onclick='speakFrench("Ne la lui montre pas.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Mets-les-y.</span>
+          <span class="ipa">/ mɛ.lɛ.ji/</span>
+          <span class="meaning">—— 把那們放到那裡去。</span>
+          <button class="speak-btn" onclick='speakFrench("Mets-les-y.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ne nous en parle pas.</span>
+          <span class="ipa">/ nə nu z‿ɑ̃ paʁl pɑ/</span>
+          <span class="meaning">—— 別跟我們談那個。</span>
+          <button class="speak-btn" onclick='speakFrench("Ne nous en parle pas.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：肯定命令式雙重代名詞後置時，第一個代名詞的結尾音常與第二個代名詞的首音聯誦，如「donne-le-moi」中 /lə/ 與 /mwa/ 連讀為 /lə.mwa/。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>比較以下兩組結構，釐清肯定與否定命令式中代名詞位置與連讀的關鍵差異。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">肯定命令式</div>
+        <div class="pron-ipa">代名詞置於動詞後，雙重代名詞按 me/te/se/nous/vous → le/la/les → lui/leur → y → en 的順序排列</div>
+        <div class="pron-example"> Donne-moi-le.（錯誤）→ Donne-le-moi.（正確）<button class="speak-btn" onclick='speakFrench("Donne-moi-le.\uff08\u932f\u8aa4\uff09\u2192 Donne-le-moi.\uff08\u6b63\u78ba\uff09")' aria-label="播放發音">🔊</button><br>me/te 在 le/la/les 前需變為 moi/toi，但口語中常簡化。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">否定命令式</div>
+        <div class="pron-ipa">代名詞維持動詞前置語序，順序與現在式相同，無聯誦變化</div>
+        <div class="pron-example"> Ne me le donne pas.<button class="speak-btn" onclick='speakFrench("Ne me le donne pas.")' aria-label="播放發音">🔊</button><br>否定結構中代名詞排序與現在式完全一致。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪個選項正確表達「別把那給我們！」？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Ne nous la donnez pas.</li>
+          <li onclick="checkAnswer(this, true)">B. Ne la nous donnez pas.</li>
+          <li onclick="checkAnswer(this, false)">C. Ne donnez pas nous la.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 否定命令式中，間接受詞代名詞 nous 必須置於直接受詞代名詞 la 之前，且兩者均需放在動詞前，正確順序為「Ne la nous donnez pas.」</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「把書交給她！」的正確法語表達為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Donne-le-lui le livre.</li>
+          <li onclick="checkAnswer(this, false)">B. Donne le livre-lui.</li>
+          <li onclick="checkAnswer(this, true)">C. Donne-lui le livre.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 當間接受詞代名詞 lui 與名詞受詞同時出現時，名詞受詞保留在動詞後，代名詞 lui 前置並聯誦，正確結構為「Donne-lui le livre.」</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀跟練清單中的四個例句各三次，錄音後對比原音糾正聯誦位置</li>
+        <li style="padding: 0.5rem 0;">用肯定與否定命令式各造三句雙重代名詞句子，例如：「Donnez-moi-les.」與「Ne me les donnez pas.」</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 62 · 第 62 課：法語命令式中的代名詞連用實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語被動語態的入門應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
