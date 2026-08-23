@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 63 — 第 63 課：條件式過去時（Conditionnel Passé）入門</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 63</span>
+    <h1 class="lesson-title">第 63 課：條件式過去時（Conditionnel Passé）入門</h1>
+    <p class="lesson-subtitle">從條件式現在時邁向更細膩的假設與委婉表達</p>
+  </div>
+
+  <!-- Section 1: 什麼是條件式過去時 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是條件式過去時</div>
+    <p>條件式過去時是用來表達「過去某個假設情況下的結果」，或用於委婉地表達與過去事實相反的假設。它的結構是：<strong>助動詞（avoir 或 être）的條件式現在時＋過去分詞</strong>。你可以把它想像成「複合過去時」的條件式版本——就像第 35 課學的 compound passé 套上第 43 課的條件式外殼。例如：「我本來會去」（Je serais allé）表示實際上沒有去，但假設條件成立就會發生。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>條件式過去時的發音重點在於<strong>助動詞的條件式現在時變位</strong>與<strong>過去分詞</strong>的連讀。過去分詞的發音規則與複合過去時相同（第 35-37 課），請注意 -é、-é、-i、-u、-ert 等結尾的清晰讀法。助動詞部分的重音落在最後一個音節，這是法語節奏群的特徵（第 34 課）。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">aurais / aʁ.ɛ/</div>
+        <div class="pron-ipa">avoir 的條件式現在時第一人稱，注意 r 輕柔、尾音 /a/ 接 /ɛ/ 的滑音</div>
+        <div class="pron-example"><em>j'aurais</em>（我本來會（有））<button class="speak-btn" onclick='speakFrench("j&#39;aurais")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">serais / sə.ʁɛ/</div>
+        <div class="pron-ipa">être 的條件式現在時第一人稱，r 發喉嚨音，與 sera 僅一音之差</div>
+        <div class="pron-example"><em>je serais</em>（我本來會（是／去））<button class="speak-btn" onclick='speakFrench("je serais")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">allé / a.le/</div>
+        <div class="pron-ipa">aller 的過去分詞，-é 發 /e/ 音（第 6 課），閉口清晰</div>
+        <div class="pron-example"><em>Je serais allé.</em>（我本來會去。）<button class="speak-btn" onclick='speakFrench("Je serais all\u00e9.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">fini / fi.ni/</div>
+        <div class="pron-ipa">finir 的過去分詞，-i 發清晰 /i/，兩個音節平分節奏群</div>
+        <div class="pron-example"><em>J'aurais fini.</em>（我本來會完成。）<button class="speak-btn" onclick='speakFrench("J&#39;aurais fini.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>跟讀以下句子，注意助動詞條件式與過去分詞之間的連誦（liaison）與節奏群的分配。每個句子請放慢速度，先拆開各部分，再逐步加速到自然語速。</p>
+    <div class="follow-box">
+      <h4>跟讀以下句子，注意助動詞條件式與過去分詞之間的連誦（liaison）與節奏群的分配。每個句子請放慢速度，先拆開各部分，再逐步加速到自然語速。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">J'aurais voyagé.</span>
+          <span class="ipa">/ʒo.ʁɛ.vwa.ja.ʒe/</span>
+          <span class="meaning">—— 我本來會去旅行。</span>
+          <button class="speak-btn" onclick='speakFrench("J&#39;aurais voyag\u00e9.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle serait partie.</span>
+          <span class="ipa">/ɛl sə.ʁɛ paʁ.ti/</span>
+          <span class="meaning">—— 她本來會離開。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle serait partie.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Nous aurions réussi.</span>
+          <span class="ipa">/nu.z‿u.ʁjɔ̃ re.ys.i/</span>
+          <span class="meaning">—— 我們本來會成功。</span>
+          <button class="speak-btn" onclick='speakFrench("Nous aurions r\u00e9ussi.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ils seraient arrivés.</span>
+          <span class="ipa">/il sə.ʁɛ a.ʁi.ve/</span>
+          <span class="meaning">—— 他們本來會到達。</span>
+          <button class="speak-btn" onclick='speakFrench("Ils seraient arriv\u00e9s.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Tu aurais compris.</span>
+          <span class="ipa">/ty.z‿u.ʁɛ kɔ̃.pʁi/</span>
+          <span class="meaning">—— 你本來會明白。</span>
+          <button class="speak-btn" onclick='speakFrench("Tu aurais compris.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：把助動詞條件式想成「現在時＋-ais」的發音模式，過去分詞保持複合過去時的讀法，兩者之間做輕微聯誦即可。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>以下是條件式過去時與之前學過時態的關鍵對比，幫助你區分不同情境的使用時機。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">條件式現在時</div>
+        <div class="pron-ipa">表達現在或未來的假設結果（第 43 課）</div>
+        <div class="pron-example">Je voudrais un café.<button class="speak-btn" onclick='speakFrench("Je voudrais un caf\u00e9.")' aria-label="播放發音">🔊</button><br>委婉請求，與現在相關</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">條件式過去時</div>
+        <div class="pron-ipa">表達過去假設情況下的結果</div>
+        <div class="pron-example">J'aurais voulu partir.<button class="speak-btn" onclick='speakFrench("J&#39;aurais voulu partir.")' aria-label="播放發音">🔊</button><br>實際上沒走成，假設過去</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">複合過去時</div>
+        <div class="pron-ipa">描述已發生的過去事件（第 35 課）</div>
+        <div class="pron-example">J'ai voyagé hier.<button class="speak-btn" onclick='speakFrench("J&#39;ai voyag\u00e9 hier.")' aria-label="播放發音">🔊</button><br>實際發生的動作</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">過未完成時</div>
+        <div class="pron-ipa">描述過去的習慣或背景（第 38 課）</div>
+        <div class="pron-example">Je voyais souvent.<button class="speak-btn" onclick='speakFrench("Je voyais souvent.")' aria-label="播放發音">🔊</button><br>持續性、重複性過去動作</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「我本來會幫忙（但實際上沒幫）」用條件式過去時怎麼說？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. J'ai aidé.</li>
+          <li onclick="checkAnswer(this, true)">B. J'aurais aidé.</li>
+          <li onclick="checkAnswer(this, false)">C. Je aidais.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. J'aurais aidé. — 助動詞 avoir 的條件式現在時 première personne（aurais）＋過去分詞 aidé，表達與過去事實相反的假設。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪一句使用了條件式過去時？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Elle partira demain.</li>
+          <li onclick="checkAnswer(this, true)">B. Nous serionsvenus.</li>
+          <li onclick="checkAnswer(this, false)">C. Ils avaient fini.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. Nous serions venus. — « serions » 是 être 的條件式現在時第一人稱複數，「venus」是過去分詞，符合條件式過去時結構。A 是簡單未來時，C 是過未完成時。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 條件式過去時的結構是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 助動詞現在時＋過去分詞</li>
+          <li onclick="checkAnswer(this, true)">B. 助動詞條件式現在時＋過去分詞</li>
+          <li onclick="checkAnswer(this, false)">C. 助動詞未完成時＋现在分詞</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B. 助動詞條件式現在時＋過去分詞 — 這就是把複合過去時的結構（助動詞現在時＋過去分詞）中的助動詞換成條件式現在時。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用條件式過去時寫三句話，描述「本來會做但實際上沒做」的三件事（可選擇 avoir 或 être 作助動詞）</li>
+        <li style="padding: 0.5rem 0;">朗讀第 35 課複合過去時例句與本課條件式過去時例句各五組，比較兩者在發音與語氣上的差異</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 63 · 第 63 課：條件式過去時（Conditionnel Passé）入門 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：被動語態（La Voix Passive）初探</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
