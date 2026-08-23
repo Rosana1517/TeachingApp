@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 31 — 市場洞察與決策</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 6: The Shield</span>
+    <h1 class="lesson-title">市場洞察與決策</h1>
+    <p class="lesson-subtitle">用客觀數據取代直覺，讓 AI 成為你的產品策略分析師</p>
+  </div>
+
+  <!-- Section: 為什麼獨立開發者需要數據驅動思維 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼獨立開發者需要數據驅動思維？</div>
+    <p>在 Vibe Coding 的開發循環中，我們經常依賴 AI 生成程式碼或新功能，但「該做什麼功能」這個問題不能只靠直覺。<strong>數據驅動開發</strong>的核心在於用實際使用者行為來驗證假設，而不是憑猜測決定優先級。對於獨立開發者而言，資源有限，每一個 Feature 都必須有明確的價值回報。數據能提供客觀的指標，例如功能使用率、轉換率、使用者流失點等，幫助你判斷下一步該投資在哪裡。當 Vibe 破裂（例如功能上線後沒人用）時，數據能幫助你快速定位問題：是功能不夠明顯？還是解決的需求其實並不存在？透過持續追蹤數據，你可以將 AI 的生成能力與市場驗證結合，形成一個閉環的決策系統。</p>
+  </div>
+
+  <!-- Section: AI Agent 如何參與數據決策流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI Agent 如何參與數據決策流程？</div>
+    <p>現代 AI Agent 已不僅是編碼助手，還能擔任<strong>數據分析代理</strong>。你可以讓 Agent 連接數據源（如 PostHog、Supabase 查詢結果、Google Analytics CSV），讓它執行數據清洗、統計分析、趨勢識別，甚至撰寫視覺化圖表。Agent 能根據你設定的產品目標（例如「提升訂閱轉換率 10%」），自動分析哪些功能區塊與轉換相關，並給出具體建議。在 Vibe Coding 中，Agent 的角色是「策略分析師」，它將原始數據轉化為可執行的決策建議，讓你專注於驗證與實施。當建議與預期不符時，你應該檢查 Agent 的上下文是否包含正確的數據定義，或確認分析邏輯沒有陷入相關性誤區。</p>
+  </div>
+
+  <!-- Section: 實戰：建立你的數據分析環境 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實戰：建立你的數據分析環境</div>
+    <p>首先確保你有穩定的數據來源。假設你已使用 PostHog 監控網站行為，可匯出關鍵指標。接著，建立一個簡單的 Node.js 腳本來读取和分析數據。以下是一個實際的操作範例，展示如何安裝依賴並設定分析環境：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm init -y</span>
+<span class="output">Wrote to /your-project/package.json</span>
+
+<span class="prompt">$</span> <span class="cmd">npm install postgrest-js csv-parser</span>
+<span class="output">added 42 packages in 3s</span>
+
+<span class="prompt">$</span> <span class="cmd">node analyze_features.js</span>
+<span class="comment"># 腳本將讀取匯出的行為數據並統計各功能使用頻率</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：如何區分相關性與因果性 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：如何區分「相關性」與「因果性」</div>
+    <details class="deep-dive">
+      <summary>為什麼數據顯示有關係的功能，不一定代表是它帶來了成功？</summary>
+      <div class="deep-dive-content">
+        <p>數據分析中最常見的陷阱是將<strong>相關性</strong>誤認為<strong>因果性</strong>。例如，你發現使用「深色模式」的使用者留存率較高，但這可能不是因為深色模式提升了留存，而是因為偏好深色模式的使用者本身就對產品有更深的投入度。在 Vibe Coding 中，AI Agent 如果僅基於相關性建議開發某種功能，可能會導致資源錯置。正確的因果推論需要透過受控實驗（如 A/B 測試）來驗證。即使無法進行完整實驗，也應尋找自然實驗或控制變量來逼近因果關係。Agent 在生成決策建議時，應被要求區分這兩者，並在上下文中註明證據強度，如此才能在 Vibe 破裂時快速修正策略，而不是盲目跟隨數據表面現象。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 對照：直覺決策 vs 數據驅動決策 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 對照：直覺決策 vs 數據驅動決策</div>
+    <p>直覺決策依賴開發者的主觀判斷，而數據驅動決策則基於客觀事實。兩者的差異在以下範例中特別明顯：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">直覺決策情境</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">我感覺使用者需要一個「社交分享」功能，
+因為其他熱門平台都有。
+我決定立即用 v0 生成這個功能並上線。
+# 結果：上線後使用率不到 1%，因為核心使用者根本不需要這功能。</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">數據驅動決策情境</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">我從 PostHog 發現，70% 的使用者在完成核心任務後
+會停留在頁面超過 5 秒，且這群人的留存率是平均值的 2 倍。
+我推測他們在尋找進階選項，於是先用數據確認了這個假設，
+再讓 Agent 分析哪些進階功能最受關注，才決定開發優先順序。
+# 結果：新功能上線後使用率高出預期，因為源自真實行為信號。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂時如何診斷決策錯誤 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 當 Vibe 破裂時如何診斷決策錯誤？</div>
+    <p>當功能上線後數據不佳，Vibe 破裂通常源於三種情況：數據來源有誤、分析邏輯錯誤、或因果推論過早。首先檢查數據管道是否正常運行，例如 PostHog 的事件追蹤是否漏掉關鍵轉換。其次，檢視 AI Agent 的分析腳本是否有邏輯缺陷，例如誤用了平均值而非中位數來應對偏態分佈。最後，反思是否因為數據顯示某種相關性就倉促決策，而沒有經過小規模驗證。此時應回到數據收集階段，增加定性反饋（如使用者訪談）來補充定量數據的盲點，形成混合分析框架，讓 Vibe 重新穩定。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在數據驅動決策中，以下哪一項最能幫助區分相關性與因果性？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">增加數據採樣量，讓統計顯著性提升</li>
+          <li onclick="checkAnswer(this, true)">進行 A/B 測試或尋找自然實驗來控制變量</li>
+          <li onclick="checkAnswer(this, false)">使用更複雜的 AI 模型來預測行為</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A/B 測試或自然實驗能透過控制變量來建立因果關係，而增加樣本量僅提升統計精度，不改變相關性本質；AI 模型若基於相關性數據訓練，仍無法自發建立因果推論。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 AI Agent 基於數據建議開發某個功能，但該功能上線後使用率極低，最可能的原因是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">Agent 的編碼能力不足，生成了有 Bug 的功能</li>
+          <li onclick="checkAnswer(this, true)">決策忽略了因果性與相關性的區別，或數據來源有偏差</li>
+          <li onclick="checkAnswer(this, false)">該功能在市場上完全沒有競爭對手</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 功能使用率低通常源於決策階段的問題，而非編碼品質。若 Agent 僅根據相關性數據（例如「使用 A 功能的人也會點 B 按鈕」）建議開發 B，但 B 並非真正驅動價值的因素，就會導致誤判。數據來源偏差（如只分析活躍使用者）也會使建議偏離實際需求。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">設定數據監控：若尚未設定，請為你的專案接入 PostHog 或類似分析工具，確保能追蹤至少 3 個關鍵行為事件（例如註冊、核心功能使用、付費轉換）。</li>
+        <li style="padding: 0.5rem 0;">數據匯出與清洗：使用 Agent 協助你從後端資料庫或分析平台匯出過去 30 天的行為數據，並清理遺漏或重複的記錄，形成結構化 CSV 或 JSON 檔案。</li>
+        <li style="padding: 0.5rem 0;">AI 驅動分析：讓 Claude Code 或 Cursor 根據你的產品目標（如「提升轉化率」）分析數據，要求它生成一份包含發現、建議下一步功能的報告，並觀察它是否區分了相關性與因果性。</li>
+        <li style="padding: 0.5rem 0;">決策驗證與迭代：根據 AI 報告的建議，選擇一項最小可行性功能進行原型驗證（可用 v0 快速生成），並規劃下週的數據收集重點，形成持續決策循環。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 31 · 市場洞察與決策</p>
+    <p style="margin-top: 0.3rem;">下一課預告：自動化增長引擎與 A/B 測試</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

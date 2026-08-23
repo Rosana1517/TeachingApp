@@ -620,6 +620,16 @@
     "generatedDate": "2026-08-22"
   },
   {
+    "id": "french-lesson-63",
+    "title": "French Lesson 63",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-63.html",
+    "path": "lessons/french/french-lesson-63.html",
+    "number": 63,
+    "generatedDate": "2026-08-23"
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
@@ -1138,5 +1148,15 @@
     "path": "lessons/vibe/vibe-lesson-30.html",
     "number": 30,
     "generatedDate": "2026-08-22"
+  },
+  {
+    "id": "vibe-lesson-31",
+    "title": "Vibe Lesson 31",
+    "category": "Vibe",
+    "categorySlug": "vibe",
+    "fileName": "vibe-lesson-31.html",
+    "path": "lessons/vibe/vibe-lesson-31.html",
+    "number": 31,
+    "generatedDate": "2026-08-23"
   }
 ]
