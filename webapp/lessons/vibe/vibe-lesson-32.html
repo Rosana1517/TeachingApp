@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 32 — 課程主標題：AI Agent 的成本控管與 Token 優化</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 4: Agent Engineering Deep Dive</span>
+    <h1 class="lesson-title">課程主標題：AI Agent 的成本控管與 Token 優化</h1>
+    <p class="lesson-subtitle">掌握 token 計費邏輯，在 vibe coding 中避免驚人帳單並提升效率</p>
+  </div>
+
+  <!-- Section: 為什麼成本控管是 Vibe Coding 的必修課 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼成本控管是 Vibe Coding 的必修課</div>
+    <p>在 Vibe Coding 的工作流中，我們習慣讓 AI Agent（例如 Claude Code、Cursor、Bolt 等）大量處理程式碼產生、除錯、重構等任務。然而，這些工具的背後都是按 token 計費的 LLM API。如果你從來沒注意過自己的使用情況，很可能會在某天看到一張讓你大吃一驚的帳單。<strong>成本控管</strong>不是要你限制 Agent 的能力，而是要你學會<strong>策略性地使用</strong>它——用更少的 token 達到相同甚至更好的效果。這涉及四個核心面向：<strong>輸入優化</strong>（減少無謂的上下文）、<strong>輸出控制</strong>（避免冗長回應）、<strong>快取策略</strong>（重複請求的 cost 節省）以及<strong>計費監控</strong>（實時掌握消耗）。</p>
+  </div>
+
+  <!-- Section: Token 計費的現實：你正在付錢的是什麼 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Token 計費的現實：你正在付錢的是什麼</div>
+    <p>大多數商業 LLM API（OpenAI、Anthropic、Google、OpenRouter 等）都採用 <strong>token 計費制</strong>。一個 token 大約等於 0.75 個英文單字或 0.5 個中文字。當你發送一段 prompt 時，你支付的是「輸入 token」；當模型產生回答時，你支付的是「輸出 token」。兩者單價不同——通常輸出 token 比輸入 token 貴 2～5 倍。舉例來說，Claude 3.5 Sonnet 的輸入價格約為每百萬 token $3，輸出價格約為每百萬 token $15。這意味著一個簡單的對話如果上下文累積到 10 萬輸入 token + 1 萬輸出 token，成本就是 $3.15，看起來不多，但若每天重複使用，一個月就可能超過 $100。</p>
+  </div>
+
+  <!-- Section: 輸入優化：減少無謂的上下文消耗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 輸入優化：減少無謂的上下文消耗</div>
+    <p>上下文工程在第 13 課已經講過，但從成本角度重新審視，你會發現許多開發者正在無意義地燒錢。<strong>最常見的成本黑洞</strong>包括：① 每次都把整個專案結構塞進 prompt；② 在對話中重複貼上相同的程式碼片段；③ 沒有使用工具封裝而是一次次手動貼上檔案內容。<strong>具體優化策略</strong>：使用 <code>.cursorrules</code> 或 <code>.claude/rules</code> 設定全域提示，避免每次重複寫相同指示；善用工具呼叫讓 Agent 自行讀取檔案，而不是你貼上；使用 <code>/compact</code>（Claude Code）或 <code>/clear</code> 定期清理對話上下文；對於大型檔案，用 <code>sed</code>、<code>grep</code> 或 <code>ripgrep</code> 等 CLI 工具先定位再讓 Agent 處理特定區段，而不是一股腦丟進去。</p>
+  </div>
+
+  <!-- Section: 輸出控制：避免冗長回應的成本黑洞 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 輸出控制：避免冗長回應的成本黑洞</div>
+    <p>許多開發者發現，同樣的問題，不同的模型或參數設定，輸出的 token 量可以差上 10 倍。例如讓 Claude 解釋一段程式碼，它可以產生 500 字的詳細教學，也可以產生 3 行的簡潔說明。<strong>控制輸出長度的核心方法</strong>：在 system prompt 中明確設定回應格式限制，例如「請用 JSON 格式輸出」或「回答不超過 3 行」；對於程式碼產生，要求 Agent 直接輸出可執行的程式碼而不是教學式解釋；使用 <code>/compact</code> 命令將冗長的歷史對話壓縮成精簡的摘要，然後基於摘要繼續；對於只需要简单確認的任務，使用更快的便宜模型（如 Claude 3.5 Haiku 或 GPT-4o-mini）而非昂貴的旗艦模型。<strong>實際案例</strong>：如果你只是讓 Agent 檢查一段程式碼是否有安全漏洞，用 Haiku 模型可能只要 $0.25，但用 Sonnet 模型可能花 $2.50，而效果幾乎相同。</p>
+  </div>
+
+  <!-- Section: 快取策略：被低估的成本節省武器 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 快取策略：被低估的成本節省武器</div>
+    <p>所有主流 LLM API 都提供某種形式的<strong>提示快取</strong>（Prompt Caching）。Anthropic 的「Prompt Caching」是最成熟的實作——當你發送與上次相同的 prefix（例如相同的 system prompt + 相同的檔案內容），快取命中時輸入 token 的價格可以降到原来的 1/10。具體來說，Claude 3.5 Sonnet 的快取命中價格是每百萬 token $0.30，而非快取時是 $3.00。<strong>如何最大化快取命中率</strong>：① 保持 system prompt 絕對穩定，不要每次改變；② 將不常變動的上下文（如程式碼架構說明、專案規範）放在 prompt 的最前面，這樣即使後續內容變化，前面的固定部分仍能命中快取；③ 使用相同的模型版本，混用不同模型會導致快取失效；④ 對於相同檔案內容，確保編碼和格式一致，任何微小差異都會導致快取失效。<strong>注意</strong>：OpenAI 也有類似的快取功能（Context Caching），但實作細節不同，且僅限 GPT-4o 和 o 系列模型。</p>
+  </div>
+
+  <!-- Section: 計費監控：實時掌握你的 token 消耗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">6</span> 計費監控：實時掌握你的 token 消耗</div>
+    <p>不知道自己在花多少錢，是成本控管失敗的主因。<strong>不同工具提供的監控方式</strong>：Anthropic Console 提供完整的 API 使用紀錄和成本試算；OpenAI Platform 有詳細的使用量儀表板；Cursor 內建 usage 面板（右上角點擊你的頭像可以看到本月使用量）；Claude Code 的 <code>/cost</code> 命令會顯示當前對話的 token 消耗和預估成本；OpenRouter 提供跨模型的統一計費介面。<strong>建立監控習慣</strong>：① 每天開始工作前看一眼成本儀表板；② 設定預算警報（Anthropic 和 OpenAI 都支援設定月度預算上限）；③ 定期檢視哪些專案或功能消耗的 token 最多，找到優化機會；④ 對於個人開發者，考慮使用 <code>.env</code> 中的 <code>ANTHROPIC_API_KEY</code> 或 <code>OPENAI_API_KEY</code> 對應的免費層额度作為緩衝。</p>
+  </div>
+
+  <!-- Section: Vibe 破裂診斷：當成本超支時的緊急處理 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">7</span> Vibe 破裂診斷：當成本超支時的緊急處理</div>
+    <p>當你發現 token 消耗異常時，這通常意味著你的 Agent 正在做某些低效的事情。<strong>常見的 vibe 破裂情境與修復方法</strong>：① **對話過長導致成本飆升**：使用 <code>/compact</code> 或 <code>/clear</code> 重置上下文，然後用精簡的 system prompt 重新開始；② **Agent 陷入無限迴圈**：設定 <code>max_turns</code> 或使用 Agent 工具時加入 <code>timeout</code> 限制；③ **大量檔案被錯誤地載入上下文**：檢查你的 <code>.gitignore</code> 和工具的 ignore 設定，確保 <code>node_modules</code>、<code>.next</code>、<code>dist</code> 等目錄不被包含；④ **使用了過昂貴的模型**：建立模型切換快捷鍵或設定，讓常見任務使用 Haiku/GPT-4o-mini 等便宜模型；⑤ **快取失效**：檢查你的 system prompt 是否被意外修改，以及檔案編碼是否一致。<strong>診斷命令</strong>：在 Claude Code 中使用 <code>/cost</code> 查看即時成本；在 Cursor 中使用 <code>Cmd+Shift+P</code> → 「Cursor: Show Usage」查看詳細數據。</p>
+  </div>
+
+  <!-- Section: 深度解析：為什麼大上下文不等於好結果 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深度解析：為什麼大上下文不等於好結果</div>
+    <details class="deep-dive">
+      <summary>為什麼越來越多 token 反而讓 Agent 變笨，還让你變窮？</summary>
+      <div class="deep-dive-content">
+        <p>這涉及 LLM 的<strong>注意力機制</strong>（Attention Mechanism）的本質限制。Transformer 架構的注意力計算複雜度是 O(n²)，其中 n 是序列長度。雖然這不直接解釋「為什麼長上下文變笨」，但它確實解釋了為什麼更長的上下文需要更多的計算資源和更高的成本。<strong>真正的原因是</strong>：當上下文過長時，重要的資訊會被「稀釋」。模型需要在成百上千個 token 中尋找相關資訊，這增加了「注意力分散」的機率。此外，長上下文中的矛盾資訊（不同檔案中的不同程式碼風格、過時的註解等）會導致模型產生不一致的輸出。<strong>從成本角度的進一步解釋</strong>：即使你支付更多 token，模型的準確率也不一定會提升——有時反而下降。這意味著你同時失去了成本效益和結果品質，形成雙重損失。最佳實踐是保持上下文精簡且相關，使用 RAG（第 18 課）和工具呼叫（第 15 課）讓 Agent 在需要時才獲取特定資訊，而不是一股腦塞入所有資料。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪種做法最能有效降低 Anthropic API 的 prompt caching 命中率？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">保持 system prompt 絕對穩定，放在 prompt 最前面</li>
+          <li onclick="checkAnswer(this, true)">每次對話都修改 system prompt 的某些字詞，即使只是同義詞替換</li>
+          <li onclick="checkAnswer(this, false)">將不常變動的專案規範放在 prompt 中段而非開頭</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確，因為 prompt caching 要求 prefix 完全相同才能命中快取，即使是同義詞替換也會導致快取失效。A 是正確的 caching 做法，C 的影響較小因為 caching 主要看最前面的 prefix。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 你發現 Claude Code 的 token 消耗異常飆升，以下哪個 <code>/cost</code> 命令是正確的診斷步驟？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">在終端機輸入 <code>/cost</code> 查看當前對話的 token 消耗和預估成本</li>
+          <li onclick="checkAnswer(this, false)">使用 <code>/memory</code> 命令查看 Agent 的記憶儲存情況</li>
+          <li onclick="checkAnswer(this, false)">使用 <code>/models</code> 命令查看當前使用的模型價格</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 正確，<code>/cost</code> 是 Claude Code 內建的計費診斷命令，會顯示當前對話的輸入/輸出 token 數量和預估成本。B 和 C 不是 Claude Code 的有效命令。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">查看並記錄你目前使用的 AI 工具（Cursor/Claude Code/Copilot 等）的當前 token 使用量和成本，找出你最常使用的模型及其計費標準</li>
+        <li style="padding: 0.5rem 0;">在你的主力專案中，檢查是否有任何大型目錄（如 node_modules、.next、dist）被意外包含在 Agent 的上下文處理範圍內，並修正相關設定</li>
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor，針對同一個簡單任務（例如「幫我寫一個 React hook」），分別使用便宜模型和昂貴模型各執行一次，記錄兩者的輸出品質差異和成本差異</li>
+        <li style="padding: 0.5rem 0;">實作一個成本優化實踐：為你的專案建立一個精簡版的 <code>.cursorrules</code> 或 <code>.claude/rules</code>，設定 system prompt 的穩定前綴，然後運行三次相同任務，觀察快取命中率是否提升</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 32 · 課程主標題：AI Agent 的成本控管與 Token 優化</p>
+    <p style="margin-top: 0.3rem;">下一課預告：可持續的 AI 基礎設施架構</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
