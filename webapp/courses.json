@@ -870,6 +870,16 @@
     "generatedDate": "2026-08-24"
   },
   {
+    "id": "mind-lesson-23",
+    "title": "Mind Lesson 23",
+    "category": "Mind",
+    "categorySlug": "mind",
+    "fileName": "mind-lesson-23.html",
+    "path": "lessons/mind/mind-lesson-23.html",
+    "number": 23,
+    "generatedDate": "2026-08-25"
+  },
+  {
     "id": "vibe-lesson-01",
     "title": "Vibe Lesson 01",
     "category": "Vibe",
