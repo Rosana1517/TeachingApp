@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 65 — 第 65 課：虛擬式現在時在主從子句中的應用</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 65</span>
+    <h1 class="lesson-title">第 65 課：虛擬式現在時在主從子句中的應用</h1>
+    <p class="lesson-subtitle">掌握 que 引導受詞子句時，如何精準判斷直陳式與虛擬式的切換時機</p>
+  </div>
+
+  <!-- Section 1: 為什麼 que 後面有時要用虛擬式？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼 que 後面有時要用虛擬式？</div>
+    <p>在第 64 課，我們學會了虛擬式現在時的變位規則。今天我們要把這個知識帶進更實際的語境——<strong>主從子句</strong>。當主句的動詞或形容詞表達<strong>情感、意愿、必要性、懷疑或否定</strong>時，que 後面必須改用虛擬式，而不是直陳式。這反映法語邏輯中「主觀觀點」與「客觀事實」的細微區別。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>請特別留意以下詞彙的 <strong>聯誦</strong>與<strong>重音位置</strong>，它們將在本課的例句中反覆出現：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">veux que</div>
+        <div class="pron-ipa">/vø kə/ —— 聯誦時 vø 與 kə 緊密相連，無停頓</div>
+        <div class="pron-example"><em>Je veux que tu viennes.</em>（我希望你來。）<button class="speak-btn" onclick='speakFrench("Je veux que tu viennes.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">il faut que</div>
+        <div class="pron-ipa">/il fo kə/ —— fa与que 聯誦，fa 發 /fo/（半閉口），que 發 /kə/（輕快）</div>
+        <div class="pron-example"><em>Il faut que nous partions.</em>（我們必須離開。）<button class="speak-btn" onclick='speakFrench("Il faut que nous partions.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">je doute que</div>
+        <div class="pron-ipa">/ʒə dut kə/ —— 注意 dout 的 /t/ 不發音，只與 que 聯誦時 /t/ 才出現</div>
+        <div class="pron-example"><em>Je doute qu'il puisse venir.</em>（我懷疑他能來。）<button class="speak-btn" onclick='speakFrench("Je doute qu&#39;il puisse venir.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">content que</div>
+        <div class="pron-ipa">/kɔ̃.tɑ̃ kə/ —— 鼻化元音 /ɔ̃/ 需穩定，que 輕讀</div>
+        <div class="pron-example"><em>Je suis content que tu sois là.</em>（很高興你在這裡。）<button class="speak-btn" onclick='speakFrench("Je suis content que tu sois l\u00e0.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下句子，注意每個 que 後動詞的虛擬式變位，以及句末的<strong>降調</strong>：</p>
+    <div class="follow-box">
+      <h4>請跟讀以下句子，注意每個 que 後動詞的虛擬式變位，以及句末的<strong>降調</strong>：</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Je souhaite que tu réussisses.</span>
+          <span class="ipa">/ʒə suɛt kə ty ʁe.y.is/</span>
+          <span class="meaning">—— 我希望你能成功。</span>
+          <button class="speak-btn" onclick='speakFrench("Je souhaite que tu r\u00e9ussisses.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle insiste pour que je vienne.</span>
+          <span class="ipa">/ɛl ɛ̃.sist puʁ kə ʒə vjɛn/</span>
+          <span class="meaning">—— 她堅持要我來。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle insiste pour que je vienne.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il est possible que nous ayons raison.</span>
+          <span class="ipa">/il ɛ pɔs.ibl kə nu.z‿a.jɔ̃ ʁɛ.zɔ̃/</span>
+          <span class="meaning">—— 我們可能是對的。</span>
+          <button class="speak-btn" onclick='speakFrench("Il est possible que nous ayons raison.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Je ne pense pas qu'il veuille partir.</span>
+          <span class="ipa">/ʒə nə pɑ̃s pɑ k‿il vøj pɑʁ.tiʁ/</span>
+          <span class="meaning">—— 我認為他不想離開。</span>
+          <button class="speak-btn" onclick='speakFrench("Je ne pense pas qu&#39;il veuille partir.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發音小技巧：當主句是現在時、que 後動詞是虛擬式現在時，整句語調平穩，不要在中途停頓過久。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>同一個主句框架，用直陳式還是指虛擬式，意思會完全不同：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Je sais que...</div>
+        <div class="pron-ipa">直陳式 —— 表達確信的事實</div>
+        <div class="pron-example">Je sais qu'il est médecin.<button class="speak-btn" onclick='speakFrench("Je sais qu&#39;il est m\u00e9decin.")' aria-label="播放發音">🔊</button><br>我知道他是醫生。（我確信）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Je ne sais pas que...</div>
+        <div class="pron-ipa">否定 + 直陳式 —— 表示「不知道某事是事實」，語氣較自然</div>
+        <div class="pron-example">Je ne sais pas qu'il est médecin.<button class="speak-btn" onclick='speakFrench("Je ne sais pas qu&#39;il est m\u00e9decin.")' aria-label="播放發音">🔊</button><br>我不知道他是醫生。（可能以後會發現）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Je doute que...</div>
+        <div class="pron-ipa">虛擬式 —— 表達懷疑與不確定</div>
+        <div class="pron-example">Je doute qu'il soit médecin.<button class="speak-btn" onclick='speakFrench("Je doute qu&#39;il soit m\u00e9decin.")' aria-label="播放發音">🔊</button><br>我懷疑他是醫生。（不確定）</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Il faut que...</div>
+        <div class="pron-ipa">虛擬式 —— 表達必要性</div>
+        <div class="pron-example">Il faut que tu partes.<button class="speak-btn" onclick='speakFrench("Il faut que tu partes.")' aria-label="播放發音">🔊</button><br>你必須離開。（強迫性）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 哪一句正確使用了虛擬式？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je suis content que tu es là.</li>
+          <li onclick="checkAnswer(this, true)">B. Je suis content que tu sois là.</li>
+          <li onclick="checkAnswer(this, false)">C. Je suis content que tu êtes là.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。être 的虛擬式現在時第三人人稱是 sois，主句「Je suis content que」表達情感，必须用虛擬式。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪一句需要虛擬式？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je vois que le ciel est bleu.</li>
+          <li onclick="checkAnswer(this, true)">B. Je veux que tu finisses ton travail.</li>
+          <li onclick="checkAnswer(this, false)">C. Je sais qu'il habite à Paris.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 需要虛擬式。vouloir que 表達意愿，que 後動詞需變為虛擬式（finisses）。A 和 C 分別為 voir 和 savoir 引導的直陳事實子句。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. "Il est nécessaire que..." 後面應該接什麼語氣？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 直陳式</li>
+          <li onclick="checkAnswer(this, true)">B. 虛擬式</li>
+          <li onclick="checkAnswer(this, false)">C. 條件式</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 虛擬式。nécessaire 表達必要性，在主從子句中 que 後需使用虛擬式。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">練習朗讀第 4 段「跟練時間」的 4 個例句，錄音並對比自己的發音與標準音</li>
+        <li style="padding: 0.5rem 0;">用今天學到的動詞（vouloir, douter, falloir, être content que）各寫一句完整句子，注意虛擬式變位</li>
+        <li style="padding: 0.5rem 0;">複習第 64 課的虛擬式變位表，確保 être、avoir、aller、faire 的四種變化熟練無誤</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 65 · 第 65 課：虛擬式現在時在主從子句中的應用 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 66 課：虚拟式與條件式的混合時態實戰</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
