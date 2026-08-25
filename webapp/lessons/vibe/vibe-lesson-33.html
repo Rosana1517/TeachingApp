@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 33 — 課程主標題：AI Agent 的 Prompt 快取與成本控管</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: Agent Engineering</span>
+    <h1 class="lesson-title">課程主標題：AI Agent 的 Prompt 快取與成本控管</h1>
+    <p class="lesson-subtitle">第 33 課：減少 Token 消耗、優化上下文重用的實戰技術</p>
+  </div>
+
+  <!-- Section: 為什麼需要 Prompt 快取 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💰</span> 為什麼需要 Prompt 快取？</div>
+    <p>在 Vibe Coding 環境中，我們已經讓 AI Agent 能夠自動化完成許多任務，但隨著對話輪次增加，<strong>Token 消耗</strong>會呈線性甚至指數增長。這不是理論問題——每當 Agent 重新讀取整個上下文（包含系統提示、歷史對話、工具回傳結果），你就要為每一輪重新付費。Prompt 快取（Prompt Caching）是各大 LLM API 提供的成本優化機制，<strong>OpenAI</strong>、<strong>Claude</strong>、<strong>Azure OpenAI</strong> 都支援此功能。快取的核心理念很簡單：<strong>如果連續請求之間有相同的內容，後面的請求可以大幅減低費用</strong>，因為 API 側的推理引擎可以重用已計算好的中間狀態。對 Vibe Coding 開發者而言，理解快取機制的觸發條件與限制，能直接影響 Agent 設計——例如如何安排靜態資訊的位置、如何重構提示結構，讓快命中率最大化。</p>
+  </div>
+
+  <!-- Section: 快取觸發的三大條件 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔑</span> 快取觸發的三大條件</div>
+    <p>不同 API 提供商的快取條件略有差異，但核心原則一致。以<strong>OpenAI</strong>為例，快取觸發需要滿足三個條件：<strong>1. 相同的 model 名稱（包含版本號，例如 gpt-4o-2024-05-13，但 gpt-4o 本身不包含快取）</strong>；<strong>2. 相同的 temperature、top_p 等推理超參數</strong>；<strong>3. 連續請求的 prefix 完全相同</strong>，這通常指 system prompt 的前 N 個 token。OpenAI 的快取單位是 token，最小快取粒度為 1024 tokens，快取有效期約 5-10 分鐘。<strong>Claude</strong>（Anthropic）的快取行為更為簡單：<strong>只要同一個 conversation 內的相同內容，就會在 API 端自動快取</strong>，不需要特別參數設定，且快取粒度更細（以千 token 計）。理解這些差異後，在設計 Agent 的系統提示（System Prompt）時，就應該把<strong>不變的核心指令放在最前面</strong>，讓它成為快取的第一段內容，這樣後續對話輪次的快取命中率才會高。</p>
+  </div>
+
+  <!-- Section: 在 Vibe Coding 中的角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🏗️</span> 在 Vibe Coding 中的角色</div>
+    <p>在 Vibe Coding 工作流中，AI Agent 通常是「持續對話」的模式——一個任務可能涉及數十甚至數百輪對話。每輪對話都會把當前上下文重新傳給 API，這意味著<strong>同一個系統提示会被重複發送、重複計費</strong>。Prompt 快取的作用是打破這個模式：一旦某個 prefix（例如 system prompt 或 conversation 開頭）被快取，後續請求只要共享相同的 prefix，就能以<strong>約 10% 的價格</strong>取得快取命中部分的處理權重。對 Agent 架構師而言，這代表一個設計決策：<strong>靜態資訊應該集中放在上下文的前段</strong>，而不是分散在各處。同時，快取也會影響工具回傳（tool result）的處理方式——如果工具調用結果每次都不同，它們就無法被快取，只能依賴對話歷史的重用。因此，理解快取機制能幫助你重新思考 Agent 的上下文組織方式，例如把專案規範、程式碼結構說明等不變資訊提升到 system prompt，讓快取效益最大化。</p>
+  </div>
+
+  <!-- Section: AI Agent 如何調用與控制快取 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🤖</span> AI Agent 如何調用與控制快取</div>
+    <p><code>Claude Code</code>、<code>Claude Desktop</code>、<code>Cursor Agent</code>、<code>OpenAI Assistants API</code> 等主流工具，底層都已自動啟用快取功能，你不需要手動設定。但作為 Vibe Coding 的進階使用者，你應該知道如何<strong>設計提示來主動利用快取</strong>。首先，確保每次對話的開頭內容一致——例如相同的 system prompt、相同的 tool definitions。其次，<strong>避免在每次請求中變動 prefix</strong>，比如在 system prompt 中加入時間戳記、動態 ID，這會直接破壞快取。第三，使用 <code>cached_prompt</code> 或 <code>cache_control</code> 參數（OpenAI 支援）來<strong>明確標記哪些段落需要快取</strong>。以 OpenAI 為例，你可以在 messages 中加上 <code>"cache_control": {"type": "ephemeral"}</code>，這告訴 API「這段內容應該被快取，有效期約 5-10 分鐘」。對於 Vibe Coding 來說，了解這些機制可以讓你更好地設計 Agent 的提示模板，從而降低 Token 成本。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂時的診斷方法 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 當 Vibe 破裂時的診斷方法</div>
+    <p>當你在 Vibe Coding 中發現 Agent 成本異常升高或回應速度變慢，可能是快取未生效。診斷的第一步是<strong>檢查 API 回應中的快取命中資訊</strong>。以 OpenAI API 為例，回應標頭中會包含 <code>x-ai-prompt-cache-hit-tokens</code> 和 <code>x-ai-prompt-cache-miss-tokens</code> 兩個欄位，分別代表快取命中與未命中的 token 數。如果你看到命中數為零，說明快取未生效，可能的原因包括：<strong>1. 每次請求的 prefix 不同（例如 system prompt 中有動態內容）</strong>；<strong>2. 推理參數不一致（temperature、top_p 等被修改）</strong>；<strong>3. 使用的 model 不支援快取（例如 gpt-4o 而非 gpt-4o-2024-05-13）</strong>。修復方法是統一 prompt 模板、固定推理參數，並確保 model 名稱包含版本號。對於 Claude API，快取行為更自動，但同樣需要注意不要隨機化開頭內容。</p>
+  </div>
+
+  <!-- Section: 成本計算與優化策略 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📊</span> 成本計算與優化策略</div>
+    <p>快取命中後的定價與原始定價有顯著差異。以 OpenAI <code>gpt-4o-2024-05-13</code> 為例，輸入 token 原始價格為 <code>$2.50 / 1M tokens</code>，快取命中後價格降至 <code>$0.25 / 1M tokens</code>，降低約 90%。Claude 3.5 Sonnet 的快取命中價格約為 <code>$1.60 / 1M tokens</code>（原始為 <code>$3.00 / 1M</code>）。對 Vibe Coding 專案而言，這代表<strong>將 5,000 tokens 的 system prompt 設計成可快取的，比設計成每次重新計費，每月可節省數百元</strong>。具體策略包括：將專案規範、程式碼風格指南、工具定義等靜態資訊統一放在 system prompt 前段；避免在每次對話中加入時間戳、會話 ID 等動態內容；使用相同 model 名稱與參數；定期檢視 API 費率明细，確認快取命中率。</p>
+  </div>
+
+  <!-- Section: 深入解析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析</div>
+    <details class="deep-dive">
+      <summary>為什麼快取只命中 prefix 而不是整個上下文？</summary>
+      <div class="deep-dive-content">
+        <p>快取的設計基於一個重要的技術事實：<strong>LLM 的推理過程是增量式的</strong>。當模型處理一個序列時，前 N 個 token 的計算結果（例如 attention 權重、KV cache）可以被重複使用，而不需要重新計算。這就是為什麼快取只針對「prefix」而非整個上下文——因為 prefix 的計算結果是最 stable 且最可能被重複使用的部分。當你在 Vibe Coding 中設計 Agent 時，理解這個機制可以幫助你更有策略地組織上下文：<strong>把不變的資訊放在 prefix，把會變動的資訊放在 suffix</strong>。例如，系統提示（system prompt）是最適合快取的內容，因為它通常是靜態的；工具定義（tool definitions）也是好選擇；但對話歷史中的具體內容（如用戶的具體問題）會每次都不同，無法被快取。此外，快取的有效期限制（通常 5-10 分鐘）意味著它適合「短時間內的連續請求」，而不適合跨時間長度的重用。這也解釋了為什麼在多輪對話中，保持每次請求的 prefix 一致是提升快取命中率的關鍵。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 對照小節：快取 vs 無快取 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> 對照小節：快取 vs 無快取</div>
+    <p>比較同一個 Agent 在不同設計下的 Token 成本</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">未優化設計（prefix 每次都變）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;你是一名助手，請遵循以下專案規範：...&quot;}
+{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;請幫我寫一個 Next.js 頁面&quot;}
+# system prompt 不包含動態內容
+# 快取命中率可達 90%+，prefix 成本大幅降低</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">優化設計（prefix 固定）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例的小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 帶指令範例的小節</div>
+    <p>以下示範如何在 OpenAI API 中使用 <code>cache_control</code> 參數來明確標記需要快取的內容：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">node --eval &quot;</span>
+const OpenAI = require(&#x27;openai&#x27;);
+const client = new OpenAI();
+
+async function chatWithCache() {
+  const response = await client.chat.completions.create({
+    model: &#x27;gpt-4o-2024-05-13&#x27;,
+    messages: [
+      {
+        role: &#x27;system&#x27;,
+        content: &#x27;你是一名 Next.js 專家。&#x27;,
+        cache_control: { type: &#x27;ephemeral&#x27; }
+      },
+      { role: &#x27;user&#x27;, content: &#x27;幫我建立一個 TODO 頁面&#x27; }
+    ]
+  });
+
+  console.log(&#x27;Cache hit tokens:&#x27;,
+    response.usage?.prompt_cache_hit_tokens);
+  console.log(&#x27;Cache miss tokens:&#x27;,
+    response.usage?.prompt_cache_miss_tokens);
+}
+
+chatWithCache();
+&quot;
+<span class="comment"># 執行後查看回傳的 usage 欄位</span>
+<span class="comment"># 第二次相同請求時，cache_hit_tokens 會大幅增加</span>
+<span class="comment"># 因為 system prompt 已被快取</span>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 哪個參數可以控制 OpenAI 的 Prompt 快取？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">temperature</li>
+          <li onclick="checkAnswer(this, true)">cache_control</li>
+          <li onclick="checkAnswer(this, false)">top_p</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ cache_control 是 OpenAI 專門用於控制快取行為的參數，可以設為 { type: "ephemeral" } 來標記需要快取的內容。temperature 和 top_p 都是推理超參數，用於控制回應的隨機性，與快取無關。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪個設計會破壞 Prompt 快取？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">在 system prompt 中加入專案名稱</li>
+          <li onclick="checkAnswer(this, true)">在 system prompt 中加入動態時間戳記</li>
+          <li onclick="checkAnswer(this, false)">使用相同的 model 名稱與參數</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 動態時間戳記（例如 "當前時間是 2026-03-15 10:00"）會導致每次請求的 prefix 不同，從而破壞快取。選項 A 的專案名稱是靜態內容，不會破壞快取；選項 C 是使用相同 model 與參數，這是快取生效的必要條件之一，而不是破壞因素。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">檢查你目前使用的 AI Agent 工具（Claude Code / Cursor / v0 / Bolt 等）的 API 回應，找出是否有快取命中資訊。如果是 Claude，觀察對話歷史是否自動被快取；如果是 OpenAI 系列，確認 model 名稱是否包含版本號。</li>
+        <li style="padding: 0.5rem 0;">設計一個包含「系統提示 + 工具定義 + 對話歷史」的完整上下文模板，將靜態資訊（如專案規範、程式碼風格）放在最前面，動態資訊（如具體問題）放在後面。</li>
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor Agent，讓它幫助你重構一個現有專案的提示模板，目標是讓 system prompt 不包含任何動態內容，並觀察快取命中率是否提升。</li>
+        <li style="padding: 0.5rem 0;">記錄你今天使用的 API 請求次數與 Token 消耗，對比快取命中率。如果命中率低於 50%，分析原因並提出優化方案（例如調整提示結構、固定推理參數等）。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 33 · 課程主標題：AI Agent 的 Prompt 快取與成本控管</p>
+    <p style="margin-top: 0.3rem;">下一課預告：課程主標題：Agent 沙盒安全與權限控管</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
