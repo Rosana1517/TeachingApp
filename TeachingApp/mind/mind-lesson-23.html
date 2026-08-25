@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 23 — 為自己發聲的勇氣</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 23 課</span>
+    <h1 class="lesson-title">為自己發聲的勇氣</h1>
+    <p class="lesson-subtitle">當你想要爭取權益時，如何跨出第一步</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼你總是不敢開口？</div>
+    <p>你已經學會了緩衝句、PREP結構、DEAR MAN腳本，甚至知道怎麼推回情緒勒索。但有一件事還沒被練習過——<strong>開口前的那一瞬間</strong>。那是最難的關卡：你想爭取權益、想說出自己的需求，但身體卻像被釘住一樣動彈不得。這不是因為你還不夠聰明，而是因為大腦在擔心「說了之後會怎樣」。CBT告訴我們，這種擔心通常來自一些<strong>自動化想法</strong>，像是「我不該麻煩別人」「我要是不讓步，對方會討厭我」「我沒有資格要求」。這些想法看起來很合理，但它們其實是你長期習慣的「安全模式」，不是事實。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>這課的重點是<strong>「為自己爭取的勇氣」</strong>，不是新的表達技巧，而是你內心的那道關卡。我們用ACT的框架來看：勇氣不是沒有恐懼，而是<strong>帶著恐懼，仍然選擇朝價值方向前進</strong>。CBT的另一個角度是：當你發現自己的自動化想法在擋路，你可以跟它對話，而不是被它命令。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">自動化想法</div>
+        <div class="principle-desc">在開口前瞬間浮現的念頭，通常是過去經驗形成的自動判斷，不等於事實。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">安全行為</div>
+        <div class="principle-desc">為了避免不安而選擇的應對方式，例如沉默、討好、附和，長期會強化「我不敢開口」的信念。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">價值方向</div>
+        <div class="principle-desc">你真正在乎的事，比如被尊重、建立真實關係、讓自己的生活更順利，而不是別人願不願意高興。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">接納恐懼</div>
+        <div class="principle-desc">承認「我現在很緊張」，不努力壓掉它，而是讓它陪著你去做對你有價值的事。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>在你真的開口之前，先對自己說這些話。這不是說给别人听的，是在幫自己<strong>把腦中的卡住解開</strong>。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">你想要提出需求，但腦中一直在想「萬一對方不高興怎麼辦」</span>
+          <span class="line">「我現在的擔心，是我過去學到的保護機制，不代表現在一定會有壞結果。」</span>
+        </li>
+        <li>
+          <span class="situation">你覺得自己不配爭取，覺得「反正我不重要」</span>
+          <span class="line">「我的需求也是重要的，這不代表對方不夠重要，只是我們都值得被聽見。」</span>
+        </li>
+        <li>
+          <span class="situation">你害怕衝突，擔心說了就不會再有關係</span>
+          <span class="line">「真實的關係不怕一次不同的想法，假的关系才需要我一直退讓才能維持。」</span>
+        </li>
+        <li>
+          <span class="situation">你已經想清楚了要說什麼，但身體還是動不了</span>
+          <span class="line">「我現在感覺緊張，我可以帶著緊張說出我想說的話，不需要等緊張消失。」</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 選一句最適合你的，在心裡默念三遍，然後再做下一步。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>有些話聽起來像是在鼓勵自己，實際上是在<strong>繼續壓抑真實需求</strong>。以下這些說法，會讓你更難跨出第一步。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">「算了，反正說了也沒用」</td><td>這是放棄的說法，不是事實判斷。你不知道說了有沒有用，除非你試過。用一句否定的結論堵死可能性，就永遠不會知道。</td></tr>
+        <tr><td class="bad">「我應該要大方一點，不要那麼計較」</td><td>這是用討好慣性取代自主判斷。「應該」聽起來很高尚，但它讓你忽略了自己的真實感受，長期下來會讓你在關係中越来越沒有存在感。</td></tr>
+        <tr><td class="bad">「等到我不那麼緊張了，我再說」</td><td>緊張不會等你。這個想法讓你一直在等一個永遠不會來的事，結果什麼都沒說，而緊張卻變得更深。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 你正要對朋友提出一個請求，但腦中冒出念頭：「他說不定會覺得我很麻煩，還是不說了。」這屬於哪一種自動化想法？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 預期負面結果</li>
+          <li onclick="checkAnswer(this, false)">B. 直接驗證事實</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">這是預期負面結果——你在還沒說出口之前，就已經預設了對方會怎樣反應。它不是事實，只是你的擔心。實際的結果只有說了才知道。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 根據這課的原則，「接納恐懼」是什麼意思？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 帶著緊張去做對自己重要的事</li>
+          <li onclick="checkAnswer(this, false)">B. 等恐懼消失後再行動</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">接納恐懼不是消除恐懼，而是承認「我現在很緊張」，然後仍然朝價值方向行動。等你不緊張了再說，往往會一直等下去。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>回想最近一週，你有沒有哪件事「想說但最後沒說」？把那個情境寫下來，並寫出當時腦中浮現的自動化想法。</li>
+        <li>選一個今天內可以做的低風險練習：對身邊的人提出一個小型請求（例如：「我希望能準時開始，我們可以現在開始嗎？」），先用「可以直接用的句型」之一對自己說一遍，再開口。</li>
+        <li>做完之後，記錄你當時的感覺（緊張程度0-10）和實際結果，不需要完美，只需要真實記錄。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 23 課 · 2026-08-25</p>
+    <p class="next">下一課：面對他人的負面反應</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
