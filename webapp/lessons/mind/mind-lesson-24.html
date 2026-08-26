@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 24 — 小型暴露計畫：從第一步開始</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 24 課</span>
+    <h1 class="lesson-title">小型暴露計畫：從第一步開始</h1>
+    <p class="lesson-subtitle">把迴避地圖變成行動清單</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼需要「小型」暴露？</div>
+    <p>你知道自己會逃避什麼（迴避地圖），但你不需要一次就面對最害怕的事。<strong>小型暴露計畫的核心概念是：把目標拆成你覺得「只是有點不舒服，而不是崩潰」的小步驟，一步一步往上走。</strong>每一步成功，你的大腦就學會一件事：「這件事其實我可以承受。」這不是強迫自己硬撐，而是用可控制的經驗，慢慢擴大你的舒適區。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>建立暴露階梯，有三個關鍵要點：</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">暴露階梯</div>
+        <div class="principle-desc">把一個讓你焦慮的場景，從最容易到最難，分成 3 到 5 個小步驟，排成一條階梯。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">痛苦錨點（約 4 分）</div>
+        <div class="principle-desc">每個步驟應該讓你的不舒服指數落在 1～5 分之間，不要超過 5 分；如果太難，就再拆小一點。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">成功標記</div>
+        <div class="principle-desc">每完成一個步驟，在心裡或紙上給自己一個清楚的「我做到了」標記，這是累積自信的基礎。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>在規劃暴露階梯時，你需要對自己說一些話，幫助你把模糊的恐懼變成具體的行動。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">要跟自己確認這步是否合適</span>
+          <span class="line">這一步我不確定會不會太難，我先試試看，覺得超過 5 分就退回上一步。</span>
+        </li>
+        <li>
+          <span class="situation">要描述一個具體可執行的小步驟</span>
+          <span class="line">今天我先做這件小事：在大家面前說出我的第一個想法，不追求完美，只求說出口。</span>
+        </li>
+        <li>
+          <span class="situation">完成後的自我肯定</span>
+          <span class="line">我已經完成了第一步，接下來我只需要決定下一步是不是也可以試試看。</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 句型要用第一人称、具體時間和動作，越精確越好。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>規劃暴露計畫時，有些想法會悄悄把你的步伐帶偏，記得認出它們。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">「我一定要一次就做到。」</td><td>這會跳過暴露階梯的設計，直接挑戰最難的步驟，容易引發強烈焦慮而提早放棄。</td></tr>
+        <tr><td class="bad">「我還沒準備好，等時機成熟再做。」</td><td>這會讓大腦無限期延後行動，用「準備」當藉口，繼續待在安全的迴避圈裡。</td></tr>
+        <tr><td class="bad">「如果我不小心又逃了，代表我沒有進步。」</td><td>把一次退步當成全部失敗，會讓人對整個計畫失去信心，反而更不想繼續。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一種做法，比較符合「小型暴露計畫」的設計原則？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">先挑戰最害怕的場景，因為直接面對才能最快克服恐懼</li>
+          <li onclick="checkAnswer(this, true)">從較容易的場景開始，逐步增加難度，讓痛苦指數維持在 5 分內</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">小型暴露計畫強調的是「逐步」而不是「一次到位」。先挑戰最害怕的場景，容易超出自己的承受範圍，反而讓大腦把這個情境和強烈焦慮綁得更緊；從較容易的步驟開始，才能穩穩建立新的經驗。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 如果你在執行暴露步驟時，發現自己完全無法做到，最適當的做法是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">退回上一個已經成功的步驟，重新建立穩定感後再嘗試</li>
+          <li onclick="checkAnswer(this, false)">立刻換一個完全不同的目標，讓自己不用再面對這個困境</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">退步不該被當成失敗，而是暴露計畫的一部分。退回已成功的步驟，能讓你在可控範圍內重新累積經驗；立刻換目標則會重複「逃避→短暫鬆懈→長期受限」的循環，無助於擴大舒適區。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>打開你畫好的「迴避地圖」，挑出其中一個你覺得「有一點點想躲，但還做得來」的場景。</li>
+        <li>為這個場景寫出三個小步驟，從最容易開始，到稍微有挑戰性為止，每個步驟的不舒服指數預估不要超過 5 分。</li>
+        <li>選出第一個步驟，在今天內實際執行一次，不用追求完美，只要做過就好。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 24 課 · 2026-08-26</p>
+    <p class="next">下一課：復發處理：退步不是失敗</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
