@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 66 — 第 66 課：法語直接引語與間接引語的轉換</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 66</span>
+    <h1 class="lesson-title">第 66 課：法語直接引語與間接引語的轉換</h1>
+    <p class="lesson-subtitle">學會用不同的說話方式表達同一句話</p>
+  </div>
+
+  <!-- Section 1: 什麼是直接引語與間接引語？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是直接引語與間接引語？</div>
+    <p>法語中，我們可以用兩種方式轉述別人說的話：<strong>直接引語（discours direct）</strong>直接引用原話，通常用引號「...」標記；<strong>間接引語（discours indirect）</strong>則用連接詞（如 que）將原話融入主句中，不做完整的原話引用。<br><br>例如：<br>「 Je suis fatigué. 」→ Il dit <em>qu'il est fatigué</em>.<br><br>重點在於：<strong>時態對應</strong>、<strong>人稱與所有格代名詞的轉換</strong>，以及<strong>時間與地點副詞的調整</strong>。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>掌握這些關鍵字與連接詞的準確發音，是流利轉述的前提。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">qu'il</div>
+        <div class="pron-ipa">/kil/，que + il 的合音連讀</div>
+        <div class="pron-example"><em>Il dit qu'il vient.</em>（他說他要來。）<button class="speak-btn" onclick='speakFrench("Il dit qu&#39;il vient.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">demain</div>
+        <div class="pron-ipa">/də.mɛ̃/，鼻化元音</div>
+        <div class="pron-example"><em>Il a dit qu'il viendrait demain.</em>（他說他明天會來。）<button class="speak-btn" onclick='speakFrench("Il a dit qu&#39;il viendrait demain.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">hier</div>
+        <div class="pron-ipa">/jɛʁ/，R 為喉嚨音</div>
+        <div class="pron-example"><em>Elle a parlé de hier.</em>（她談論了昨天的事。）<button class="speak-btn" onclick='speakFrench("Elle a parl\u00e9 de hier.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">aujourd'hui</div>
+        <div class="pron-ipa">/o.ʒuʁ.d‿ɥi/，注意聯誦</div>
+        <div class="pron-example"><em>Il dit qu'il part aujourd'hui.</em>（他說他今天離開。）<button class="speak-btn" onclick='speakFrench("Il dit qu&#39;il part aujourd&#39;hui.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>跟讀以下句子，注意時態與代名詞的轉換。</p>
+    <div class="follow-box">
+      <h4>跟讀以下句子，注意時態與代名詞的轉換。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Je suiscontent.</span>
+          <span class="ipa">/ʒə sɥi kɔ̃.ta/</span>
+          <span class="meaning">—— 我很高興。</span>
+          <button class="speak-btn" onclick='speakFrench("Je suiscontent.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il dit qu'il est content.</span>
+          <span class="ipa">/il dit kil ɛ̃ kɔ̃.ta/</span>
+          <span class="meaning">—— 他說他很開心。</span>
+          <button class="speak-btn" onclick='speakFrench("Il dit qu&#39;il est content.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Demain, je partirai.</span>
+          <span class="ipa">/də.mɛ̃, ʒə paʁ.ti.ʁe/</span>
+          <span class="meaning">—— 明天我會離開。</span>
+          <button class="speak-btn" onclick='speakFrench("Demain, je partirai.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il a dit qu'il partirait le lendemain.</span>
+          <span class="ipa">/il a di kik il paʁ.ti.ʁɛ lə lɑ̃.də.mɛ̃/</span>
+          <span class="meaning">—— 他說他隔天會離開。</span>
+          <button class="speak-btn" onclick='speakFrench("Il a dit qu&#39;il partirait le lendemain.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Où est mon livre ?</span>
+          <span class="ipa">/u ɛ mɔ̃ li.vʁ/</span>
+          <span class="meaning">—— 我的書在哪裡？</span>
+          <button class="speak-btn" onclick='speakFrench("O\u00f9 est mon livre ?")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il a demandé où était son livre.</span>
+          <span class="ipa">/il a de.mɑ̃ de u ɛ.tɛ sɔ̃ li.vʁ/</span>
+          <span class="meaning">—— 他問他的書在哪裡。</span>
+          <button class="speak-btn" onclick='speakFrench("Il a demand\u00e9 o\u00f9 \u00e9tait son livre.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：先讀出直接引語，再轉換為間接引語，語速由慢到快，培養轉換的直覺。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照：時態轉換規則 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照：時態轉換規則</div>
+    <p>當主句動詞為過時態（如 Passé Composé）時，子句中的時態需要「往後推一格」。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Présent → Imparfait</div>
+        <div class="pron-ipa">現在時轉為未完成時</div>
+        <div class="pron-example">Il dit : « Je suis là. » → Il dit qu'il était là.<button class="speak-btn" onclick='speakFrench("Il dit : \u00ab Je suis l\u00e0. \u00bb \u2192 Il dit qu&#39;il \u00e9tait l\u00e0.")' aria-label="播放發音">🔊</button><br>主句為現在時，時態不變；主句為過去時，時態後推。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Passé Composé → Plus-que-parfait</div>
+        <div class="pron-ipa">複合過去時轉為愈過去時</div>
+        <div class="pron-example">Il a dit : « J'ai fini. » → Il a dit qu'il avait fini.<button class="speak-btn" onclick='speakFrench("Il a dit : \u00ab J&#39;ai fini. \u00bb \u2192 Il a dit qu&#39;il avait fini.")' aria-label="播放發音">🔊</button><br>注意 avoir 變位也需隨時態改變。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Futur Simple → Conditionnel Présent</div>
+        <div class="pron-ipa">簡單未來時轉為條件式現在時</div>
+        <div class="pron-example">Il a dit : « Je viendrai. » → Il a dit qu'il viendrait.<button class="speak-btn" onclick='speakFrench("Il a dit : \u00ab Je viendrai. \u00bb \u2192 Il a dit qu&#39;il viendrait.")' aria-label="播放發音">🔊</button><br>條件式在此作為未來在過去中的對應時態。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Impératif → Subordonnée avec que</div>
+        <div class="pron-ipa">命令式轉為 que 引導的子句</div>
+        <div class="pron-example">Il a dit : « Viens ! » → Il a dit que je vienne.<button class="speak-btn" onclick='speakFrench("Il a dit : \u00ab Viens ! \u00bb \u2192 Il a dit que je vienne.")' aria-label="播放發音">🔊</button><br>命令式在間接引語中通常轉換為虛擬式。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 將以下直接引語轉換為間接引語：Il a dit : « Je parlerai français demain. 」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Il a dit qu'il parle français demain.</li>
+          <li onclick="checkAnswer(this, true)">B. Il a dit qu'il parlerait français le lendemain.</li>
+          <li onclick="checkAnswer(this, false)">C. Il a dit qu'il parlait français hier.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 主句為 Passé Composé，簡單未來時（parlerai）應後推為條件式現在時（parlerait），demain 改為 le lendemain。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪一句是「Je suis malade.」的正確間接引語形式（主句為過去時）？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Il a dit qu'il est malade.</li>
+          <li onclick="checkAnswer(this, true)">B. Il a dit qu'il était malade.</li>
+          <li onclick="checkAnswer(this, false)">C. Il a dit qu'il sera malade.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 現在時（suis）在主句為過去時的情況下，應後推為未完成時（était）。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「 Nous allons au cinéma ce soir. 」的間接引語（主句為過去時）中，ce soir 應改為？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. ce jour-là</li>
+          <li onclick="checkAnswer(this, false)">B. ce soir-là</li>
+          <li onclick="checkAnswer(this, true)">C. ce même soir</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 時間副詞 ce soir 在間接引語中通常改為 ce même soir 或 ce soir-là，依語境而定；最常見且自然的是 ce même soir。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">將以下 5 句直接引語轉換為間接引語，注意時態、代名詞與時間副詞的對應：（1）「 J'ai fini mon travail. 」→ 他剛才說。（2）「 Je viens demain. 」→ 她昨天晚上說。（3）「 Nous partons ce soir. 」→ 他們昨天說。（4）「 Tu es courageux. 」→ 老師說。（5）「 Je voudrais voyager. 」→ 他說。</li>
+        <li style="padding: 0.5rem 0;">用自己的話，寫一段 3-5 句的短文，描述某人告訴你的消息，全部使用間接引語，並標註轉換規則。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 66 · 第 66 課：法語直接引語與間接引語的轉換 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語被動式（Voix Passive）的結構與應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
