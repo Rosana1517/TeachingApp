@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 34 — 第 34 課：Agent 沙盒安全</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: Agent Engineering</span>
+    <h1 class="lesson-title">第 34 課：Agent 沙盒安全</h1>
+    <p class="lesson-subtitle">讓 Vibe Coding 的 AI Agent 安全執行系統操作，同時避免災難性錯誤</p>
+  </div>
+
+  <!-- Section: 為什麼沙盒是 Vibe Coding 的守門員 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛡️</span> 為什麼沙盒是 Vibe Coding 的守門員</div>
+    <p>在 Vibe Coding 的工作流中，AI Agent 經常被賦予執行檔案操作、安裝套件、甚至啟動伺服器的權限。這些能力讓 Agent 能快速實現開發者的意圖，但同時也是一把雙面刃。<strong>Agent 沙盒安全</strong>的核心目標是：讓 Agent 能在一個受限、可預測的環境中執行操作，同時守住系統底線，避免因為提示詞誤導、上下文污染或模型失誤，導致刪除重要檔案、寫入錯誤權限、或竄改生產環境資料。
+
+沙盒的架構通常包含三個層面：<code>權限最小化</code>（Agent 只能存取必要的檔案路徑與指令）、<code>指令白名單</code>（限制可執行的命令類型，例如禁止 rm -rf /）、以及<code>執行結果預覽</code>（讓開發者在 Agent 實際執行前，先看到擬執行指令的摘要）。在 Vibe Coding 中，沙盒不是要阻止 Agent 做什麼，而是讓 Agent 知道「在這個專案範圍內，你可以安全地做這些事」，這樣你才能在保持快速迭代的同時，不會因為一次誤操作而重啟整個專案。
+
+當 Vibe 破裂時，很多時候是因為 Agent 執行了預期外的指令，或者因為權限設定過於寬鬆導致系統狀態失穩。透過沙盒機制，你可以在發生問題前先截獲可疑行為，並即時回滾或修正。</p>
+  </div>
+
+  <!-- Section: AI Agent 如何調用沙盒工具 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚙️</span> AI Agent 如何調用沙盒工具</div>
+    <p>在實作層面，AI Agent 調用沙盒主要透過兩種方式：<code>Function Calling（工具定義）</code>與<code>命令執行中介層</code>。當你使用 Claude Code、Cursor 或自建 Agent 時，你可以定義一組工具函數，例如 <code>read_file(path)</code>、<code>write_file(path, content)</code>、<code>run_command(cmd, args)</code>。這些工具函數內部會串接沙盒邏輯：檢查 path 是否在允許的目錄範圍內、檢查 cmd 是否在白名單中、以及記錄每次執行的上下文以便事後審查。
+
+當 Vibe 穩定時，Agent 會順暢地呼叫這些工具，並在執行完後回傳結果。但如果你在提示詞中沒有明確設定沙盒規則，Agent 可能會依賴模型的內建知識來決定哪些操作是「安全的」，這往往不可靠。因此，<strong>最佳實踐是在工具定義層面就嵌入安全檢查</strong>，而不是依賴模型自行判斷。例如，你可以在 <code>run_command</code> 中加入預設的拒絕對照表，包含 <code>rm -rf</code>、<code>drop database</code>、<code>sudo</code> 等高风险指令，這樣即使提示詞被污染，Agent 也無法繞過這些限制。</p>
+  </div>
+
+  <!-- Section: 沙盒實戰設定範例 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔧</span> 沙盒實戰設定範例</div>
+    <p>以下是一個簡單的沙盒工具函數實例，展示如何在 Node.js 環境中限制 Agent 只能執行特定的命令集，並檢查檔案路徑是否在專案根目錄內。這段程式碼可以整合進你的 Agent 工具層，作為 Vibe Coding 工作流的基礎安全防護。
+
+首先，我們定義一個 <code>SAFE_COMMANDS</code> 列表，僅允許 <code>npm</code>、<code>git</code>、<code>ls</code>、<code>cat</code>、<code>mkdir</code>、<code>cp</code>、<code>mv</code> 等常用指令。接著，在執行任何命令前，會檢查命令前綴是否在白名單中，如果不是，直接拒絕。對於檔案操作，則會將路徑解析為絕對路徑，並確認其位於 <code>process.cwd()</code> 之下，避免 Agent 意外存取系統目錄或使用者家目錄。
+
+這種設計讓 Vibe Coding 的流程既保持彈性，又守住底線。當 Vibe 破裂時，你可以檢查日誌中是否有被攔截的指令，快速定位是哪個步驟觸發了安全規則。</p>
+  </div>
+
+  <!-- Section: 深入解析：為什麼沙盒不能只靠模型內建知識 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼沙盒不能只靠模型內建知識</div>
+    <details class="deep-dive">
+      <summary>為什麼依賴 LLM 自行判斷安全邊界是不可靠的？</summary>
+      <div class="deep-dive-content">
+        <p>大型語言模型雖然能理解「安全」這個抽象概念，但它們的訓練資料並未針對「特定專案的系統權限結構」進行最佳化。當 Agent 被賦予執行命令的權限時，模型會基於一般性的安全知識來推斷哪些操作「應該」是被允許的，但這種推斷充滿了不確定性。例如，模型可能認為 <code>rm -rf /tmp/*</code> 是安全的，因為路徑在 <code>/tmp</code> 下，但它無法知道你的 Agent 是否正在某個時間敏感的 CI/CD 流程中，而 <code>/tmp</code> 裡可能有正在執行的腳本暫存檔。
+
+此外，提示詞工程中的上下文污染問題會進一步放大風險。如果對話歷史中出現了被惡意或意外引入的指令，模型可能在後續回覆中無意間複述或放大這些指令的影響範圍。沙盒機制的作用，就是在模型層面之下建立一道硬性的執行閘門，讓即使模型「以為」某個操作是安全的，實際上也會被工具層攔截。這種「defense in depth」的設計，才是 Vibe Coding 能長期穩定運作的關鍵。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪一項是 Agent 沙盒安全的主要目的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">讓 Agent 能夠執行任意指令以加速開發</li>
+          <li onclick="checkAnswer(this, true)">在限制範圍內讓 Agent 安全執行操作，避免災難性錯誤</li>
+          <li onclick="checkAnswer(this, false)">完全取代模型的安全判斷能力</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確，因為沙盒的目標不是阻止 Agent 做事，而是在可控範圍內授權，避免誤操作導致專案或系統受損。選項 A 錯誤，因為允許任意指令會失去安全控制。選項 C 錯誤，沙盒是輔助而非取代模型判斷，兩者協同才能兼顧彈性與安全。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 Vibe 破裂時，如何快速定位是否為沙盒攔截所致？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">檢查 Model 的內部權重分佈</li>
+          <li onclick="checkAnswer(this, true)">查看 Agent 工具的執行日誌，尋找被拒絕對照表攔截的指令</li>
+          <li onclick="checkAnswer(this, false)">重新開機伺服器後重試</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確，因為沙盒機制會在工具層記錄每次執行的結果，包含被攔截的指令與原因。選項 A 錯誤，模型內部權重無法直接反映執行時的安全攔截。選項 C 錯誤，重新開機無法解決安全規則的問題。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在你的 Next.js 專案中建立一個 <code>sandbox.ts</code> 工具檔案，實作 <code>run_command</code> 函數，包含命令白名單與路徑檢查邏輯。</li>
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor 創建一個新對話，嘗試讓 Agent 執行 <code>rm -rf /</code> 或 <code>sudo apt update</code>，觀察沙盒工具是否成功攔截，並記錄下來的錯誤訊息。</li>
+        <li style="padding: 0.5rem 0;">將沙盒工具整合進你的 Agent 工具列表，確保只有 <code>npm</code>、<code>git</code>、<code>ls</code>、<code>cat</code> 等指令可執行，並測試 Agent 是否能正常完成檔案讀寫與命令執行。</li>
+        <li style="padding: 0.5rem 0;">模擬一次「Vibe 破裂」情境：在提示詞中加入一段誤導性的上下文，觀察 Agent 是否仍會嘗試執行受限指令，並記錄沙盒的攔截反應。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 34 · 第 34 課：Agent 沙盒安全</p>
+    <p style="margin-top: 0.3rem;">下一課預告：長任務中斷恢復與狀態重構</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
