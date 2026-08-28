@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 26 — 推回不崩潰：被拒絕時稳住自己</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 26 課</span>
+    <h1 class="lesson-title">推回不崩潰：被拒絕時稳住自己</h1>
+    <p class="lesson-subtitle">學會回應對方的反彈，讓你的界線不再一碰就碎</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼被推回來就崩潰？</div>
+    <p>你說了「不」，對方冷淡、追問、生氣、甚至冷笑——那一瞬間，胸口緊縮、腦袋空白，只想說「好，那就聽你的」。這不是你的錯，是因為你的大腦把「對方不高興」解讀成了「我又要失去這段關係了」。今天這課要學的，不是學怎麼讓對方滿意，而是學怎麼<strong>守住自己說了不的那一瞬間</strong>。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>別人對你說不的反應，是「對方的課題」，不是「你的失敗」。崩潰的原因不是被拒絕，而是你內部的「必須讓對方滿意」的規程被觸發了。認知解離讓你看到：那個「我搞砸了」的想法，只是想法，不是事實。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">對方的反應</div>
+        <div class="principle-desc">對方的情緒是他的课题，不決定你的對錯</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">崩潰觸發點</div>
+        <div class="principle-desc">被拒絕不是真正原因，是內在規程被觸發</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">認知解離</div>
+        <div class="principle-desc">把「我搞砸了」看作一個想法，而非事實</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">守住那個瞬間</div>
+        <div class="principle-desc">說不之後的第一秒最重要，撑過去就成功了</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>被推回時，先用一句話接住對方的情緒，再回到自己的立場。以下句型可用於不同情境：</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">對方追問為什麼</span>
+          <span class="line">「我知道這讓你意外，但我確實做不到，希望你能理解。」</span>
+        </li>
+        <li>
+          <span class="situation">對方生氣冷淡</span>
+          <span class="line">「我感覺到你不開心，這不是我想要的結果，但我還是需要這個選擇。」</span>
+        </li>
+        <li>
+          <span class="situation">對方持續施壓</span>
+          <span class="line">「我聽到了，但我的決定不變，我們之後可以再聊。」</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 語氣要平穩，不用提高音量，也不用降調示弱</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>被推回時最容易犯的錯誤，就是立刻退讓、自我攻擊，或反過來攻擊對方。以下列舉常見陷阱：</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">好，那就聽你的啦。</td><td>一碰就退，界線等於沒設立</td></tr>
+        <tr><td class="bad">你怎麼可以這樣對我！</td><td>把焦點轉到對方人品，引發更大衝突</td></tr>
+        <tr><td class="bad">對不起，都是我不好。</td><td>把問題歸因給自己，強化討好模式</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 你拒絕後對方冷淡不回，最符合今天所學的做法是哪一個？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">先深呼吸，讓情緒過去再回應</li>
+          <li onclick="checkAnswer(this, false)">立刻傳訊息道歉證明自己沒錯</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">崩潰觸發點是被拒絕的當下，不是後續發展。先深呼吸能切斷自動反應，讓自己回到選擇位。立刻道歉則是內在建構的規程，會強化討好模式。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>回想最近一次你說了不，對方卻有負面反應的情境</li>
+        <li>寫下對方的反應，以及你當時想做的事（例如道歉、退讓、追問）</li>
+        <li>選一個今天能用上的句型，練習對鏡子或手機錄下來說一遍</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 26 課 · 2026-08-28</p>
+    <p class="next">下一課：辨識情緒勒索的三張牌</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
