@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 35 — Agent 長任務中斷恢復工程</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: Production-Grade Agent</span>
+    <h1 class="lesson-title">Agent 長任務中斷恢復工程</h1>
+    <p class="lesson-subtitle">用 Checkpoint 與 State Machine 讓 Vibe 不再因為一次失敗就全盤崩解</p>
+  </div>
+
+  <!-- Section: 為什麼長任務恢復是 Vibe Coding 的基礎設施 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼長任務恢復是 Vibe Coding 的基礎設施</div>
+    <p>在 Vibe Coding 的實踐裡，我們期待 AI Agent 能一次執行多個步驟、完成複雜的協作流程。然而，任何一個步驟因為網路超時、API 限流、token 用量超標或沙盒安全規則觸發而失敗，就會讓整個任務狀態丟失，開發者必須從頭開始重新觸發，這正是 <strong>vibe 破裂</strong> 最常見的情境之一。<code>長任務中斷恢復</code>（Long-Task Resumption）透過在關鍵節點保存 Agent 的狀態快照（Checkpoint），讓系統在失敗後能夠從最後一個已完成的步驟繼續執行，而不是重複已經完成的動作。它同時也是一種 <strong>成本控制</strong> 的手段：每次中斷後不需要重新產生相同的上下文與工具呼叫結果，就能直接推進後續步驟。實務上，Agent 會在執行完一個原子性步驟後，將當前的 <code>state</code>、<code>message_history</code>、<code>tool_results</code> 與 <code>next_action</code> 寫入外部儲存（例如 Redis、Supabase 或本地檔案），並在啟動時檢查是否存在未完成的執行序，若存在就載入並繼續。Vibe 破裂時的診斷首先應確認是否存在有效的 Checkpoint 記錄，其次檢視該記錄的時間戳記與步驟 ID，接著檢查外部儲存服務是否可正常存取，最後模擬從該狀態繼續執行，觀察 Agent 是否會重複呼叫已成功的工具或是否進入無限循環。</p>
+  </div>
+
+  <!-- Section: 狀態機 vs 無狀態重試 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 狀態機 vs 無狀態重試</div>
+    <p>設計長任務恢復時，最常見的兩種架構選擇是 <strong>無狀態重試</strong>（Stateless Retry）與 <strong>有狀態狀態機</strong>（Stateful State Machine）。前者在步驟失敗後直接重新執行整個 Agent 流程，缺點是會重複產生相同的上下文與工具呼叫，不僅增加 token 成本，也可能因為外部服務的冪等性問題而產生副作用。後者則透過明確的狀態轉換圖來管理執行進度，只有失敗的狀態需要中斷恢復。無狀態重試適合步驟數少、外部依賴冪等性明確且失敗率極低的場景；有狀態狀態機則適合步驟數多、步驟之間有依賴關係、或外部服務非冪等（例如建立資源、發送通知）的複雜流程。當 Vibe 破裂時，若發現錯誤訊息提示「重複執行相同動作」或「重複呼叫同一 API」，通常表示當前架構是無狀態重試，需要導入狀態機來避免資源浪費。</p>
+  </div>
+
+  <!-- Section: 實作 Checkpoint 的三個關鍵層級 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實作 Checkpoint 的三個關鍵層級</div>
+    <p>實作長任務恢復系統時，需要處理三個層級的狀態儲存：<strong>執行序層</strong>（Execution Layer）負責決定下一個要執行的步驟，通常透過狀態欄位（如 <code>current_step</code> 或 <code>status</code>）來追蹤進度；<strong>上下文層</strong>（Context Layer）負責儲存當前的訊息歷史與工具結果，讓 Agent 在恢復時能維持完整的對話上下文，避免重新產生相同內容；<strong>工具層</strong>（Tool Layer）負責記錄每個工具的呼叫結果，以便在恢復時跳過已成功的步驟，直接載入先前結果。這三個層級必須協調一致，才能避免狀態不一致的問題。例如，若只儲存了上下文但沒有儲存工具結果，恢復後 Agent 可能會因為看不到工具輸出而重複呼叫工具；若只儲存了工具結果但沒有儲存上下文，Agent 可能會因為失去對話脈絡而產生脫節的回應。</p>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 Checkpoint 不能只存下一步該做什麼 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 Checkpoint 不能只存「下一步該做什麼」</div>
+    <details class="deep-dive">
+      <summary>只記下一個「步驟編號」真的足夠嗎？</summary>
+      <div class="deep-dive-content">
+        <p>Checkpoint 的儲存內容決定了恢復時的準確性與效率。許多初學者會犯下只儲存 <code>current_step</code> 的錯誤，認為只要記住下一步該做什麼就足夠。然而，這種做法忽略了 Agent 恢復後需要完整的上下文才能正確執行後續步驟。當 Agent 從步驟 2 恢復時，它需要知道步驟 1 已經成功執行了什麼、收到了什麼工具結果、以及當前的對話脈絡為何。如果只記錄步驟編號，Agent 在恢復後可能會因為缺乏上下文而重新產生步驟 1 的輸入，導致工具被重複呼叫，或者因為不知道步驟 1 的結果而做出錯誤的判斷。此外，工具呼叫通常具有副作用（例如建立資料庫記錄、發送郵件），重複執行可能產生重複資源或通知。因此，一個完整的 Checkpoint 必須包含 <strong>當前的完整訊息歷史</strong>、<strong>已執行事務的工具結果</strong>、<strong>任務的狀態標記</strong>（如 pending、completed、failed）以及 <strong>錯誤追蹤資訊</strong>（如失敗時間、錯誤訊息）。這樣才能確保恢復後的 Agent 能在完全一致的環境中繼續執行，而不是重新開始或做出錯誤的假設。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當 Agent 在執行第 3 步時失敗，但 Checkpoint 只儲存了 <code>current_step: 3</code>，沒有儲存步驟 1 和 2 的工具結果，恢復後可能會發生什麼問題？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">Agent 會直接跳到步驟 4，因為步驟 3 已經失敗</li>
+          <li onclick="checkAnswer(this, true)">Agent 可能會因為不知道步驟 1 和 2 的結果而重複執行它們，或產生脫節的回應</li>
+          <li onclick="checkAnswer(this, false)">Agent 會自動從步驟 3 繼續執行，因為步驟編號已經足夠</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確，因為缺少工具結果與上下文，Agent 恢復後無法知道前兩步已經完成且得到了什麼結果，可能重新執行導致重複副作用，或基於不完整資訊做出錯誤判斷。選項 A 錯誤，因為 Agent 通常不會自動跳過失敗步驟，而是嘗試重新執行或基於現有上下文繼續。選項 C 錯誤，因為單純的步驟編號不足以恢復一致的執行環境。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 Supabase 或 Redis 實作一個簡單的 Agent Checkpoint 儲存機制，讓 Agent 在執行完每個步驟後能將狀態寫入資料庫。</li>
+        <li style="padding: 0.5rem 0;">撰寫一個重試邏輯：當步驟失敗時，從 Checkpoint 載入狀態並繼續執行，而不是重新開始整個流程。</li>
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor 建立一個簡易的「待辦事項管理 Agent」，並觀察當它執行中途失敗時，是否能夠從 Checkpoint 恢復。</li>
+        <li style="padding: 0.5rem 0;">實作 Checkpoint 的自動清理機制，確保已完成或過期的狀態不會無限累積，並記錄清理日誌以便除錯。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 35 · Agent 長任務中斷恢復工程</p>
+    <p style="margin-top: 0.3rem;">下一課預告：多 Agent 協作的狀態同步與共識機制</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
