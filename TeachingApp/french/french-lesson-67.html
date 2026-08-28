@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 67 — 第 67 課：法語主觀動詞與虛擬式名詞子句</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 67</span>
+    <h1 class="lesson-title">第 67 課：法語主觀動詞與虛擬式名詞子句</h1>
+    <p class="lesson-subtitle">expressions de sentiment, jugement et souhait + subjonctif</p>
+  </div>
+
+  <!-- Section 📖: 課程導讀 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📖</span> 課程導讀</div>
+    <p>在法語中，當我們表達情感、判斷、希望或必要性時，通常會在主句與子句之間使用連接詞「que」，並將子句的動詞變為虛擬式。本課將介紹常見的虛擬式觸發詞組，如「il faut que」「je veux que」「je suis heureux que」等，幫助學習者準確使用虛擬式名詞子句。</p>
+  </div>
+
+  <!-- Section 🔤: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔤</span> 發音對照表</div>
+    <p>請注意以下單字的發音與重音位置：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">que</div>
+        <div class="pron-ipa">/k/，輔音「k」，無元音</div>
+        <div class="pron-example"><em>que je veuille</em>（我希望…）<button class="speak-btn" onclick='speakFrench("que je veuille")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">faut</div>
+        <div class="pron-ipa">/fo/，唇齒摩擦音「f」+ 半閉口元音「o」</div>
+        <div class="pron-example"><em>il faut que</em>（必須…）<button class="speak-btn" onclick='speakFrench("il faut que")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">veux</div>
+        <div class="pron-ipa">/vø/，濁唇齒摩擦音「v」+ 圓唇元音「ø」</div>
+        <div class="pron-example"><em>je veux que</em>（我希望…）<button class="speak-btn" onclick='speakFrench("je veux que")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">heureux</div>
+        <div class="pron-ipa">/øʁø/，鼻化元音與喉嚨音「r」</div>
+        <div class="pron-example"><em>je suis heureux que</em>（我很高興…）<button class="speak-btn" onclick='speakFrench("je suis heureux que")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下句子，注意連讀與重音：</p>
+    <div class="follow-box">
+      <h4>請跟讀以下句子，注意連讀與重音：</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">il faut que je vienne</span>
+          <span class="ipa">/il fo kə ʒə vjɛn/</span>
+          <span class="meaning">—— 我必須來</span>
+          <button class="speak-btn" onclick='speakFrench("il faut que je vienne")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">je veux que tu viennes</span>
+          <span class="ipa">/ʒə vø kə ty vjɛn/</span>
+          <span class="meaning">—— 我希望你來</span>
+          <button class="speak-btn" onclick='speakFrench("je veux que tu viennes")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">je suis content que tu sois là</span>
+          <span class="ipa">/ʒə sɥi kɔ̃t kə ty swa la/</span>
+          <span class="meaning">—— 我很高興你在這裡</span>
+          <button class="speak-btn" onclick='speakFrench("je suis content que tu sois l\u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：虛擬式觸發詞組通常重音落在最後一個詞上</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>比較直述式與虛擬式的用法差異：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">直述式</div>
+        <div class="pron-ipa">表達事實或確定性</div>
+        <div class="pron-example">Je sais qu'il vient.<button class="speak-btn" onclick='speakFrench("Je sais qu&#39;il vient.")' aria-label="播放發音">🔊</button><br>我知道他要來。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">虛擬式</div>
+        <div class="pron-ipa">表達情感、判斷或希望</div>
+        <div class="pron-example">Je veux qu'il vienne.<button class="speak-btn" onclick='speakFrench("Je veux qu&#39;il vienne.")' aria-label="播放發音">🔊</button><br>我希望他來。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 選擇正確填入虛擬式觸發詞組的句子：</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je sais qu'il vient.</li>
+          <li onclick="checkAnswer(this, true)">B. Je veux qu'il vienne.</li>
+          <li onclick="checkAnswer(this, false)">C. Je pense qu'il vient.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 是正確答案，因為「je veux que」後需接虛擬式</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">練習說出三個使用「il faut que」的句子</li>
+        <li style="padding: 0.5rem 0;">寫下兩個使用「je veux que」的句子</li>
+        <li style="padding: 0.5rem 0;">跟讀本課的發音對照表五遍</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 67 · 第 67 課：法語主觀動詞與虛擬式名詞子句 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：下一課預告：法語條件式過去時的否定結構與綜合應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
