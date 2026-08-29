@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 36 — 課程主標題（繁體中文）
+Agent 狀態管理：檢查點與斷點續傳</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: Production Engineering</span>
+    <h1 class="lesson-title">課程主標題（繁體中文）
+Agent 狀態管理：檢查點與斷點續傳</h1>
+    <p class="lesson-subtitle">讓 AI 代理能在中斷後精準恢復，而非重頭開始</p>
+  </div>
+
+  <!-- Section: 為什麼需要檢查點 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🧠</span> 為什麼需要檢查點？</div>
+    <p>在實戰中，一個複雜的 Agent 任務可能涉及數十次工具調用、多次 RAG 檢索與串聯的 llm 推理。如果整個執行過程沒有狀態記錄，任何意外中斷（例如網路超時、成本限制、或人工干預）都會導致之前的所有努力歸零。檢查點（Checkpoint）本質上是一段結構化的 JSON 快照，它忠實記錄了當時的對話歷史、工具參數、執行結果以及內部的變數狀態。當 Vibe 破裂時，開發者可以將這個快照載入 Agent 的記憶系統，並告訴 Agent「你目前處於這個狀態，請繼續」。這不是單純的 Crash Recovery，而是一種設計思維：將長流程拆解成可獨立恢復的節點，讓每一次工具調用後都能建立一個安全的回檔。這種做法大幅降低了重試的成本，也讓我們能夠實現更複雜的用戶交互，例如在執行中途暫停並等待人工審核。</p>
+  </div>
+
+  <!-- Section: 檢查點 vs. 純記憶 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> 檢查點 vs. 純記憶</div>
+    <p>許多開發者會將「檢查點」與「記憶系統」混淆，但它們的角色完全不同。記憶系統（Memory）是 Agent 的長期認知，用於存儲用戶偏好、知識庫檢索結果與跨會話的上下文，它通常以向量資料庫或 JSON 檔案的形式存在，強調的是「知識的積累」。而檢查點（Checkpoint）是執行時的臨時狀態，它關注的是「任務進度」。舉例來說，當一個 Agent 正在編寫一個包含 5 個檔案的專案時，記憶系統可能儲存著「用戶喜歡 TypeScript」，但檢查點會記錄「已完成 main.ts，正在處理 utils.ts，已調用 write_file 工具，結果尚未回傳」。當系統崩潰後恢復時，我們恢復的是檢查點，而不是重新從記憶中推導出當前進度。正確區分這兩者，能幫助我們設計出更輕量、更穩定的 Agent 架構，避免因記憶膨脹而導致上下文過載，也能精準定位故障節點。</p>
+  </div>
+
+  <!-- Section: 建立與載入檢查點 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💾</span> 建立與載入檢查點</div>
+    <p>在 Vibe Coding 環境中，我們可以使用 Node.js 配合簡單的檔案 I/O 來實作最基礎的檢查點系統。核心邏輯非常直觀：在每一次重要的工具調用前後，將當前的狀態物件序列化並寫入磁碟。當偵測到需要恢復時，讀取該檔案並反序列化回記憶體。這套機制不依賴特定框架，但卻是理解 LangGraph 或 CrewAI 等進階工具內部原理的基石。我們可以定義一個標準的狀態結構，包含 turn_id、messages、tools_state 與 metadata。當 Agent 完成一個步驟，就呼叫 save_checkpoint 函數；當啟動時，先檢查是否存在有效的檢查點檔案，若有則載入並跳過已完成的步驟，直接從中斷處繼續。這不僅能用於錯誤恢復，還能實現「分叉執行」——基於同一個檢查點創建多個並行的實驗路徑，選擇結果最好的那一路繼續深入。</p>
+  </div>
+
+  <!-- Section: 檢查點失效的診斷 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚨</span> 檢查點失效的診斷</div>
+    <p>當 Vibe 破裂且恢復失敗時，最常見的原因不是程式邏輯錯誤，而是檢查點本身的損毀或格式不匹配。診斷的第一步是檢查檢查點檔案是否存在且非空，這可以透過簡單的檔案大小判斷。若檔案存在但內容為空的 JSON 物件，表示檢查點建立時機過早，可能在工具尚未完成時就被儲存。若檔案內容包含亂碼或截斷的 JSON，則是寫入過程中發生 I/O 錯誤。另一個常見陷阱是「狀態漂移」：Agent 的程式碼邏輯已更新，但舊的檢查點仍沿用舊版的結構，導致載入時欄位缺失而報錯。此時需要手動遷移或清除舊檢查點。還有一種情況是「依賴版本不兼容」，例如檢查點中記錄了特定工具的 schema，但當前環境的工具已升級，參數名稱改變，這會導致工具調用時參數驗證失敗。解決這類問題需要建立檢查點的版本控管機制，或在恢復時進行適配器轉換。</p>
+  </div>
+
+  <!-- Section: 深入解析：檢查點的原子性與一致性 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：檢查點的原子性與一致性</div>
+    <details class="deep-dive">
+      <summary>為什麼寫入檢查點時要避免「半完成」狀態？</summary>
+      <div class="deep-dive-content">
+        <p>檢查點寫入最關鍵的挑戰在於原子性（Atomicity）。若我們直接將狀態寫入同一個 JSON 檔案，當寫入過程中發生電源中斷或進程崩潰，磁碟上可能殘留一個被截斷的檔案。當 Agent 下次啟動並嘗試載入這個檔案時，會因為 JSON 解析失敗而崩潰，形成一個無法恢復的惡性循環。為了解決這個問題，業界標準做法是使用「寫入暫存檔案後重新命名」的技術。我們先將狀態序列化寫入一個以 .tmp 結尾的暫存檔案，確認寫入完成且無錯誤後，再透過作業系統的 mv 命令將暫存檔案重新命名為正式的檢查點檔案。由於檔案系統的 rename 操作在多數 POSIX 系統中是原子性的，這確保了檢查點檔案在任意時刻非完整即舊版，永遠不會出現半完成狀態。此外，為了保證一致性，檢查點應該在「工具調用成功返回結果後」才會寫入，而不是在調用前。這避免了因工具執行失敗而導致狀態卡在中間的尷尬局面，確保每次恢復的起點都是一個已經完成且可驗證的狀態節點。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列關於檢查點（Checkpoint）與記憶系統（Memory）的敘述，何者正確？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">檢查點用於長期存儲用戶偏好，記憶系統用於記錄執行進度。</li>
+          <li onclick="checkAnswer(this, true)">檢查點是執行時的狀態快照，記憶系統是跨會話的知識積累。</li>
+          <li onclick="checkAnswer(this, false)">檢查點與記憶系統本質相同，只是名稱不同。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 選項將兩者角色顛倒。C 選項錯誤，因為檢查點是暫時的、與執行流程綁定，而記憶系統是持久的、與用戶綁定。B 選項正確描述了兩者的核心區別：檢查點記錄「做到哪一步」，記憶系統記錄「知道什麼」。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當檢查點檔案損毀導致恢復失敗時，以下哪種做法最適當？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">直接編輯損毀的 JSON 檔案，手動修復語法錯誤。</li>
+          <li onclick="checkAnswer(this, false)">刪除損毀的檢查點檔案，讓系統從頭開始執行任務。</li>
+          <li onclick="checkAnswer(this, true)">備用檢查點檔案，並在程式碼中加入自動清理損毀檔案的邏輯。</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 選項不可靠，手動修復可能引入新錯誤，且損毀原因未明。B 選項雖可行，但可能丟失大量已完成的進度，不符合檢查點的初衷。C 選項最符合工程實踐：利用備用檔案確保可恢復性，同時加入清理邏輯防止損毀檔案累積造成干擾，這是健壯系統的設計思維。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 Node.js 的 fs 模組，實作一個簡單的 saveCheckpoint 函數，將传入的狀態物件寫入 checkpoints/current.json.tmp，然後使用 fs.renameSync 將其重命名為 final.json。</li>
+        <li style="padding: 0.5rem 0;">寫一個 loadCheckpoint 函數，嘗試讀取 checkpoints/final.json。若檔案不存在或 JSON 解析失敗，則返回 null，而非拋出錯誤。</li>
+        <li style="padding: 0.5rem 0;">利用 Claude Code 或 Cursor，建立一個簡單的 Agent 腳本，該腳本在每次迴圈中調用 writeCheckpoint。然後手動終止腳本進程，觀察檢查點檔案的狀態，並驗證重新啟動後能否從最後的檢查點恢復執行。</li>
+        <li style="padding: 0.5rem 0;">設計一個檢查點版本欄位（如 checkpointVersion: 1），並模擬一個升級情境：當程式碼期望 checkpointVersion 為 2 時，載入版本為 1 的舊檢查點，觀察如何報錯並實作簡單的向下相容邏輯。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 36 · 課程主標題（繁體中文）
+Agent 狀態管理：檢查點與斷點續傳</p>
+    <p style="margin-top: 0.3rem;">下一課預告：可觀察性與 A/B 測試：衡量 Agent 行為品質</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
