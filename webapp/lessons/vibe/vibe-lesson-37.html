@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 37 — 課程主標題（繁體中文）
+課程主標題：Agent 可觀測性：追蹤、除錯與效能分析</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: Agent Engineering 深究</span>
+    <h1 class="lesson-title">課程主標題（繁體中文）
+課程主標題：Agent 可觀測性：追蹤、除錯與效能分析</h1>
+    <p class="lesson-subtitle">當 Agent 行為失控時，如何看見它實際做了什麼</p>
+  </div>
+
+  <!-- Section: 為什麼需要可觀測性 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼需要可觀測性</div>
+    <p>在 Vibe Coding 的世界裡，開發者往往把大部分決策權交給 AI Agent，讓它自行規劃步驟、讀取檔案、執行程式碼。這種分工模式在順暢時效率極高，但一旦 Agent 行為偏離預期，傳統開發者的除錯經驗就會失效——你沒辦法單靠堆疊追蹤（stack trace）來還原 Agent 的思考過程。這就是為什麼可觀測性（Observability）成為進階 Agent 工程的關鍵能力：它不只是「日誌記錄」，而是提供一個完整的視角，讓你能看見 Agent 每一次工具調用、每一個 context 片段、每一筆 token 消耗，進而診斷 vibe 破裂的真正原因。在本課中，我們不會只學「怎麼看」，更會學「怎麼問」——當 vibe broken 時，你應該先追問哪幾個問題，才能快速定位是 Prompt 設計、工具實現，還是外部服務的問題。</p>
+  </div>
+
+  <!-- Section: Agent 可觀測性的核心支柱 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Agent 可觀測性的核心支柱</div>
+    <p>Agent 的可觀測性建立在三個核心支柱之上：Tracing（追蹤）、Logging（日誌）、Metrics（指標）。這三個支柱分別回答不同的問題——Trace 回答「Agent 的執行順序與依賴關係是什麼」，Logging 回答「每個步驟的輸入與輸出內容是什麼」，Metrics 回答「整體性能與成本表現如何」。在實作層面，Tracing 通常依賴 OpenTelemetry 標準，它可以自動攔截 LLM 呼叫、Function Calling、HTTP 請求等關鍵事件，並組成一棵執行樹；Logging 則更多依賴結構化日誌（JSON Log），讓你能夠事後搜尋特定條件的對話片段；Metrics 關注的是延遲（latency）、token 用量（cost）、錯誤率（error rate）等時間序列數據。這三者缺一不可：只靠日誌無法重建執行順序，只靠追蹤看不到對話內容，只靠指標無法定位根本原因。</p>
+  </div>
+
+  <!-- Section: OpenTelemetry 在 Agent 中的角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> OpenTelemetry 在 Agent 中的角色</div>
+    <p>OpenTelemetry（簡稱 OTel）是目前業界最主流的開源可觀測性框架，它的核心价值在於提供了一套標準化的 API，讓不同工具和後端能夠互操，而不需要為每個後端寫不同的接入代碼。對於 AI Agent 開發者而言，OpenTelemetry 的價值體現在它可以自動攔截 LLM SDK 的呼叫——當你的 Agent 呼叫 Claude 或 GPT 時，OTel 會在后台記錄這一次呼叫的 model、temperature、token 用量、延遲，以及最重要的：完整的輸入與輸出內容（你可以選擇在 exporter 裡啟用包含 prompt/response 的選項）。此外，如果你使用 LangChain、LangGraph 這類框架，它們通常內建了 OTel 支援，只需要安裝對應的插件並設定 exporter，就能自動生成包含每一個 Agent 節點執行的完整 Trace。這裡要注意一個常見的陷阱：OpenTelemetry 本身只是數據收集層，真正決定你能看到什麼、能看到多詳細的，是你要接入的後端觀察平台（例如 SigNoz、Jaeger、或 LangSmith），後面我們會詳細比較這些選擇。</p>
+  </div>
+
+  <!-- Section: 常用可觀測後端平台對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 常用可觀測後端平台對照</div>
+    <p>目前市面上支援 OpenTelemetry 的主流觀察後端有三類：第一類是通用型追蹤後端，例如 Jaeger 和 SigNoz，它們對 trace、span、log 都有完整的支援，適合需要深度自定義觀察邏輯的團隊，SigNoz 還額外提供了 metric dashboard 和 alert 功能；第二類是專為 LLM 應用打造的觀察平台，例如 LangSmith（LangChain 官方）、Arize Phoenix（Phoenix 開源）、OpenLIT，它們的優勢在於自動解析 LLM 調用結構，幫你直接看到 prompt 模板變數替換的結果、tool call 的完整 JSON payload、以及每步的 token 成本；第三類是雲厂商自家的解決方案，例如 Vercel Observability（針對 Next.js 部署）、Datadog、New Relic，它們的優勢是與部署平台深度整合。對於獨立開發者而言，我建議從 Phoenix 或 LangSmith 的免費方案開始——它們不需要額外的基礎設施，直接 pip install 或 npm install 就能在本地啟動一個觀察介面，這對除錯 vibe 破裂特別有用，因為你能直接在 Web UI 裡回放 Agent 的每一次工具調用。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂時的診斷流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 當 Vibe 破裂時的診斷流程</div>
+    <p>當 Vibe 破裂時，最有效的診斷流程是「從果溯因」而非「從因推果」——先看 Trace 裡最後出錯的那個 Span，找出它之前的上下文，而不是從 Agent 的第一個動作開始追。具體的診斷步驟如下：第一步，打開觀察平台的 Trace 視圖，找到最後一個狀態為 error 或 timeout 的 Span，記錄它的錯誤訊息和發生時間；第二步，往上追查這個 Span 的 parent Span，確認是哪個 LLM 呼叫或工具調用產生了這個錯誤；第三步，檢視這個 Span 的 Attributes，特別是 input 和 output 字段，判斷是 LLM 沒有正確理解 Prompt、工具實現有 Bug、還是外部服務返回了預期外的格式；第四步，如果錯誤反覆出現，檢查 Metrics 視圖裡的錯誤率曲線，確認是特定 Prompt 模式才會觸發，還是隨機性的問題。這個流程的核心在於：Trace 裡的每個 Span 都有明確的開始和結束時間，你可以直接看到哪個步驟的延遲異常或哪個 Tool Call 的回應格式不符合預期，而不需要依賴 Agent 自己列印的日誌來猜。</p>
+  </div>
+
+  <!-- Section: 工具調用的錯誤模式分類 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">6</span> 工具調用的錯誤模式分類</div>
+    <p>在實際操作中，Agent 的錯誤可以分為三大類：第一類是 LLM 輸出格式錯誤，例如工具回傳的 JSON 缺少某個必填欄位，或 tool call 的 arguments 欄位根本沒有按照 schema 定義的格式輸出，這種問題通常出現在 function calling 的 schema 設計不夠精確時；第二類是工具實現錯誤，例如某個 MCP tool 的執行邏輯有 Bug、或工具呼叫了外部 API 但沒有正確處理非 200 狀態碼，這類錯誤會在 Trace 裡表現為 tool span 的 status 直接標記為 error；第三類是上下文污染錯誤，例如之前的 tool 調用結果太長，淹沒了後續 Prompt 的關鍵指令，導致 LLM 忽略或誤讀了某個重要條件。第一類錯誤的診斷方法是檢視 tool schema 的 JSON Schema 定義，確認每个 property 都有正確的 type 和 required 標記；第二類錯誤需要直接讀取工具的原始碼，在工具執行前後加 logging；第三類錯誤則需要調整 context window 的管理策略，例如使用 sliding window 或 summarization 來控制每輪的上下文長度。</p>
+  </div>
+
+  <!-- Section: 在 Phoenix 中設定本地觀察 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">7</span> 在 Phoenix 中設定本地觀察</div>
+    <p>Phoenix 是一個輕量級的開源 LLM 觀察平台，使用 Python 開發，只需要一條指令就能在本地啟動。它支援 LangChain、LlamaIndex、以及任何遵守 OpenTelemetry 標準的框架，並且可以直接在瀏覽器中檢視 Trace、評估 Prompt 品質、甚至比較不同模型的輸出。安裝方式非常簡單，先確認你的環境有 Python 3.9+，然後執行 pip install phoenix，接著執行 phoenix setup 來完成環境設定，最後執行 phoenix serve 即可在本地 http://localhost:6006 啟動觀察介面。一旦服務啟動，你只需要在程式碼裡加入一行 OpenTelemetry 的設定， Phoenix 就會自動接收所有的 Trace 數據。這個流程的優勢是幾乎沒有學習曲線，對於想要快速建立本地可觀測環境的獨立開發者來說，這是目前最輕量且資訊量最豐富的選擇。</p>
+  </div>
+
+  <!-- Section: 設定 Phoenix 觀察環境 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 設定 Phoenix 觀察環境</div>
+    <p>以下是在 macOS 或 Linux 環境中，使用 Phoenix 進行本地可觀測的完整流程：</p>
+    <div class="terminal-block">
+<span class="comment"># 第一步：安裝 Phoenix</span>
+<span class="prompt">$</span> <span class="cmd">pip install phoenix</span>
+<span class="output">Looking in indexes: https://pypi.org/simple/</span>
+<span class="output">Collecting phoenix</span>
+<span class="output">  Downloading phoenix-7.2.0-py3-none-any.whl (3.1 MB)</span>
+<span class="output">Successfully installed phoenix-7.2.0</span>
+<span class="comment"># 第二步：執行環境初始化（會建立本地 SQLite 資料庫和設定檔）</span>
+<span class="prompt">$</span> <span class="cmd">phoenix setup</span>
+<span class="output">Phoenix configuration saved to ~/.config/phoenix/config.json</span>
+<span class="output">Database initialized at ~/.phoenix/phoenix.db</span>
+<span class="comment"># 第三步：啟動 Phoenix 伺服器</span>
+<span class="prompt">$</span> <span class="cmd">phoenix serve</span>
+<span class="output">INFO:     Uvicorn running on http://0.0.0.0:6006</span>
+<span class="output">INFO:     Application startup complete.</span>
+<span class="comment"># 第四步：在瀏覽器開啟 http://localhost:6006，即可看到空白的 Spans 列表</span>
+<span class="comment"># 等待程式執行後，Span 會自動出現在「Projects &gt; Default Project」中</span>
+    </div>
+  </div>
+
+  <!-- Section: Phoenix 的實際追蹤效果 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> Phoenix 的實際追蹤效果</div>
+    <p>當你完成 Phoenix 設定後，接著在你的 Agent 程式碼中加入最小化的 OpenTelemetry 初始化，例如使用 Python 的 langchain 時：</p>
+    <div class="terminal-block">
+<span class="comment"># 在程式碼開頭加入以下三行</span>
+from phoenix.trace.langchain import LangChainSpanExporter
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+<span class="comment"># 將 exporter 設定為 Phoenix</span>
+provider = TracerProvider()
+provider.add_span_processor(
+    BatchSpanProcessor(LangChainSpanExporter())
+)
+trace.set_tracer_provider(provider)
+<span class="comment"># 之後任何 langchain agent 的呼叫都會自動出現在 Phoenix UI</span>
+<span class="prompt">$</span> <span class="cmd">python main.py</span>
+<span class="output">[Phoenix] Exporting 12 spans to http://localhost:6006</span>
+<span class="output">Agent completed with 3 tool calls and 1 error</span>
+<span class="comment"># 回到瀏覽器 http://localhost:6006，你會看到一條完整的 Trace</span>
+<span class="comment"># 包含 3 個 Tool Call Span、1 個 LLM Span、以及 1 個 Error Span</span>
+    </div>
+  </div>
+
+  <!-- Section: 原理深挖 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 原理深挖</div>
+    <details class="deep-dive">
+      <summary>為什麼 Trace 比日誌更能定位 Agent 的根因錯誤？</summary>
+      <div class="deep-dive-content">
+        <p>日誌（Logging）和追蹤（Tracing）的本質差異在於它們記錄的維度不同。日誌是線性的、事件驅動的，每一個 log 都是一個孤立的條目，你需要靠自己推斷哪些 log 屬於同一次執行；而 Trace 是一個有向圖結構，每一個 Span 都有明確的 parent_id 和 trace_id，這意味著你不僅知道「發生了什麼」，還知道「發生在什麼上下文裡」。對 AI Agent 而言，這個差異尤為關鍵，因為 Agent 的執行本質上就是一棵工具調用的樹——每次 tool call 都是一個分支，每次 LLM 呼叫都是一個節點，而錯誤可能藏在任何一個分支的深處。如果只用日誌，你看到的可能是一堆散亂的「tool called: search」和「error: undefined」訊息，無從判斷是哪一次 search 的結果導致了後續的錯誤；但有了 Trace，你可以直接在圖譜上點擊那個錯誤的 Span，瞬間看到它的所有 parent Span 的輸入內容，以及同一個 trace 裡其他分支的並行結果。這就是為什麼在 Vibe Coding 的除錯場景中，Trace 的資訊密度遠高於日誌——它把原本需要跨越多個日誌文件才能拼湊出來的上下文，壓縮成了一次點擊就能讀取的視覺化結構。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 OpenTelemetry 架構中，Span 的 trace_id 和 span_id 分別承擔什麼角色？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">trace_id 用於標記單一工具調用的執行結果，span_id 用於標記一次完整的 Agent 對話</li>
+          <li onclick="checkAnswer(this, true)">trace_id 用於標記一次完整的執行流程（所有相關 Span 共享同一 trace_id），span_id 用於唯一標記該流程中的每一個獨立步驟</li>
+          <li onclick="checkAnswer(this, false)">trace_id 是每次 LLM 呼叫隨機生成的 identifier，span_id 是固定的工具名稱字符串</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。trace_id 用於將同一執行流程中的所有 Span 關聯在一起，確保你能夠在 UI 中還原整棵執行樹；span_id 則是每個 Span 的唯一標識，用於區分同一 trace 內的並行或順序步驟。A 將兩者意義說反，C 則是對 OpenTelemetry 識別機制完全誤解——trace_id 並非每次隨機生成，而是從根 Span 開始傳播，所有子 Span 繼承同一 trace_id。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗（第二題） -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗（第二題）</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當你在 Phoenix UI 中看到某個 Span 的 status 是 Error，但你點開後看不到具體錯誤訊息，最可能的原因是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">Phoenix 的免費版不顯示錯誤訊息，需要付費才能解鎖</li>
+          <li onclick="checkAnswer(this, true)">該 Span 在建立時沒有透過 set_status(StatusCode.ERROR, reason) 明確設定錯誤狀態和訊息，僅靠異常未捕獲不足以讓觀察後端顯示具體錯誤</li>
+          <li onclick="checkAnswer(this, false)">OpenTelemetry 無法追蹤 Python 的異常，只能追蹤成功的呼叫</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。OpenTelemetry 的 Span 錯誤狀態需要開發者主動透過 API 設定，常見的寫法是 try/except 塊中呼叫 span.set_status(StatusCode.ERROR, str(e))，這樣錯誤訊息才會被寫入 Span 的 attributes 並在下載時顯示。A 是錯誤的，錯誤訊息不屬於付費功能。C 也是錯誤的，OpenTelemetry 完全支援追蹤異常，只是需要明確設定。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在本機安裝 Phoenix，執行 pip install phoenix 並用 phoenix serve 啟動，確認 http://localhost:6006 可以正常開啟。</li>
+        <li style="padding: 0.5rem 0;">撰寫一個最小的 Python 腳本，使用 langchain 或 anthropic SDK 呼叫一次 LLM，並在腳本中加入 OpenTelemetry 的 TracerProvider 設定，將 trace 導向本地 Phoenix。</li>
+        <li style="padding: 0.5rem 0;">執行腳本後，回到 Phoenix UI，找到剛才產生的 Trace，逐一點擊每個 Span，觀察 tool call 的 input、output、duration 等 attributes 的實際內容，並截圖記錄你看到的第一個 LLM Span 的 prompt 和 response。</li>
+        <li style="padding: 0.5rem 0;">在腳本中故意加入一個會失敗的工具調用（例如呼叫一個不存在的 endpoint 或回傳無效 JSON），再次執行並觀察 Phoenix 中該 Span 的 error status 如何呈現，記錄錯誤訊息在哪個 attribute 裡，以便下次除錯時快速定位。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 37 · 課程主標題（繁體中文）
+課程主標題：Agent 可觀測性：追蹤、除錯與效能分析</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 安全邊界：權限最小化與輸入消毒</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
