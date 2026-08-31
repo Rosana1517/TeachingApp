@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 38 — Agent 的動態工具擴展：根據情境即時生成與載入工具</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: Advanced Agent Engineering</span>
+    <h1 class="lesson-title">Agent 的動態工具擴展：根據情境即時生成與載入工具</h1>
+    <p class="lesson-subtitle">讓 AI Agent 從固定工具集演變為自主擴展的彈性工作流</p>
+  </div>
+
+  <!-- Section: 動態工具擴展在 Vibe Coding 中的角色 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 動態工具擴展在 Vibe Coding 中的角色</div>
+    <p>在 Vibe Coding 的哲學中，開發者期望 AI 能像人類工程師一樣，遇到新需求時能自行延伸能力，而非被預先設定好的工具清單綁手綁腳。<strong>動態工具擴展（Dynamic Tool Expansion）</strong>指的是 AI Agent 在執行任務時，能根據當前上下文動態生成、載入或呼叫未預先定義的工具。這在 Vibe Coding 中扮演著「無限潛在能力」的角色：Agent 不再受限於開發者事先編寫的工具，而是能即時根據問題需求創造新工具，例如在開發過程中需要一個特定的 API 轉換格式，Agent 能自動撰寫並註冊一個新的工具函數。AI Agent 調用這個技術的方式通常透過「自我反思」機制：當現有工具無法滿足需求時，Agent 會評估是否需要新工具，然後利用程式碼生成能力（例如透過 LLM）即時產生工具定義（包含名稱、描述、參數、實現邏輯），並註冊到當前的工具註冊表中。這種動態性讓 Vibe Coding 從「預設流程」邁向「適應性流程」，但也帶來了可觀測性與安全性的挑戰。</p>
+  </div>
+
+  <!-- Section: 對照：預設工具集 vs. 動態擴展 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 對照：預設工具集 vs. 動態擴展</div>
+    <p>在傳統 Agent 架構中，工具是靜態預設的；而動態擴展讓 Agent 能根據情境即時演化其能力。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">預設工具集（靜態）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">const tools = [
+  { name: &#x27;read_file&#x27;, description: &#x27;讀取檔案內容&#x27;, ... },
+  { name: &#x27;write_file&#x27;, description: &#x27;寫入檔案&#x27;, ... }
+];
+// 工具清單在啟動時固定，無法新增</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">動態工具擴展（彈性）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// Agent 在執行中檢測到需求，即時生成新工具
+const dynamicTool = {
+  name: &#x27;transform_api_response&#x27;,
+  description: &#x27;將 API 回應轉換為指定格式&#x27;,
+  parameters: { schema: {...} },
+  implementation: async (params) =&gt; { /* LLM 生成實作 */ }
+};
+tools.push(dynamicTool); // 動態註冊到註冊表
+// 工具集隨任務演進</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 實作範例：使用 Claude Code 動態新增工具 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 實作範例：使用 Claude Code 動態新增工具</div>
+    <p>以下展示如何在 Claude Code 環境中，讓 Agent 根據你的提示動態生成並註冊一個新工具。這種方法讓 Agent 在遇到複雜轉換需求時，能自動擴展自己的能力，而不必依賴開發者事先編寫。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">claude --dangerously-skip-permissions</span>
+<span class="comment"># 進入 Claude Code 互動模式後，輸入以下提示</span>
+<span class="output">&quot;我需要一個工具，能將 JSON 陣列轉換為 CSV 格式，包含隊頭。請生成並註冊這個工具。&quot;</span>
+<span class="comment"># Agent 會回應並執行以下動作：</span>
+<span class="output">生成工具定義與實作，並透過 &lt;tool_code&gt; 標籤輸出 JavaScript/TypeScript 程式碼。</span>
+<span class="output">執行程式碼，將工具註冊到全局工具注册表。</span>
+<span class="output">確認註冊成功後，你可以直接呼叫這個新工具：</span>
+<span class="output">&quot;請使用 transform_json_to_csv 工具處理 data.json。&quot;</span>
+<span class="comment"># 成功後，你會看到轉換結果；若失敗，錯誤訊息會指出工具註冊或執行問題。</span>
+<span class="comment"># 注意事項：動態生成的工具需要適當的權限與沙盒環境，以避免不安全程式碼執行。</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：動態工具擴展的機制與挑戰 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：動態工具擴展的機制與挑戰</div>
+    <details class="deep-dive">
+      <summary>為什麼動態工具擴展能讓 Vibe Coding 更強大，卻又更容易出錯？</summary>
+      <div class="deep-dive-content">
+        <p>動態工具擴展的基礎是「元編程（Metaprogramming）」概念：讓程式碼能生成或操作其他程式碼。在 AI Agent 中，這透過 LLM 生成工具定義（名稱、描述、參數結構、實現函數）並即時註冊到執行環境。實現的關鍵在於「工具註冊表」的設計：通常是一個全局物件（如 `window.tools` 或模組匯出的 `toolRegistry`），Agent 需要具備寫入權限，且註冊的工具必須符合可呼叫的介面（例如接受參數並回傳結果）。然而，這種彈性帶來了挑戰：一是安全性，動態生成的程式碼可能包含惡意或錯誤邏輯；二是可追蹤性，當工具是在執行過程中產生的，除錯時難以追溯原始碼；三是成本，生成新工具需要額外的 LLM 呼叫，增加 token 消耗。因此，實作時通常會結合沙盒執行環境（如 Docker 容器）與工具驗證機制（如檢查工具描述是否清晰、參數 schema 是否合理）。在 Vibe Coding 中，開發者需學會監控動態工具的生成與執行，並設定適當的權限限制，以平衡彈性與穩定性。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 動態工具擴展的主要好處是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">減少 token 消耗，因為工具生成更精簡</li>
+          <li onclick="checkAnswer(this, true)">讓 Agent 能根據當前需求即時生成並註冊新工具，提升適應性</li>
+          <li onclick="checkAnswer(this, false)">完全取代預設工具集，因為動態工具總是更好</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 是正確的，因為動態工具擴展的核心價值在於讓 Agent 能適應未知需求，即時創造所需工具，而不只是依賴預先定義的靜態清單。A 錯誤：動態生成工具反而需要額外 LLM 呼叫，可能增加 token 消耗。C 錯誤：動態工具並不會完全取代預設工具集，因為預設工具提供穩定基礎，且動態生成有安全與成本考量。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 當 Vibe 破裂時，如何診斷動態工具擴展的問題？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">直接重新啟動整個 Agent，忽略錯誤訊息</li>
+          <li onclick="checkAnswer(this, true)">檢查工具註冊表狀態、檢視動態生成工具的程式碼與輸出錯誤、確認權限與沙盒環境</li>
+          <li onclick="checkAnswer(this, false)">假設是 LLM 的隨機錯誤，等待下一次呼叫自動修復</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 是正確的診斷方法：動態工具擴展的問題可能源於工具註冊失敗、生成程式碼有語法錯誤、參數不匹配、或權限不足。需要檢視 Agent 的日誌、工具註冊表內容、以及生成的工具程式碼。A 和 C 都是消極做法，無法解決根本問題，且可能導致問題持續。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 Claude Code 或 Cursor 的「vibe coding」模式，提示 Agent 生成一個新工具（例如：計算指定目錄下所有 .js 檔案的行數），並觀察它如何動態註冊與執行。</li>
+        <li style="padding: 0.5rem 0;">撰寫一個簡單的 Node.js 腳本，模擬工具註冊表（使用一個物件或 Map），並實現動態新增工具的函數，測試工具呼叫流程。</li>
+        <li style="padding: 0.5rem 0;">嘗試在沙盒環境（如 Docker 容器）中執行動態生成的工具，觀察安全性隔離的效果。</li>
+        <li style="padding: 0.5rem 0;">記錄本次學習中的疑問，並準備在下一課探討「Agent 誤差校正與自我修正機制」時進一步研究。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 38 · Agent 的動態工具擴展：根據情境即時生成與載入工具</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 誤差校正與自我修正機制</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
