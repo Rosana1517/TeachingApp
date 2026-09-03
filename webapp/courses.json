@@ -700,6 +700,16 @@
     "generatedDate": "2026-09-02"
   },
   {
+    "id": "french-lesson-71",
+    "title": "French Lesson 71",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-71.html",
+    "path": "lessons/french/french-lesson-71.html",
+    "number": 71,
+    "generatedDate": "2026-09-03"
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
