@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 40 — Agent 生產部署：從本地開發到穩定上線的完整流程</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: Production</span>
+    <h1 class="lesson-title">Agent 生產部署：從本地開發到穩定上線的完整流程</h1>
+    <p class="lesson-subtitle">學會在 Vercel/Cloudflare 部署 Agent 系統，並建立自動化 CI/CD 與生產監控</p>
+  </div>
+
+  <!-- Section: 為什麼生產部署是 Agent 工程的最後一道關卡 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 為什麼生產部署是 Agent 工程的最後一道關卡</div>
+    <p>在第 39 課你已經學會如何用測試框架驗證 Agent 的行為，但測試通過並不代表 Agent 可以在真實環境中穩定運作。生產部署的核心難題在於：<strong>Agent 本質上是機率性的</strong>，同樣的輸入可能產生不同的輸出，這與傳統 API 服務「同一份程式碼一定給出相同結果」的行為完全不同。你的 Agent 可能在本地 localhost 跑得很順，但部署後卻遇到模型供應商限流、超時、狀態丟失、或串接工具失敗等問題。這課要把之前學過的 <code>Supabase</code>、<code>Better Auth</code>、<code>Redis 緩存</code>、<code>v0/Bolt 原型</code>、<code>Coding Agent</code> 等所有技術串成一條可上線的完整流程，讓你清楚知道在 Vibe Coding 中，<strong>部署不只是一次性動作，而是建立一個讓 Agent 可以自我監控、自我恢復的機制</strong>。</p>
+  </div>
+
+  <!-- Section: Vercel 部署 Next.js Agent 應用程式 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> Vercel 部署 Next.js Agent 應用程式</div>
+    <p>&lt;span&gt;Vercel 是目前部署 Next.js 應用程式最常見的選擇，特別適合已經用過 v0/Bolt 原型工具的開發者。部署前必須確認你的 Agent 相關的環境變數（<code>OPENAI_API_KEY</code>、<code>SUPABASE_URL</code>、<code>SUPABASE_ANON_KEY</code> 等）已經在 Vercel Dashboard 的 Project Settings 中設定完成，否則 Agent 在運行時會因為無法存取必要服務而拋出錯誤。部署的標準流程是：在專案根目錄建立或確認 <code>vercel.json</code> 存在，然後用 <code>vercel --prod</code> 將最新程式碼推送到生產環境。如果你的 Agent 包含 <code>streaming</code>（串流）功能，要特別注意 Vercel 的 Serverless 函數預設限流是 10 秒，這對於 LLM 產生大量回應時往往不夠，需要透過 <code>maxDuration</code> 參數延長，或在路由處理時加入 <code>response.on('close')</code> 來取消未完成的請求以節省資源。</p>
+  </div>
+
+  <!-- Section: Cloudflare Pages 部署與邊緣運算的優勢 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Cloudflare Pages 部署與邊緣運算的優勢</div>
+    <p>如果你的 Agent 應用程式主要依賴 <code>Cloudflare R2</code>（已學過）和 <code>Cloudflare Workers</code>，那麼用 Cloudflare Pages 部署会比 Vercel 更順手，因為兩者同屬 Cloudflare 生態，在 <code>wrangler.toml</code> 中設定環境變數的方式與 Vercel 的 <code>.env</code> 邏輯一致但更直覺。Cloudflare Pages 特別適合需要<strong>低延遲</strong>的 Agent 應用程式，因為它的邊緣節點分佈在全球，能減少用戶端到模型的網路來回時間。需要注意的是，Cloudflare Workers 的預設執行時間上限為 30 秒（Edge Runtime），如果你的 Agent 需要更長的處理時間（例如進行多步驟 RAG 檢索），可以在路由處理函數中改用 Node.js runtime 或在 Cloudflare 的 <code>workerd</code> 配置中調整。另外，Cloudflare 的 <code>Cache API</code> 可以用來快取 Agent 的回應結果，大幅降低 LLM 呼叫成本——這是 Vercel 邊緣快取做不到的原生功能。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂時的快速診斷流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 當 Vibe 破裂時的快速診斷流程</div>
+    <p>部署後最怕的是 Agent 完全無法運作，以下是&lt;span style="color:red"&gt;Vibe 破裂&lt;/span&gt;時的標準診斷順序：第一步，查看 Vercel 或 Cloudflare Dashboard 的 <strong>Deployment Logs</strong>，確認錯誤是否發生在部署階段（編譯失敗、環境變數遺漏）還是運行階段（API 呼叫失敗、資料庫連線超時）。第二步，如果是 API 錯誤，檢查 <code>Supabase</code> 的 <strong>Project Settings → API</strong> 頁面，確認 <code>anon</code> key 與 <code>service_role</code> key 的權限設定是否符合需求——很多時候部署後 DB 權限問題會被忽略。第三步，如果是 LLM 呼叫失敗，檢查環境變數中的 API Key 是否與本地開發時使用的是同一組——Vercel 的環境變數是獨立管理的，不會自動同步本地 <code>.env.local</code>。第四步，如果是串流（streaming）問題，在 Chrome DevTools 的 Network 面板中查看 SSE 連接是否異常中斷，並檢查伺服器端是否有 <code>AbortSignal</code> 超時設定。第五步，用 <code>postman</code> 或 <code>curl</code> 直接測試 Agent 的 API endpoint，排除前端渲染問題。</p>
+  </div>
+
+  <!-- Section: 建立 Agent 專用的健康檢查端點 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 建立 Agent 專用的健康檢查端點</div>
+    <details class="deep-dive">
+      <summary>為什麼 Agent 的健康檢查比傳統 API 更複雜？</summary>
+      <div class="deep-dive-content">
+        <p>傳統 API 服務的健康檢查（<code>/health</code>）通常只檢查某個 endpoint 是否可存取，但 Agent 的健康檢查需要驗證<strong>三個層面</strong>：第一，LLM 模型供應商是否可達——可以用 <code>fetch</code> 發送一個最簡單的 <code>/chat/completions</code> 請求來測試，並記錄回應時間與成功率；第二，資料庫連線是否正常——用 <code>supabase.from('health_check').select('*').limit(1)</code> 這類最小查詢來確認；第三，外部工具（如 Stripe、Resend）的 API 認證是否有效——可以發送一個無副作用的測試請求。這三個層面中，LLM 層面最不可靠，因為模型供應商會進行限流（rate limiting）或暫時性故障，所以健康檢查應該設計成<strong>非同步輪詢</strong>，而不是同步檢查——否則每次健康檢查本身就會消耗 LLM 的 token 配額。在 Vercel 中可以用 <code>@vercel/cron</code> 實現自動輪詢，在 Cloudflare 中用 <code>Cron Triggers</code> 實現相同功能。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 使用 Vercel 的 CICD 確保每次推送都經過測試 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 使用 Vercel 的 CI/CD 確保每次推送都經過測試</div>
+    <p>Vercel 的 <strong>Git Integration</strong> 功能讓你每次推送程式碼到 <code>main</code> 分支時，自動觸發測試與部署流程。要啟用這個功能，先在 <code>package.json</code> 中定義測試指令，例如 <code>"test:agent"</code> 跑你第 39 課建立的 Agent 行為測試，然後在 <code>vercel.json</code> 中設定 <code>buildCommand</code> 與 <code>installCommand</code>。當 GitHub Action 被觸發時，你可以用 <code>posthog/posthog-action</code> 來追蹤每次部署的品質指標。特別重要的一點是：<strong>Agent 的測試應該在部署前跑完</strong>，因為 Agent 行為的機率性意味著即使同一份程式碼在不同時間執行，結果也可能不同——所以測試應該專注於驗證「錯誤路徑」是否被正確處理，而不是驗證「正確輸出」。這也解釋了為什麼第 39 課要教使用測試框架（如 Vitest）來建立 Agent 的&lt;span style="color:blue"&gt;契約測試（contract tests）&lt;/span&gt;，而不是簡單的單元測試。</p>
+  </div>
+
+  <!-- Section: Agent 的生產監控：用 PostHog 追蹤每一次呼叫 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> Agent 的生產監控：用 PostHog 追蹤每一次呼叫</div>
+    <p>第 29 課你學過 <code>PostHog</code> 的基礎安裝，但 Agent 的監控需要更深入。Agent 的每一次執行都可以被追蹤成一個&lt;span style="color:purple"&gt;Trace&lt;/span&gt;，包含以下屬性：<code>agent_id</code>（哪個 Agent 執行）、<code>input_tokens</code>（輸入了多少 token）、<code>output_tokens</code>（輸出了多少 token）、<code>tool_calls&lt;/u&gt;（執行了哪些工具）、<code>latency_ms</code>（總耗時）、<code>success</code>（是否成功）、<code>error_message</code>（如果失敗）。在 Next.js 中，你可以在 Agent 執行的每個階段呼叫 <code>posthog.capture()</code>，並在失敗時額外呼叫 <code>posthog.capture('agent_error', { error: error.message })</code>。這些數據可以匯入 PostHog 的 <strong>Dashboard</strong> 來建立儀表板，讓你看到「哪個 Agent 最耗費 token」、「哪個工具的失敗率最高」、「平均每次 Agent 執行需要多少時間」。這種監控讓你在 Vibe 破裂時能快速定位是&lt;span style="color:red"&gt;前端問題、後端問題還是模型供應商問題&lt;/span&gt;。</p>
+  </div>
+
+  <!-- Section: 當 Vibe 破裂時：Agent 專用除錯流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">6</span> 當 Vibe 破裂時：Agent 專用除錯流程</div>
+    <p>Agent 的除錯與傳統後端除錯最大的不同在於：<strong>你無法用 breakpoint 來檢查模型輸出的中間狀態</strong>。以下是 Vibe 破裂時的完整除錯流程：第一步，開啟 Vercel 或 Cloudflare 的即時日誌（Live Logs），觀察 Agent 執行的每一步。第二步，在 Agent 的每個 tool call 前後加上 <code>console.log</code> 或使用 <code>next-logger</code> 等庫來記錄呼叫內容與結果，特別關注 <code>function_call</code> 的參數是否正確。第三步，用 <code>langsmith</code> 或 <code>langfuse</code> 來追蹤 LLM 的完整執行軌跡——這兩個工具專門為 LLM 應用程式設計，能顯示每一輪的 input/output、所使用的 tool、消耗的 token。第四步，如果是串流問題，用 <code>eventsource</code> 或 <code>fetch with streaming</code> 的 debug mode 來看 SSE 回應是否被正確解析。第五步，用 <code>supabase</code> 的 <strong>Logs → SQL</strong> 頁面檢查資料庫查詢是否有異常。最後，如果所有診斷都找不到原因，嘗試&lt;span style="color:green"&gt;降低 prompt 的複雜度&lt;/span&gt;——很多 Agent 錯誤是 prompt 設計問題而非程式碼問題。</p>
+  </div>
+
+  <!-- Section: Agent 狀態管理：部署後的檢查點機制 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">7</span> Agent 狀態管理：部署後的檢查點機制</div>
+    <p>第 35 課你學過 Agent 長任務中斷恢復工程，第 36 課學過檢查點與斷點續傳，但這些機制在&lt;span style="color:orange"&gt;部署後的真實環境&lt;/span&gt;中需要更嚴格的實現。當 Agent 在雲端運行時，可能有以下幾種中斷情況：Vercel Serverless 函數被重新啟動（cold start）、雲端網路斷線、模型供應商限流導致重試、使用者關閉瀏覽器頁面。為應對這些情況，Agent 的檢查點機制應該：<strong>每執行完一個 tool call 就將當前狀態寫入 Supabase</strong>（使用 <code>upsert</code> 操作），而不是在整個任務結束後才寫入。這樣即使 Serverless 函數被強制終止，也可以從 Supabase 中恢復到最近一次 tool call 完成時的狀態。在 Next.js 中，可以用 <code>@supabase/ssr</code> 套件來簡化這個過程，並確保檢查點的寫入操作使用 <code>service_role</code> key 而非 <code>anon</code> key，以避免資料庫行級安全（RLS）規則阻擋寫入。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 在 Vercel 部署 Agent 應用程式時，為什麼 streaming 功能特別需要注意？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">Vercel 的預設 Serverless 函數限流是 10 秒，LLM 產生大量回應時可能超時</li>
+          <li onclick="checkAnswer(this, false)">Vercel 不支援 streaming 功能，必須改用其他平台</li>
+          <li onclick="checkAnswer(this, false)">Vercel 的 streaming 功能會導致所有 LLM 回應被截斷</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 是正確的。Vercel 的 Serverless 函數預設有一個 10 秒的執行時間上限（<code>maxDuration</code>），而 LLM 產生大量 text 需要較長時間，如果不額外設定 <code>maxDuration</code> 參數，請求會在中途被強製作業系統終止，導致串流中斷。B 錯誤因為 Vercel 原生支援 streaming（透過 Next.js 的 <code>NextResponse</code>）。C 錯誤因為截斷是伺服器端的行為，不是 Vercel 的設計特性。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. Agent 的健康檢查為什麼應該設計成非同步輪詢而非同步檢查？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">同步檢查會消耗不必要的 LLM token 配額，且模型供應商可能有短暫故障</li>
+          <li onclick="checkAnswer(this, false)">非同步輪詢是 Vercel 的強制要求</li>
+          <li onclick="checkAnswer(this, false)">同步檢查的速度太慢，會影響用戶體驗</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 是正確的。每次 LLM 健康檢查都會消耗 token，輪詢可以控制檢查頻率，避免不必要的消耗。同時模型供應商可能有短暫故障，非同步機制可以避免健康檢查本身阻礙正常請求。B 錯誤因為 Vercel 沒有強制要求某種健康檢查方式。C 錯誤因為同步檢查的速度影響的是健康檢查本身，而非用戶體驗——用戶不會直接看到健康檢查的結果。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">在 Vercel 上部署你的 Next.js Agent 應用程式，並在 Dashboard 的 Environment Variables 中設定所有必要的 API Key 與 Supabase 連線資訊，確認部署後 Agent 可以正常執行</li>
+        <li style="padding: 0.5rem 0;">建立一個 <code>/api/health</code> 端點，驗證 Supabase 連線與 LLM 基本可用性，並在部署後用 <code>curl https://your-domain.vercel.app/api/health</code> 測試健康檢查是否正常回應</li>
+        <li style="padding: 0.5rem 0;">使用 AI Agent（如 Claude Code 或 Cursor）來幫你把现有的 Agent 測試腳本升級為契約測試（contract tests），並觀察 Agent 如何理解「測試錯誤路徑而非正確輸出」這個概念</li>
+        <li style="padding: 0.5rem 0;">在 PostHog 中建立一個 Agent 監控儀表板，追蹤每次 Agent 執行的 token 消耗量與成功率，並設定一個告警規則：當連續 5 次執行失敗時觸發通知</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 40 · Agent 生產部署：從本地開發到穩定上線的完整流程</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 評估框架設計：自動化測試與持續優化</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>

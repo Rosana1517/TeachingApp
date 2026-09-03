@@ -1388,5 +1388,15 @@
     "path": "lessons/vibe/vibe-lesson-39.html",
     "number": 39,
     "generatedDate": "2026-09-02"
+  },
+  {
+    "id": "vibe-lesson-40",
+    "title": "Vibe Lesson 40",
+    "category": "Vibe",
+    "categorySlug": "vibe",
+    "fileName": "vibe-lesson-40.html",
+    "path": "lessons/vibe/vibe-lesson-40.html",
+    "number": 40,
+    "generatedDate": "2026-09-03"
   }
 ]
