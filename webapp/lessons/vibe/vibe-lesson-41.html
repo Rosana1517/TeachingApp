@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 41 — 課程主標題：AI Agent 的 Tool Dependency Graph 與執行序控管</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 4: Advanced Agent Engineering</span>
+    <h1 class="lesson-title">課程主標題：AI Agent 的 Tool Dependency Graph 與執行序控管</h1>
+    <p class="lesson-subtitle">讓 Agent 知道「先做 A 再做 B」，而不是一股腦丟出所有工具呼叫</p>
+  </div>
+
+  <!-- Section: 為什麼工具執行序這麼重要 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼工具執行序這麼重要？</div>
+    <p>在 Vibe Coding 的實戰中，你常常會看到 Agent 同時呼叫五個工具、七個工具，看起來很有條理，但最後結果卻爛掉。為什麼？因為工具之間有依賴關係：工具 B 需要工具 A 的輸出、工具 D 要先檢查工具 C 是否成功，但 Agent 沒有這個認知，它把全部工具一齊送出去，導致執行結果無法串接、部分失敗、甚至重複執行。Tool Dependency Graph（工具依賴圖）就是解決這個問題的工程方法：把 Agent 擁有的工具集合，畫成一張有向圖，讓 Agent 知道哪些工具可以並行、哪些必須順序執行。這不是單純的「效率優化」，而是「正確性保證」——在 Vibe Coding 中，正確的執行序才是 vibe 穩定的基石。</p>
+  </div>
+
+  <!-- Section: AI Agent 如何理解與使用 Tool Dependency Graph -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> AI Agent 如何理解與使用 Tool Dependency Graph？</div>
+    <p>當你用 Claude Code、Bolt 或自建的 LangGraph/LangChain agent 時，Agent 不會自動知道工具之間的依賴關係，除非你明確地告訴它。最常見的實作方式是透過 function calling schema 的擴充字段（例如 LangGraph 的 <code>Node</code> + <code>Edges</code> 架構），讓每個工具「節點」定義它的輸入依賴，以及執行完之後的「下一站」是哪些工具。Agent 的核心循環會讀取這張圖，動態決定下一步要呼叫哪個工具、是否要等待前一個工具的結果。在 Vibe Coding 的場景中，你通常不需要手寫這套圖，而是用 LangGraph 或 Temporal 這類框架來建立圖結構，讓 Agent 在執行時自動追蹤當前節點，並在工具失敗時沿着錯誤邊跳到 recovery node。</p>
+  </div>
+
+  <!-- Section: 常見 Vibe 破裂情境與診斷 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 常見 Vibe 破裂情境與診斷</div>
+    <p>當 Agent 的工具執行序出錯時，Vibe 破裂的症狀非常具體：<strong>症狀一：工具 B 收到 undefined 的參數</strong>——因為工具 A 還沒執行完，B 就被呼叫了。<strong>症狀二：同一個工具被重複呼叫</strong>——Agent 沒有記住工具 A 已經執行過，在下一輪 context 中又決定呼叫它。<strong>症狀三：執行順序錯亂導致中間結果丟失</strong>——例如先呼叫了「讀取資料庫」又才呼叫「建立連線」，連線還沒建立就去讀資料庫，必然失敗。診斷方法很直接：把 Agent 的 <code>tool_calls</code> 列表依時間排序，檢查每個工具的輸入參數是否包含前一個工具的輸出，如果發現參數引用了不存在的變數，那就是依賴圖沒有正確建立或 Agent 沒有追蹤圖的節點狀態。</p>
+  </div>
+
+  <!-- Section: 對照：並行 vs 串行 vs 條件式執行 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔍</span> 對照：並行 vs 串行 vs 條件式執行</div>
+    <p>不同執行策略適合不同場景，選錯策略會直接導致 vibe 破裂。</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">並行執行（Parallel）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">适合工具之间完全独立的情况，
+例如同时调用 weather API 和 news API，
+两者结果互不影响，可以一次送出
+多个 tool_call，并行等待结果。
+缺点：如果工具 B 需要工具 A 的
+输出，并行会导致 B 收到 undefined。</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">串行執行（Sequential）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">适合工具之间有明确依赖关系的情况，
+例如先 call get_user()，拿到 userId
+后再 call get_orders(userId)。
+LangGraph 中用 SequentialFunction
+或 Node + Edge 明确指定顺序。
+优点：结果一定正确；缺点：速度较慢。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 帶指令範例：建立 LangGraph 工具依賴圖 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛠️</span> 帶指令範例：建立 LangGraph 工具依賴圖</div>
+    <p>以下是一個真實可運行的範例，展示如何用 LangGraph 建立有依賴關係的工具圖。這個範例中的工具 A 和工具 B 有明確的依賴關係，Agent 必須先執行 A，再執行 B。</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm install langgraph @langchain/core</span>
+<span class="output">added 42 packages in 3.2s</span>
+
+<span class="comment"># 建立兩個工具，B 依賴 A 的輸出</span>
+from langchain_core.tools import tool
+from langgraph.graph import StateGraph, START, END
+from typing import TypedDict
+
+class AgentState(TypedDict):
+    step: str
+    user_id: str
+    order_count: int
+
+@tool
+def create_user(name: str) -&gt; str:
+    &quot;&quot;&quot;Create a new user and return the user ID.&quot;&quot;&quot;
+    return f&quot;user-{name}-123&quot;
+
+@tool
+def get_order_count(user_id: str) -&gt; int:
+    &quot;&quot;&quot;Get the total number of orders for a user.&quot;&quot;&quot;
+    return 42
+
+<span class="comment"># 定義圖的節點</span>
+def create_user_node(state: AgentState) -&gt; AgentState:
+    result = create_user.invoke({&quot;name&quot;: state[&quot;step&quot;]})
+    return {&quot;step&quot;: result, &quot;user_id&quot;: result}
+
+def get_orders_node(state: AgentState) -&gt; AgentState:
+    result = get_order_count.invoke({&quot;user_id&quot;: state[&quot;user_id&quot;]})
+    return {&quot;step&quot;: state[&quot;step&quot;], &quot;order_count&quot;: result}
+
+<span class="comment"># 建立圖並連接節點</span>
+graph = StateGraph(AgentState)
+graph.add_node(&quot;create_user&quot;, create_user_node)
+graph.add_node(&quot;get_orders&quot;, get_orders_node)
+graph.add_edge(START, &quot;create_user&quot;)
+graph.add_edge(&quot;create_user&quot;, &quot;get_orders&quot;)
+graph.add_edge(&quot;get_orders&quot;, END)
+
+app = graph.compile()
+<span class="output">Graph compiled successfully.</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：Tool Dependency Graph 的核心原理 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：Tool Dependency Graph 的核心原理</div>
+    <details class="deep-dive">
+      <summary>為什麼 Agent 需要一張圖來管理工具執行，而不是直接用 if-else 寫死順序？</summary>
+      <div class="deep-dive-content">
+        <p>Tool Dependency Graph 的本質是「狀態機 + 有向圖」的結合。每一個工具被視為圖中的一個節點（Node），工具之間的依賴關係是圖中的邊（Edge）。當 Agent 執行到某個節點時，它會根據當前狀態（State）決定下一步走哪條邊。這不是簡單的時間順序問題，而是「條件依賴」問題——工具 B 可能需要工具 A 的成功結果，也可能需要工具 A 的失敗結果來決定走哪條路徑。用 if-else 寫死順序會有三個致命缺點：<strong>第一個缺點是無法處理循環</strong>，例如工具 A 失敗時需要重新執行工具 B 再試一次 A，if-else 寫不出這種循環邏輯。<strong>第二個缺點是無法處理條件分支</strong>，工具 A 的結果如果是 positive 就走路徑 X，如果是 negative 就走路徑 Y，if-else 可以寫但會迅速變成難以維護的 nested if。<strong>第三個缺點是無法動態擴展</strong>，當新增一個工具時，你需要改動所有相關的 if-else 邏輯，而圖結構只需要新增一個 Node 和對應的 Edge。在 Vibe Coding 的實戰中，這張圖通常由 LangGraph、Temporal 或自建的 state machine 來維護，Agent 的核心循環只是「讀取當前節點 → 執行工具 → 讀取狀態 → 決定下一節點」，不需要知道整個圖的結構，這正是解耦的好處。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當工具 B 依賴工具 A 的輸出時，以下哪種執行策略會導致 vibe 破裂？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">串行執行（Sequential），先執行 A 再執行 B</li>
+          <li onclick="checkAnswer(this, true)">並行執行（Parallel），同時呼叫 A 和 B</li>
+          <li onclick="checkAnswer(this, false)">條件執行，先執行 A，根據 A 的結果決定是否執行 B</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 並行執行會同時送出 A 和 B 的工具呼叫，但 B 的輸入參數需要 A 的輸出，在 A 還沒執行完時 B 已經被呼叫，導致 B 收到 undefined 或錯誤的參數，這是典型的 vibe 破裂情境。串行執行和條件執行都能確保 A 的結果在 B 執行前就存在。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪個是 Tool Dependency Graph 相對於 if-else 順序邏輯的主要優勢？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">執行速度更快，因為圖結構有更快的記憶體存取</li>
+          <li onclick="checkAnswer(this, true)">可以表達循環依賴和條件分支，而不需要複雜的 nested if</li>
+          <li onclick="checkAnswer(this, false)">不需要定義 State，Agent 可以直接在圖中流動</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ Tool Dependency Graph 的核心優勢在於可以用圖的結構（Node + Edge）自然地表達循環依賴（例如 retry 邏輯）和條件分支（例如 success edge vs error edge），而不需要用 if-else 寫出難以維護的 nested 邏輯。執行速度並不是主要優勢，因為圖的遍歷本身也有開銷。State 仍然是必要的，因為每個節點的執行結果都需要更新狀態。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：在現有專案中畫出手動的 Tool Dependency 草圖。列出你目前專案中的所有工具，用紙筆或 draw.io 畫出它們之間的依賴關係，標註哪些工具可以並行、哪些必須串行。</li>
+        <li style="padding: 0.5rem 0;">任務二：用 LangGraph 建立一個包含至少 3 個工具的簡單圖，確保其中一個工具依賴另一個工具的輸出，並在本地執行驗證執行順序是否正確。</li>
+        <li style="padding: 0.5rem 0;">任務三：用 Claude Code 或 Cursor 建立一個多步驟的 Agent，讓它先呼叫一個工具取得 userId，再用這個 userId 呼叫第二個工具。觀察 Agent 是否會自動依序執行，還是錯誤地並行執行。</li>
+        <li style="padding: 0.5rem 0;">任務四：故意打破執行序（例如先呼叫需要 userId 的工具，再呼叫建立 userId 的工具），觀察 vibe 破裂的症狀，並記錄錯誤訊息，作為後續診斷的參考基準。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 41 · 課程主標題：AI Agent 的 Tool Dependency Graph 與執行序控管</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 的 streaming 部分結果整合與增量決策</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
