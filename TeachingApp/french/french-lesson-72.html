@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 72 — 第 72 課：法語複合過去時與未完成時的敘事藝術</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 72</span>
+    <h1 class="lesson-title">第 72 課：法語複合過去時與未完成時的敘事藝術</h1>
+    <p class="lesson-subtitle">學會在故事中使用 Passé Composé 與 Imparfait 的黃金搭配</p>
+  </div>
+
+  <!-- Section 📖: 本課導論：時態的雙重風景 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📖</span> 本課導論：時態的雙重風景</div>
+    <p>在前面的課程中，我們已經分別學會了 <strong>複合過去時（Passé Composé）</strong> 與 <strong>未完成時（Imparfait）</strong> 的各自用法。本課要將兩者結合，讓你能夠講述完整的故事——哪些動作是具體發生的、哪些是背景描寫或重複性的行為。理解這兩種時態的互動關係，是法語敘事能力的重要里程碑。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表：故事常用詞彙 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表：故事常用詞彙</div>
+    <p>以下單字在敘述故事中極為常見，請務必熟讀其發音，特別注意連誦（liaison）的時機：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">j'ai fini</div>
+        <div class="pron-ipa">聯誦發音為 /ʒe.fi.ni/，注意 j'ai 與 fini 之間需聯誦</div>
+        <div class="pron-example"><em>J'ai fini mon travail.</em>（我做完了我的工作。）<button class="speak-btn" onclick='speakFrench("J&#39;ai fini mon travail.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">il faisait</div>
+        <div class="pron-ipa">faisait 的末個 t 不發音，但在聯誦中與後續元音連接：/il.fɛ.zɛ/</div>
+        <div class="pron-example"><em>Il faisait beau hier.</em>（昨天天氣很好。）<button class="speak-btn" onclick='speakFrench("Il faisait beau hier.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">nous étions</div>
+        <div class="pron-ipa">聯誦發音 /nu.zɛ.tjɔ̃/，注意 étions 的鼻化元音</div>
+        <div class="pron-example"><em>Nous étions à Paris.</em>（我們當時在巴黎。）<button class="speak-btn" onclick='speakFrench("Nous \u00e9tions \u00e0 Paris.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">elle a vu</div>
+        <div class="pron-ipa">聯誦發音 /e.la.vu/，a 與 vu 之間不可聯誦，因為 vu 是輔音開頭</div>
+        <div class="pron-example"><em>Elle a vu un chat.</em>（她看到了一隻貓。）<button class="speak-btn" onclick='speakFrench("Elle a vu un chat.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">ils parlaient</div>
+        <div class="pron-ipa">parlaient 的尾音 -aient 發 /ɛ/，不發 t，整體 /il paʁ.lɛ/</div>
+        <div class="pron-example"><em>Ils parlaient tranquille.</em>（他們當時在聊天。）<button class="speak-btn" onclick='speakFrench("Ils parlaient tranquille.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間：敘事句實讀 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間：敘事句實讀</div>
+    <p>請跟讀以下句子，注意兩種時態的發音差異與語氣節奏：</p>
+    <div class="follow-box">
+      <h4>請跟讀以下句子，注意兩種時態的發音差異與語氣節奏：</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Il pleuvait quand je suis arrivé.</span>
+          <span class="ipa">/il plə.vɛ kɑ̃ ʒə sɥi.za.ʁi.ve/</span>
+          <span class="meaning">—— 當時正在下雨，我突然到達了。</span>
+          <button class="speak-btn" onclick='speakFrench("Il pleuvait quand je suis arriv\u00e9.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Nous mangions quand le téléphone a sonné.</span>
+          <span class="ipa">/nu mɑ̃.ʒɔ̃ kɑ̃ lə tǝ.lǝ.fɔ̃ a sɔ.ne/</span>
+          <span class="meaning">—— 我們當時正在吃飯，電話響了。</span>
+          <button class="speak-btn" onclick='speakFrench("Nous mangions quand le t\u00e9l\u00e9phone a sonn\u00e9.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle lisait toujours quand j'ai frappé.</span>
+          <span class="ipa">/ɛl li.zɛ tu.ʒuʁ kɑ̃ ʒe fʁa.pe/</span>
+          <span class="meaning">—— 她當時總是在看書，我敲了門。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle lisait toujours quand j&#39;ai frapp\u00e9.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ils jouaient dans le jardin quand il a pleuvoir.</span>
+          <span class="ipa">/il ʒu.ɛ dɑ̃ lǝ ʒaʁ dɑ̃ il a plǝ.vwaʁ/</span>
+          <span class="meaning">—— 他們當時在花園裡玩，突然下雨了。</span>
+          <button class="speak-btn" onclick='speakFrench("Ils jouaient dans le jardin quand il a pleuvoir.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Je marchais quand j'ai rencontré ce ami.</span>
+          <span class="ipa">/ʒə maʁ.ʃɛ kɑ̃ ʒe ʁɑ̃.tǝ.ve sǝ a.mi/</span>
+          <span class="meaning">—— 我當時正在走路，遇到那個朋友了。</span>
+          <button class="speak-btn" onclick='speakFrench("Je marchais quand j&#39;ai rencontr\u00e9 ce ami.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：朗讀未完成時時語速稍緩，像背景音樂；複合過去時則語速較快，像畫面切換。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照：Passé Composé vs Imparfait -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照：Passé Composé vs Imparfait</div>
+    <p>這兩種過去時態各有分工，請記住以下核心原則：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Imparfait（未完成時）</div>
+        <div class="pron-ipa">描寫背景、環境、習慣性或重複性動作</div>
+        <div class="pron-example">Quand j'étais enfant, je jouais tous les jours.<button class="speak-btn" onclick='speakFrench("Quand j&#39;\u00e9tais enfant, je jouais tous les jours.")' aria-label="播放發音">🔊</button><br>「當時我是小孩，我每天都會玩。」—— 習慣性動作</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Passé Composé（複合過去時）</div>
+        <div class="pron-ipa">表示具體發生、已完成的單一動作</div>
+        <div class="pron-example">Hier, j'ai terminé mon livre.<button class="speak-btn" onclick='speakFrench("Hier, j&#39;ai termin\u00e9 mon livre.")' aria-label="播放發音">🔊</button><br>「昨天，我讀完了我的書。」—— 已完成的一次性動作</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">兩者的經典組合</div>
+        <div class="pron-ipa">未完成時提供背景，複合過去時打破背景發生事件</div>
+        <div class="pron-example">Il faisait soleil. Soudain, il a commencé à pleuvoir.<button class="speak-btn" onclick='speakFrench("Il faisait soleil. Soudain, il a commenc\u00e9 \u00e0 pleuvoir.")' aria-label="播放發音">🔊</button><br>「當時天氣晴朗。突然，開始下雨了。」</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">關鍵訊號詞</div>
+        <div class="pron-ipa">未完成時：toujours, souvent, tous les jours；複合過去時：soudain, tout à coup, enfin</div>
+        <div class="pron-example">Un jour, alors qu'il marchait, il a rencontré...<button class="speak-btn" onclick='speakFrench("Un jour, alors qu&#39;il marchait, il a rencontr\u00e9...")' aria-label="播放發音">🔊</button><br>「某天，當他正在走路時，他遇到了……」</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗：選擇正確的時態 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗：選擇正確的時態</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「Quand j'______ petit, je ______ toujours des jeux vidéo. Un jour, mon père m'______ une console." 依次應填入何種時態組合？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. étais / jouais / ai offert</li>
+          <li onclick="checkAnswer(this, false)">B. suis été / ai joué / offrais</li>
+          <li onclick="checkAnswer(this, false)">C. étais / ai joué / ai offert</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 是正確答案。第一空格用未完成時描述童年背景，第二空格用未完成時表示習慣性動作，第三空格用複合過去時表示具體發生的事件。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「Elle ______ (lire) quand le téléphone ______ (sonner).」 正確填法為：</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. lisait / a sonné</li>
+          <li onclick="checkAnswer(this, false)">B. a lu / sonnait</li>
+          <li onclick="checkAnswer(this, false)">C. lisait / sonnait</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 正確。「lire」是進行中的背景動作（未完成時），「sonner」是突然發生的事件（複合過去時）。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 以下哪一句使用時態錯誤？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Hier, il a plu toute la journée.</li>
+          <li onclick="checkAnswer(this, true)">B. Quand j'ai été enfant, je jouais dehors.</li>
+          <li onclick="checkAnswer(this, false)">C. Elle faisait ses devoirs quand je suis arrivé.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 錯誤。「Quand j'étais enfant」才是正確用法，因為這是背景描述，應使用未完成時而非複合過去時。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務：敘事寫作與口說練習 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務：敘事寫作與口說練習</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用 Passé Composé 與 Imparfait 寫一段 5 句的短文，描述一個具體發生的故事（例如：某天出門時發生的事）</li>
+        <li style="padding: 0.5rem 0;">朗讀自己的短文，錄音後檢查時態轉換是否流暢、語氣是否有背景與事件的區分</li>
+        <li style="padding: 0.5rem 0;">挑出 3 個句子，口頭轉換時態：將複合過去時改為未完成時（改變語意），再換回，觀察差異</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 72 · 第 72 課：法語複合過去時與未完成時的敘事藝術 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語過去将来時（Futur dans le passé）與綜合時態實戰</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
