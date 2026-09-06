@@ -1010,6 +1010,16 @@
     "generatedDate": "2026-09-05"
   },
   {
+    "id": "mind-lesson-30",
+    "title": "Mind Lesson 30",
+    "category": "Mind",
+    "categorySlug": "mind",
+    "fileName": "mind-lesson-30.html",
+    "path": "lessons/mind/mind-lesson-30.html",
+    "number": 30,
+    "generatedDate": "2026-09-06"
+  },
+  {
     "id": "vibe-lesson-01",
     "title": "Vibe Lesson 01",
     "category": "Vibe",
