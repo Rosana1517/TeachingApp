@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 30 — 內在基準：不靠別人說</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 30 課</span>
+    <h1 class="lesson-title">內在基準：不靠別人說</h1>
+    <p class="lesson-subtitle">建立自己的判斷尺，不再被片面資訊牽著走</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼我們總是被帶跑？</div>
+    <p><strong>容易被片面資訊帶走，背後是一件事：我們還沒建立自己的判斷基準。</strong><br><br>基準，就是你的「內在尺」。它不是你第一次聽到某個說法就立刻認同，也不是因為大家都這樣說就跟著點頭。基準是你在接收到任何資訊或評價後，先問自己幾個簡單問題的那個過程。<br><br>基準不是天生的，是練出來的。今天這課，我們從最簡單的三個問題開始。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 建立基準的三個問題</div>
+    <p>每當看到一則訊息、聽到一句評論，或對一件事產生強烈反應時，先在心裡問這三個問題。不需要回答給任何人聽，只問自己。<br><br><strong>問題一：這是事實，還是推測？</strong><br>事實是可以被驗證的；推測是「我認為」「可能」「應該是」。<br><br><strong>問題二：這資訊有來源嗎？來源可信嗎？</strong><br>匿名訊息、沒有出處的说法、只截一段的對話，都需要多問一步。<br><br><strong>問題三：這件事對我來說，真正重要的是什麼？</strong><br>把問題拉回到你自己的價值和目標，而不是別人的標準。<br><br>這三個問題不保證你能做出「正確」判斷，但它讓你的判斷是<strong>自己的</strong>，而不是自動複製別人的。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">基準</div>
+        <div class="principle-desc">你在接收資訊後，先停下來問自己的內在檢查點。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">事實 vs 推測</div>
+        <div class="principle-desc">事實可驗證，推測是解讀；先區分，才不會被解讀帶著跑。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">來源檢視</div>
+        <div class="principle-desc">沒有出處的訊息，預設可信度較低。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">價值錨點</div>
+        <div class="principle-desc">用「我真正在乎什麼」來判斷，而不是「別人覺得怎樣」。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>這課的句型不是在對話中使用，而是<strong>在心裡對自己說</strong>的內在看管句。當你感到被某件事牽動情緒時，選一句放在心裡。<br><br><strong>看到片面訊息時：</strong>「這只是其中一面，我還有其他資訊需要確認。」<br><strong>聽到他人評價時：</strong>「這是他的看法，我不需要立刻同意。」<br><strong>想立刻跟風反應時：</strong>「我先問自己三個問題，再決定怎麼想。」</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">社群上看到一則引發憤怒的單方面敘事</span>
+          <span class="line">這只是其中一面，我還有其他資訊需要確認。</span>
+        </li>
+        <li>
+          <span class="situation">同事當面給你一個讓你感到受傷的評價</span>
+          <span class="line">這是他的看法，我不需要立刻同意。</span>
+        </li>
+        <li>
+          <span class="situation">心裡很急想立刻回應某件事</span>
+          <span class="line">我先問自己三個問題，再決定怎麼想。</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 這些句子不是在辯論或反駁別人，而是幫你停下來。語氣要溫柔，像在提醒一個緊張的朋友。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>以下兩類想法會讓你繼續依賴外部判斷，失去自己的基準。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">「大家都這樣說，應該是對的。」</td><td>這把判斷權完全交給群體，跳過了自己的思考。</td></tr>
+        <tr><td class="bad">「如果我不認同，就是我不夠好。」</td><td>這把異見等同於自我否定，基準就變回別人的尺。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 你在社群上看到一段影片，內容是一位当事人單方面敘述一件事，引發大量憤怒評論。你第一個反應是跟著憤怒。以下哪一項是最符合「建立內在基準」的做法？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 先停下來問自己：這只是其中一面，還有什麼資訊我不知道？</li>
+          <li onclick="checkAnswer(this, false)">B. 先停下來問自己：我的憤怒代表這個人一定有問題對不對？</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">A是正確的。A把注意力放回「資訊是否完整」這個檢查點上，這是建立基準的第一步。B把情緒當結論，等於沒有過任何檢查。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 朋友說你「總是想太多」，你心裡不舒服。以下哪一項是最符合「建立內在基準」的回應方向？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. 這是他的看法，我需要先問自己：這話有道理嗎？還是他只是在表達他的感受？</li>
+          <li onclick="checkAnswer(this, false)">B. 這是他的看法，我需要先問自己：他是不是故意要打擊我的自尊心？</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">A是正確的。A區分了「事實／推測」與「對方的感受」，這是基準的核心動作。B直接跳到意圖判斷，反而被對方的話帶著走。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>今天選一個你最近看到、讓你有情緒反應的訊息（可以是影片、貼文、或別人的說法），在心裡對自己說：「這只是其中一面。」然後寫下至少兩個你還不確定的地方。</li>
+        <li>今天選一次你被別人評價的時刻，在心裡對自己說：「這是他的看法，我不需要立刻同意。」然後寫下：如果是我自己來判斷這件小事，我會怎麼說？</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 30 課 · 2026-09-06</p>
+    <p class="next">下一課：當基準清楚後，下一步是練習在真實情境中說出不符合自己標準的事</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
