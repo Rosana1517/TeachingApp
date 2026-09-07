@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 43 — 課程主標題（繁體中文）
+Agent 上下文窗口管理與切片策略：讓 Agent 在 Token 邊界上穩定運作</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 3: Advanced Agent Engineering</span>
+    <h1 class="lesson-title">課程主標題（繁體中文）
+Agent 上下文窗口管理與切片策略：讓 Agent 在 Token 邊界上穩定運作</h1>
+    <p class="lesson-subtitle">當對話快爆掉時，Agent 該怎麼聰明地切分、壓縮與保留重點？</p>
+  </div>
+
+  <!-- Section: 為什麼我們需要討論窗口管理 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼我們需要討論「窗口管理」？</div>
+    <p>在第 31 課我們學過「上下文工程」的基礎概念，當時的重點是如何寫出高品質的 system prompt 與 few-shot examples。但到了真實的 Agent 運行場景，你會遇到一個更棘手的問題：就算你的 prompt 寫得再好，隨著任務推進，對話歷史會不斷累積，最終逼近甚至超過模型的 context window 上限。這時候 Agent 不會自動停止，它可能會開始輸出亂碼、忽略重要指令、或直接崩潰。這門課要解決的核心問題是：當上下文快要爆掉時，Agent 該如何「動態管理」這段歷史，在有限的 Token 預算內保留最重要的資訊，並決定哪些內容應該被壓縮、哪些應該被截斷、哪些應該直接丟棄。這不是理論問題，而是每個跑過長任務的 Vibe Coder 都踩過的坑。</p>
+  </div>
+
+  <!-- Section: Token 計數與窗口大小的基本認知 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Token 計數與窗口大小的基本認知</div>
+    <p>在討論切片策略之前，你必須先能「看」到你的 Agent 用了多少 Token。不同的模型提供者對 context window 的定義略有不同，但大多數現代 LLM 的窗口都在 128K 到 200K Token 之間。舉例來說，OpenAI 的 gpt-4o 支援 128K Token 的上下文窗口，Anthropic 的 claude-3-5-sonnet 支援 200K。Token 計數不等於字數——中文大約每 1.5 到 2 個字等於 1 個 Token，而程式碼則因為標點符號與關鍵字的關係，Token 密度會更高。最可靠的計數方式是使用模型提供者提供的官方 Tokenizer 庫，而不是自己估算。Node.js 環境下可以直接用 <code>@dqbd/tiktoken</code> 或 <code>gpt-tokenizer</code> 這類套件，它們能幫你精確計算一段文字或一組 messages 會消耗多少 Token。</p>
+  </div>
+
+  <!-- Section: 動態上下文管理的三種核心策略 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 動態上下文管理的三種核心策略</div>
+    <p>當 Agent 的對話歷史快要超過窗口限制時，有三種主流的工程策略可以選擇。第一種是「滾動視窗（Rolling Window）」：只保留最近 N 則訊息，舊的訊息直接捨棄。這種策略簡單但危險——你可能會丟掉早期設定中非常重要的系統指令或使用者偏好。第二種是「摘要壓縮（Summarization）」：當歷史達到某個閾值時，呼叫另一個較便宜的 LLM 呼叫將舊的對話內容濃縮成一段摘要，然後把摘要放回對話歷史中。這種策略能保留更多資訊，但會引入額外的延迟與 Token 成本。第三種是「重要性排序截斷（Importance-Based Truncation）」：給每則訊息賦予一個重要性分數，當窗口飽和時，優先保留高分訊息。這種策略最精確但也最複雜，需要你在設計 Agent 架構時就預先規劃好每則訊息的重要性權重。</p>
+  </div>
+
+  <!-- Section: 帶指令範例的小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 帶指令範例的小節</div>
+    <p>在 Node.js 中，你可以用 <code>@dqbd/tiktoken</code> 來即時計算一段對話會消耗多少 Token，這樣就能在呼叫 LLM 之前预判是否會溢出。以下是一個簡單的範例，展示如何計算一串 messages 的 Token 數量：</p>
+    <div class="terminal-block">
+<span class="prompt">$</span> <span class="cmd">npm install @dqbd/tiktoken</span>
+<span class="output">added 3 packages in 2s</span>
+
+<span class="prompt">$</span> <span class="cmd">node</span>
+<span class="output">const { getEncoding } = require(&quot;@dqbd/tiktoken&quot;);</span>
+<span class="output">const enc = getEncoding(&quot;cl100k_base&quot;);</span>
+<span class="output">const tokens = enc.encode(&quot;你好世界，這是測試文字&quot;);</span>
+<span class="output">console.log(tokens.length);</span>
+10
+<span class="output">console.log(enc.decode(tokens));</span>
+&#x27;你好世界，這是測試文字&#x27;
+<span class="comment"># cl100k_base 是 GPT-4 / text-embedding-ada-002 使用的編碼器，</span>
+<span class="comment"># 也可用來近似計算 OpenAI 模型的 Token 消耗</span>
+    </div>
+  </div>
+
+  <!-- Section: 切片策略（Chunking Strategy）的實作細節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 切片策略（Chunking Strategy）的實作細節</div>
+    <p>在 RAG 或長文件處理的場景中，「切片」是將一大段文字拆成多個較小的區塊，每個區塊都能獨立放入上下文窗口中處理。常見的切片策略有三種：<strong>固定長度切片</strong>是最簡單的方式，直接把文字按 Token 數量切成等大的區塊，但缺點是容易在中間切斷句子，破壞語意完整性。<strong>語意感知切片</strong>會先找到句號、換行或其他語意邊界，再在這些邊界處進行切割，這樣每個區塊都盡可能保有完整的語意。<strong>重疊切片（Overlapping Chunking）</strong>則是讓相鄰的兩個區塊之間共享一部分內容，這樣即使切斷點落在錯誤位置，關鍵資訊也不會完全遺失。在 Vibe Coding 中，當你讓 Agent 處理一份長 README 或大段程式碼時，混合使用語意感知與重疊切片是最穩健的做法。</p>
+  </div>
+
+  <!-- Section: 深入解析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析</div>
+    <details class="deep-dive">
+      <summary>為什麼純靠「截掉最老的訊息」來管理上下文，在長任務中會失敗？</summary>
+      <div class="deep-dive-content">
+        <p>滾動視窗策略看起來最直覺，但它在長任務中有一個根本性的缺陷：它預設「越早的訊息越不重要」，這個假設在多數 Agent 任務中是錯誤的。一個典型的長任務流程是：系統設定（system prompt）→ 使用者目標（goal）→ 初始工具選擇 → 第一次執行結果 → 第二次調整 → …… 越後面的訊息雖然越「新」，但往往只是在前一個步驟的基礎上做微調；真正決定任務方向的是最開始的 system prompt 與 goal。如果只用滾動視窗，跑到第十步時你已經把最初的目標設定給丟掉了，Agent 開始偏離原本的任務，卻沒有任何人知道為什麼。因此，成熟的 Agent 架構會在上下文管理中引入「持久性區塊」的觀念——把 system prompt、使用者 goal、工具定義等核心內容標記為不可被滾動視窗捨棄，只有「執行過程中的中間結果」才允許被壓縮或截斷。這也解釋了為什麼在第 40 課我們討論「Agent 狀態管理」時，檢查點（checkpoint）的設計與上下文窗口管理其實是同一個問題的不同面向：你都需要在有限空間中決定什麼值得保留、什麼可以丟棄。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 小節：Vibe 破裂時的診斷流程 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">6</span> 小節：Vibe 破裂時的診斷流程</div>
+    <p>當你的 Agent 在運行長任務時突然表現異常，第一個要懷疑的不是 prompt 寫錯了，而是上下文窗口是否已經溢出或接近溢出。典型的跡象包括：Agent 突然「忘記」了之前設定的目標、開始重複已經執行過的步驟、輸出內容開始出現語意不連貫的段落，或者模型直接回傳錯誤訊息。診斷的第一步是用 Token 計數器量測當前對話的 Token 使用量，與模型的窗口上限做比較。如果已經接近上限，接下來要判斷是哪一類內容佔用了太多 Token——是對話歷史太長？是工具回傳的結果太大？還是某個 long context 的文件還沒被切片？找到根源後，再決定用哪種策略來處理：是摘要壓縮、重要性截斷，還是直接重新啟動一個乾淨的對話並載入之前的檢查點。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪一個情境最適合使用「摘要壓縮」而不是「滾動視窗」策略？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">一個只有 5 則訊息的簡單問答對話</li>
+          <li onclick="checkAnswer(this, true)">一個持續了 50 步的長任務，其中前 10 步設定了重要目標，後續步驟都是執行細節</li>
+          <li onclick="checkAnswer(this, false)">一次呼叫 LLM 就返回結果的短流程，不需要保留歷史</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 摘要壓縮適合用在長任務中，因為它可以把早期的重要設定濃縮成一段文字保留下來，而不是像滾動視窗那樣直接丟棄。選項 A 的對話太短，根本不需要任何壓縮策略；選項 C 的短流程不需要保留歷史，直接讓對話結束即可。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗（第二題） -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗（第二題）</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 關於 Token 計數，以下哪一個敘述是正確的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">Token 數量與字數成正比，中文 1 個字等於 1 個 Token</li>
+          <li onclick="checkAnswer(this, true)">使用與模型相同的編碼器（如 cl100k_base）來計算 Token 是最可靠的方式</li>
+          <li onclick="checkAnswer(this, false)">所有 LLM 模型的 context window 都是 128K Token</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 A 錯誤，因為中文的 Token 密度約為 1.5 到 2 個字換 1 個 Token，不是 1:1；選項 C 錯誤，因為不同模型的窗口大小不同，例如 Claude 3.5 Sonnet 支援 200K，而一些較小的模型只支援 4K 或 8K。選項 B 正確，因為每個模型都有對應的官方 tokenizer，使用相同編碼器計算出來的數字才與實際消耗一致。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">使用 <code>@dqbd/tiktoken</code> 寫一個簡單的 Node.js 腳本，能夠輸入一串 messages（包含 role 與 content），並輸出總 Token 數與每則訊息的 Token 數。</li>
+        <li style="padding: 0.5rem 0;">找一個你之前用過的中大型專案的 README 或程式碼文件，用「固定長度切片」與「語意感知切片」兩種方式各切一次，比較兩者在保留語意完整性上的差異。</li>
+        <li style="padding: 0.5rem 0;">用 Claude Code 或 Cursor 跑一個需要多步執行的長任務（例如：分析一個倉庫的結構、生成測試、修復 bug），觀察在對話超過 30 步後 Agent 的行為是否有偏離，並記錄你觀察到的具體現象。</li>
+        <li style="padding: 0.5rem 0;">在你的 Agent 架構中，標記出哪些內容屬於「持久性區塊」（system prompt、goal、工具定義），並設計一個簡單的優先級邏輯，讓上下文管理在窗口接近上限時優先保留這些區塊。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 43 · 課程主標題（繁體中文）
+Agent 上下文窗口管理與切片策略：讓 Agent 在 Token 邊界上穩定運作</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 的上下文窗口管理與切片策略：當 Agent 快超 Token 限制時該怎麼辦？</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
