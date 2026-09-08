@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 44 — 課程主標題（繁體中文）
+課程主標題（繁體中文）：Self-Healing Agents：讓 Vibe 破裂時自動修復</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 4: 生產級 Agent 工程</span>
+    <h1 class="lesson-title">課程主標題（繁體中文）
+課程主標題（繁體中文）：Self-Healing Agents：讓 Vibe 破裂時自動修復</h1>
+    <p class="lesson-subtitle">錯誤分類、重试策略、人工介入的黃金分割點</p>
+  </div>
+
+  <!-- Section: 什麼是 Self-Healing Agent -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🩹</span> 什麼是 Self-Healing Agent？</div>
+    <p>Self-Healing Agent 是指當執行過程中遭遇錯誤、外部 API 失敗、或上下文窗口即將溢位時，能夠**自動偵測錯誤、分類原因、選擇對應修復策略，並在不依賴人工介入的情況下恢復正常運作**的 AI Agent 架構。在 Vibe Coding 的語境中，這代表一種「即使 Vibe 破裂，系統也能自動縫合」的能力。
+
+過去我們學過「成本控管」和「錯誤監控」，但那些都是**觀察與限制**的層面。Self-Healing 則是主動修復的層面——它不再只是告訴你「出錯了」，而是直接嘗試「修好它」。這對獨立開發者尤為關鍵，因為你不可能 24 小時守在終端機前盯著 Agent 的輸出。
+
+AI Agent 調用 Self-Healing 機制的典型流程如下：
+1. **錯誤捕獲**：透過 try-catch、健康檢查端點、或輸出解析器偵測異常
+2. **錯誤分類**：將錯誤歸入預定義類別（例如：Network Error、Context Overflow、Tool Schema Mismatch、LLM Hallucination）
+3. **策略匹配**：根據分類選擇對應修復策略（Retry、Fallback、Context Truncation、Tool Regeneration 等）
+4. **執行修復**：套用策略並重新觸發受影響的步驟
+5. **驗證結果**：確認修復後輸出符合預期，若仍失敗則升級至人工介入
+
+這個流程的核心在於「分類」與「策略匹配」——錯誤不是黑箱，而是有結構的可處理物件。</p>
+  </div>
+
+  <!-- Section: 錯誤分類：把未知變成已知 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🏷️</span> 錯誤分類：把未知變成已知</div>
+    <p>Self-Healing 的第一步不是修復，而是**正確診斷**。錯誤分類是整個機制的基礎——如果把 Network Timeout 誤判為 LLM Hallucination，接著套用「重新生成 Prompt」的策略，不僅無法修復，還會浪費更多 Token。
+
+常見的错误分類維度包含以下幾個層面：
+
+<strong>1. 來源維度</strong>：錯誤來自 LLM 本身、工具呼叫、網路層、還是執行環境？
+- LLM 輸出解析失敗（JSON parse error、schema violation）
+- Tool execution error（工具內部錯誤、參數錯誤）
+- Network/HTTP error（API 超时、5xx、rate limit）
+- Context overflow（tokens 超出模型上限）
+- Safety/rejection（LLM 拒絕回應）
+
+<strong>2. 可恢復性維度</strong>：這個問題能否自動修復？
+- Transient（暫時性）：網路抖動、rate limit、temporary service outage → 可 retry
+- Permanent（永久性）：schema 變更、tool 不存在、prompt 邏輯錯誤 → 需要策略調整或人工介入
+- Ambiguous（模糊性）：LLM 給出不合規輸出但無明確錯誤碼 → 需要分類器二次判斷
+
+<strong>3. 頻率維度</strong>：是偶發還是系統性問題？
+- 偶發（&lt; 5% 失敗率）：可能是暫時性問題，retry 合理
+- 系統性（&gt; 20% 失敗率）：可能是設計缺陷或外部依賴變更，需要根本性修復
+
+在 Vibe Coding 中，錯誤分類器通常作為 Agent 的 <code>error_handler</code> 模組存在，接受原始錯誤物件，輸出結構化的分類結果。常見的實作方式是使用一個輕量 LLM call 來分析錯誤訊息並回傳 JSON 格式的分類標籤，而不是寫死 rule-based 的 if-else——因為 LLM 本身就能理解錯誤語境的語義，比分類器更靈活。
+
+當 Vibe 破裂時，正確的錯誤分類能讓修復效率提升 3-5 倍，因為它確保了「對症下藥」而不是「盲目 retry」。</p>
+  </div>
+
+  <!-- Section: 重试策略： exponential backoff 與 jitter -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔄</span> 重试策略： exponential backoff 與 jitter</div>
+    <p>.retry 是最直覺的修復策略，但錯誤的重試方式直接影響成本與成功率。 indiscriminate retry（無限 retry）會導致 Token 濫用和惡性循環，而完全放弃 retry 則會錯過大量可自動恢復的暫時性錯誤。
+
+業界標準做法是使用 <strong>Exponential Backoff with Jitter</strong>：
+- 第一次失敗：等待 1 秒後 retry
+- 第二次失敗：等待 2 秒後 retry
+- 第三次失敗：等待 4 秒後 retry
+- 第四次失敗：等待 8 秒後 retry
+- 第五次失敗：放棄，升級至人工介入或 fallback
+
+其中 <strong>jitter（抖動）</strong> 的關鍵在於：在所有 clients 同時 retry 時，加入隨機變數可以避免「thundering herd」問題——當多個 Agent 同時遇到 rate limit，如果它們都在完全相同的時間點 retry，會再次撞擊同一個限流閥門。加入 0-1 秒的隨機抖動能打散 retry 時間分佈。
+
+在 Vibe Coding 中，重试策略通常內建在 Tool Calling 的 wrapper 層。當一個 tool call 失敗時，wrapper 會檢查錯誤類型：
+- Network/HTTP 5xx → 觸發 exponential backoff retry
+- Rate limit（429）→ 觸發 exponential backoff + 更長的初始等待時間
+- Schema validation error → 不 retry，直接進入 fallback 或 error handler
+- LLM hallucination → 不 retry，觸發 output correction 策略
+
+另一個實作細節是 <strong>max_tokens_budget</strong>：每次 retry 都消耗 LLM token，所以需要設定總 retry 成本上限。超過上限後，即使錯誤類型是 transient，也應該放棄並升級。
+
+以下是典型的 retry 邏輯實現方式：</p>
+  </div>
+
+  <!-- Section: 帶指令範例的小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💻</span> 帶指令範例的小節</div>
+    <p>以下是一個基於 <code>node-fetch</code> 與自訂 retry 邏輯的實作範例，展示如何在 Tool Calling wrapper 中整合 exponential backoff：</p>
+    <div class="terminal-block">
+<span class="comment"># 安裝依賴</span>
+<span class="prompt">$</span> <span class="cmd">npm install node-fetch</span>
+<span class="prompt">$</span> <span class="cmd">npm install --save-dev vitest</span>
+<span class="comment"># 建立 retry wrapper</span>
+<span class="prompt">$</span> <span class="cmd">mkdir -p src/tools &amp;&amp; touch src/tools/retry.ts</span>
+<span class="comment"># 執行測試</span>
+<span class="prompt">$</span> <span class="cmd">npx vitest run src/tools/retry.test.ts</span>
+<span class="output">PASS src/tools/retry.test.ts</span>
+<span class="output">✓ should retry on 5xx with exponential backoff</span>
+<span class="output">✓ should not retry on 400</span>
+<span class="output">✓ should stop after maxRetries</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析</div>
+    <details class="deep-dive">
+      <summary>為什麼「永遠 retry」比「不 retry」更危險？</summary>
+      <div class="deep-dive-content">
+        <p>Many developers make the mistake of implementing a "retry forever" pattern when an API fails, assuming that persistence will eventually succeed. However, this creates a <strong>silent token drain</strong> that can quietly consume your entire budget without producing any useful output.
+
+The core issue is that not all failures are equal. A 503 Service Unavailable from a downstream API is fundamentally different from a schema validation error in your own code. The former is transient and will likely resolve itself; the latter is permanent and will fail identically on every retry attempt.
+
+When you retry a permanent failure, you're not just wasting money—you're also <strong>corrupting the context window</strong>. Each failed LLM call consumes tokens and pushes earlier conversation history closer to the context limit. If you're making 10 retry attempts, you've potentially consumed 10x the tokens needed for a successful single attempt, and your context window is now 10x closer to overflowing.
+
+The second danger is the <strong>feedback loop of failure</strong>. Many LLMs exhibit a pattern where a failed tool call affects the model's subsequent behavior—once the model "learns" that a certain tool returns errors, it may start avoiding that tool entirely, or generating increasingly desperate workarounds. This is why error classification must happen <strong>before</strong> any retry decision.
+
+A well-designed self-healing system answers three questions before retrying:
+1. Is this error transient or permanent? (Classification)
+2. How many retries have we already attempted? (Budget tracking)
+3. What is the cost of failure vs. the cost of retry? (Risk assessment)
+
+The answer to question 3 is particularly important in Vibe Coding. If your Agent is building a production feature and one tool call fails, the cost of pausing for human guidance might be far lower than the cost of consuming $50 in tokens on futile retries. Self-healing is not about eliminating human intervention—it's about <strong>reserving it for the moments that truly matter</strong>.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: 對照小節 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚖️</span> 對照小節</div>
+    <p>理解「什麼該 retry、什麼不該 retry」是自 Healing 的核心判斷力。以下是兩種典型錯誤類型的對比：</p>
+    <div class="diagram-grid">
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-blue">應 Retry（Transient Error）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// 網路超時或 5xx
+fetch(url, { timeout: 5000 })
+  .then(res =&gt; {
+    if (res.status &gt;= 500) throw new Error(`5xx: ${res.status}`)
+    return res.json()
+  })
+  .catch(err =&gt; {
+    // 這是暫時性錯誤，套用 exponential backoff retry
+    return retryWithBackoff(() =&gt; fetch(url), { maxRetries: 3 })
+  })</div>
+      </div>
+      <div class="diagram-card" style="text-align:left;">
+        <span class="tag tag-green">不 Retry（Permanent Error）</span>
+        <div class="terminal-block" style="margin-top:0.5rem;">// Schema validation failure
+const result = z.object({ email: z.string().email() }).safeParse(input)
+if (!result.success) {
+  // 這是永久性錯誤——用戶輸入格式就錯了
+  // retry 不會改變輸入格式，只会浪費 token
+  throw new SchemaValidationError(result.error)
+}
+// 直接進入 fallback 或請求人工確認
+await notifyHuman(result.error.flatten())</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Fallback 策略：當 retry 失敗後的第二道防線 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🛡️</span> Fallback 策略：當 retry 失敗後的第二道防線</div>
+    <p>當 retry 用完所有預算仍然失敗時，System 需要進入 <strong>fallback 模式</strong>。Fallback 不是「繼續嘗試相同的操作」，而是「嘗試一個替代方案來達成相同目標」。
+
+常見的 Fallback 策略包含以下幾類：
+
+<strong>1. Tool Fallback（工具替代）</strong>：當主工具失敗時，改用備用工具。例如：主搜尋工具被 rate limit，fallback 到備用搜尋引擎或緩存結果。
+
+<strong>2. Output Fallback（輸出補救）</strong>：當 LLM 輸出不合規時，不重新呼叫 LLM，而是嘗試修正輸出格式。例如：LLM 回傳了合法 JSON 但缺少必填欄位，可以直接補上預設值而不是重新產生。
+
+<strong>3. Context Fallback（上下文壓縮）</strong>：當 context window 接近溢位時，fallback 到「摘要版本」而非「完整版本」。這涉及第 43 課的上下文切片策略，但這裡是作為 fallback 而非預設策略。
+
+<strong>4. Human Fallback（人工介入）</strong>：當所有自動策略都失敗時，升級至人工。這不一定是「暫停整個流程」——可以是非同步的通知（Discord、Slack、email），讓開發者在有空時處理。
+
+在 Vibe Coding 中，fallback 策略通常以 <strong>Strategy Pattern</strong> 實作：每個 fallback 都是一個可替換的模組，系統根據錯誤類型和當前上下文動態選擇最合適的 fallback。關鍵設計原則是「fallback 不能比原始策略更差」——如果 fallback 本身也失敗，應該立即升級而不是進入無限 fallback chain。
+
+另一個實作細節是 <strong>fallback 的可觀察性</strong>。每次觸發 fallback 都應該記錄：原始錯誤、選擇的 fallback、fallback 結果。這樣可以事後分析「哪些錯誤最常觸發 fallback」並優化原始策略，形成持續改進的循環。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當一個 Tool Call 因為下游 API 返回 503 Service Unavailable 而失敗時，以下哪種處理方式最符合 Self-Healing Agent 的最佳實踐？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">立即通知開發者，暫停所有執行直到人工確認</li>
+          <li onclick="checkAnswer(this, true)">套用 exponential backoff with jitter 進行 retry，設定 maxRetries=3 並追蹤 token 成本</li>
+          <li onclick="checkAnswer(this, false)">無限 retry 直到成功，因為 503 是暫時性錯誤，最終一定會恢復</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確，因為 503 是典型的暫時性錯誤（transient error），適合套用 exponential backoff with jitter 進行有限次數 retry。選項 A 過於保守——503 通常能在數秒內自動恢復，不應該每次都升級至人工介入。選項 C 錯誤，因為無限 retry 會造成 token 浪費和 context window 污染，即使錯誤是暫時性的，也應該設定預算上限。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪種錯誤類型不應該觸發 retry，而應該直接进入 fallback 或人工介入？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">HTTP 502 Bad Gateway，每隔 30 秒出現一次</li>
+          <li onclick="checkAnswer(this, true)">JSON schema validation error，LLM 回傳的格式不符合 tool schema</li>
+          <li onclick="checkAnswer(this, false)">HTTP 429 Too Many Requests，間歇性出現</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 選項 B 正確，因為 JSON schema validation error 是永久性錯誤（permanent error）——LLM 每次都會回傳相同的不合規格式，retry 不會改變結果，只會浪費 token。選項 A 和 C 都是暫時性錯誤：502 是上游服務暫時不可用，429 是 rate limit，兩者都適合 retry。關鍵區分標準是「retry 是否能改變錯誤結果」——如果能，就 retry；如果不能，就 fallback。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">1. 實作一個錯誤分類器模組：撰寫一個 TypeScript 函數 classifyError(error: Error, context: { toolName: string; attemptCount: number })，根據錯誤訊息和上下文回傳 { type: 'transient' | 'permanent' | 'ambiguous'; category: string; shouldRetry: boolean }。使用 Claude Code 或 Cursor 生成初始版本，然後手動審視輸出是否合理。</li>
+        <li style="padding: 0.5rem 0;">2. 在你的 Agent 專案中實作 exponential backoff with jitter 的 retry wrapper：建立一個 retry.ts 工具函數，接受 async function 和配置選項（maxRetries, baseDelay, jitterRange），並使用 npx vitest 撰寫至少 3 個測試用例：transient 錯誤應 retry、permanent 錯誤不應 retry、超過 maxRetries 應拋出最後一次錯誤。</li>
+        <li style="padding: 0.5rem 0;">3. 使用 Claude Code（或 Cursor 的 Agent 模式）讓它自行修復一個故意植入的錯誤：先在專案中寫一個會拋出 TypeError 的 tool call，然後讓 Agent 偵測到錯誤並自動套用 retry 或 fallback 策略。觀察 Agent 是否正確分類錯誤，還是盲目 retry。</li>
+        <li style="padding: 0.5rem 0;">4. 設計一份 Fallback 策略表：列出你專案中常用的 5 個 Tool，為每個 Tool 設計 primary、fallback A、fallback B 三層策略，並定義「什麼錯誤類型觸發哪層 fallback」。這份表格將成為你 Agent 的「自我修復藍圖」。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 44 · 課程主標題（繁體中文）
+課程主標題（繁體中文）：Self-Healing Agents：讓 Vibe 破裂時自動修復</p>
+    <p style="margin-top: 0.3rem;">下一課預告：Agent 的長期記憶架構：從短期上下文到持續學習</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
