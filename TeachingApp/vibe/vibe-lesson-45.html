@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 課 45 — AI Agent 的 Identity Consistency 與 Persona Drift 控管</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Terminal block */
+  .terminal-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  .terminal-block .prompt { color: #a6e3a1; }
+  .terminal-block .cmd { color: #89b4fa; }
+  .terminal-block .output { color: #cdd6f4; opacity: 0.85; }
+  .terminal-block .error { color: #f38ba8; }
+  .terminal-block .comment { color: #6c7086; font-style: italic; }
+
+  /* Diagram grid */
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .diagram-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+  .tag-blue { background: #eff6ff; color: #2563eb; }
+  .tag-green { background: #f0fdf4; color: #16a34a; }
+
+  /* Follow-box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+
+  /* Deep dive */
+  .deep-dive {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .deep-dive summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1.05rem;
+    outline: none;
+  }
+  .deep-dive summary::-webkit-details-marker { display: none; }
+  .deep-dive summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    color: #667eea;
+    transition: transform 0.2s;
+  }
+  .deep-dive[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .deep-dive[open] summary {
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  .deep-dive-content {
+    padding-top: 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .deep-dive-content p {
+    margin-bottom: 0.8rem;
+  }
+  .deep-dive-content code {
+    background: #f3f4f6;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.85rem;
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Followup */
+  .followup {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px dashed #86efac;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 2rem;
+    color: #166534;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">Phase 2: Agent Engineering</span>
+    <h1 class="lesson-title">AI Agent 的 Identity Consistency 與 Persona Drift 控管</h1>
+    <p class="lesson-subtitle">讓 Agent 在不同情境下仍能「做自己」而不崩解</p>
+  </div>
+
+  <!-- Section: 為什麼這課非寫不可 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼這課非寫不可</div>
+    <p>在我們前面的課程裡，學過 Context Engineering（第 11 課）讓 Agent「記得重要資訊」、也學過 Dynamic Tool Extension（第 38 課）讓 Agent「根據情境即時生成工具」，但這兩件事加在一起，會產生一個隱藏的風險：<strong>Identity Drift（身份漂移）</strong>。Agent 在運行很長一段時間、或串聯多個子 Agent 之後，它的 persona 可能會悄悄偏離原本設定的樣子——本來應該「謹慎且結構化」的 agent，突然開始寫口語化、情緒化的回覆；本來該專注「寫 Python 腳本」的角色，突然開始講市場策略。<code>vibe broken</code> 有時不是因為程式碼錯，而是因為 agent 連「自己是誰」都搞不清楚了。這一課的目標，就是把 Identity Consistency（身份一致性）變成可設計、可監控、可修復的工程問題，而不是靠運氣。</p>
+  </div>
+
+  <!-- Section: Persona 的分層模型：什麼該動、什麼不該動 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> Persona 的分層模型：什麼該動、什麼不該動</div>
+    <p>設計 persona 的第一步，是學會把 persona 拆成<strong>三層</strong>，每層的穩定度不同：
+<code>核心層（Core Identity）</code>：這層是 agent 的「不可變量」，像是角色定位（「你是一個謹慎的系統架構師」）、基本价值观（「優先保障資料安全性」）、以及語言風格（「回覆使用繁體中文、結構清晰」）。這層應該出現在每次啟動時都會被載入的 <code>system prompt</code> 裡，且<strong>不該</strong>被 runtime 的上下文輕易覆蓋。
+<code>情境層（Contextual Persona）</code>：這層是「可切換」的，例如進入 payment 模組時 persona 會加上「現在你同時扮演 Stripe 整合顧問」，進入 code review 時會加上「現在你同時扮演 TDD 主義者」。情境層依賴 <code>role prompting</code> 機制，在 tool call 前後動態注入。
+<code>狀態層（State-Dependent Traits）</code>：這層是「根據長期記憶演化」的部分，例如 agent 在與使用者互動後「學會」的使用者偏好（「他喜歡極簡輸出，不要範例程式碼」）。這層應該存在 knowledge base 裡，而不是直接寫進 system prompt，避免每次都重新訓練 persona。
+這三分法的好處是：<strong>只有核心層有硬約束，其他層都可以動態調整</strong>，這樣 persona drift 就變成「該調整的地方沒調整」或「不該調整的地方被動到」兩個明確的診斷方向，而不是一團模糊的 vibe broken。</p>
+  </div>
+
+  <!-- Section: 診斷 persona drift：三種常見的崩解模式 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 診斷 persona drift：三種常見的崩解模式</div>
+    <p>當 vibe 開始不對勁，agent 的 persona 不是突然崩壞，而是按順序出現三種典型模式。學會辨識它們，就能把除錯時間從「整包重寫」縮短到「只修一個層」。
+<strong>模式 A：Context Bleed（上下文洩漏）</strong>——前一輪對話的 tool result 太長或太情緒化，被後續 context window 自動壓縮後殘留了語氣。Agent 本來在寫技術文件，突然開始用「老鐵」「真的絕了」這種口語化形容詞，這就是 context bleed：runtime context 的語氣污染了核心 persona。修復方法是在 context 截斷時加入 <code>tone filter</code>，把非語法內容的語氣詞過濾掉。
+<strong>模式 B：Multi-Agent Identity Clash（多 Agent 身份衝突）</strong>——Lesson 42 學過同步原語，但沒學「當兩個 agent 的 persona 互相矛盾時誰該讓步」。例如 Supervisor Agent 要求「輸出完整報告」，而 Writer Agent 的 persona 是「只給結論不要範例」，兩方同時驅動時就會出現對話邏輯分裂。修復方法是在 <code>role graph</code> 上預先標註 persona 的權重順序， supervisor 的 persona 在跨 agent 溝通時享有 higher priority。
+<strong>模式 B：Goal Drift（目標漂移）</strong>——agent 為了「完成任務」而無意中修改了自己的核心原則，例如本來該「安全優先」，在 deadline 壓力下開始「快速完成優先」。這是 persona 最隱蔽的崩解，因為看起來 vibe 還在，但 agent 已經偷偷改寫了核心約束。修復需要 periodic <code>persona audit</code>：每跑 N 個 step，用一個轻量 evaluator 檢查當前行為是否符合 core persona 的原始定義。</p>
+  </div>
+
+  <!-- Section: 帶指令範例：如何寫一個防 persona drift 的 starter prompt -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 帶指令範例：如何寫一個防 persona drift 的 starter prompt</div>
+    <p>下面是 <code>Cursor</code> 或 <code>Claude Code</code> 都可以直接貼進 <code>.cursorrules</code> / <code>CLAUDE.md</code> 的 starter prompt 範例。重點不在長，而在<strong>明確區分三個層</strong>並加上 <code>Anti-Drift Clause（防漂移條款）</code>——這是大部分入門教程不會教、但生产環境必寫的東西。</p>
+    <div class="terminal-block">
+<span class="comment"># 先建立 .cursorrules（或 CLAUDE.md）</span>
+<span class="prompt">$</span> <span class="cmd">echo &quot;</span>
+<span class="comment"># === CORE IDENTITY（不可變）===</span>
+你是一個資深全端架構師，風格：精簡、技術導向、優先考慮安全與可維護性。
+語言：繁體中文，非必要不使用口語化用語。
+工作原則：遇到不確定時寧可停下來詢問，不要猜測後硬寫。
+
+<span class="comment"># === CONTEXTUAL PERSONA（依任務切換）===</span>
+- 寫資料庫 schema 時：切換為數據建模專家，優先考慮歸一化與索引策略
+- 碼檢（code review）時：切換為 TDD 主義者，優先考慮測試覆蓋率與邊界條件
+- 與使用者討論市場方案時：切換為技術顧問，優先考慮 ROI 與落地成本
+
+<span class="comment"># === ANTI-DRIFT CLAUSES（防漂移條款）===</span>
+1. 每當你發現自己用了「老鐵」「真的絕了」「救命」等口語化詞彙，立即在下一則回覆中恢復正式語氣。
+2. 當 tool result 長超過 2000 tokens，在摘要時保留技術細節、捨棄情緒用語。
+3. 每完成一個子任務，用一句話自問：「我剛才的回覆風格符合 CORE IDENTITY 嗎？」若不符合，下一則回覆主動修正。
+&quot; &gt; .cursorrules
+<span class="comment"># 檔案建立完成後，reboot 開發環境讓 rules 生效</span>
+<span class="prompt">$</span> <span class="cmd">code .</span>
+<span class="output">[Cursor] .cursorrules 已載入</span>
+<span class="comment"># 或者在 Claude Code 中直接重啟</span>
+<span class="prompt">$</span> <span class="cmd">claude --reset-context</span>
+<span class="output">Context reset. System rules reloaded.</span>
+    </div>
+  </div>
+
+  <!-- Section: 深入解析：為什麼 context window 壓縮會吃掉 persona -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔬</span> 深入解析：為什麼 context window 壓縮會吃掉 persona</div>
+    <details class="deep-dive">
+      <summary>系統提示與上下文的權重競爭，是什麼機制讓 persona 在對話拉長後悄悄偏移？</summary>
+      <div class="deep-dive-content">
+        <p>這背後的機制叫做<strong>Attention Decay（注意力衰減）</strong>。大型語言模型的 attention 機制在處理長序列時，不是平均分配注意力，而是對「最近出現的內容」賦予更高權重。當 conversation history 超過 context window 的 60% 時，模型為了擠下新的 tool result 或使用者訊息，會自動壓縮最早期的內容——而這個最早期，通常就是 system prompt 裡的 persona 定義。壓縮過程不是一種「錯誤」，而是 attention 架構的必然行為。
+更具體地說，大多數 production 用的 agent framework（例如 LangChain、Vercel AI SDK、或 Claude 自身的 function calling）在 truncate context 時，會優先保留「最近 50% 的對話」，把「最早上 50%」中的 system prompt 和早期 tool call 壓縮掉。這意味著：<strong>persona 越複雜，它被壓縮掉的風險就越高</strong>。當你寫了 800 字的 system prompt，它在 context 長到 80k tokens 時可能只剩 200 字被 attention 到；當你只寫 80 字的核心 persona，它的相對權重反而更穩定。
+這也是為什麼 production agent 常見的做法是：<strong>核心 persona 不寫在 system prompt 的「末尾」，而是用「前 few tokens」的錨點方式寫入</strong>，並配合 periodic re-injection（每跑 N 步把 core persona 重新 inject 進 context）來對抗 attention decay。這就是本課後面要教的「persona audit」的基礎原理。</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Section: persona drift 的自動化檢查：設計一個 lightweight evaluator -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> persona drift 的自動化檢查：設計一個 lightweight evaluator</div>
+    <p>有了防漂移條款還不夠，你還需要一個<strong>定期檢視</strong>的機制。這個機制的核心思想很簡單：每跑 N 個 tool call（或每 N 分鐘），用一個輕量的「persona evaluator agent」對當前行為做快速評分，發現偏移時觸發 <code>self-correction loop</code>。
+Evaluator agent 不需要是頂級模型——用 <code>GPT-4o-mini</code> 或 <code>Claude Haiku</code> 就夠了，因為它的任務只是「打分數」，不是「寫程式」。評分維度建議三個：<strong>語氣符合度（Tone Match）</strong>、<strong>技術深度適中（Depth Match）</strong>、<strong>核心約束遵守（Constraint Compliance）</strong>。每個維度 1-5 分，总分低於 12 就觸發 <code>persona re-anchor</code>。
+實作上，可以在 agent loop 裡加一個 <code>Middleware Hook（中介層鉤子）</code>，在每次 model response 被送出前執行 evaluator。這個 hook 在 LangChain 裡是 <code>RunnableLambda</code>，在 Vercel AI SDK 裡是 <code>transformResponse</code> middleware。重點是 hook 不要阻塞主流程——evaluator 跑完只要分數低於閾值，才把 <code>persona reminder</code> 追加到接下來要 sent 的 context 裡，而不是直接改掉模型的回覆。</p>
+  </div>
+
+  <!-- Section: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 以下哪一項最準確描述了「Context Bleed」在 persona drift 中的角色？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">context bleed 是指 system prompt 被截斷後，模型強制插入新的 persona 定義，造成身份覆蓋</li>
+          <li onclick="checkAnswer(this, true)">context bleed 是指 runtime context（tool result、對話歷史）中的語氣或風格污染了 core persona，讓 agent 在不該變的地方變了</li>
+          <li onclick="checkAnswer(this, false)">context bleed 是指多個 agent 之間的 persona 衝突，導致 supervisor agent 無法決定要用哪個角色的輸出</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 描述的是「persona overwrite（ persona 覆蓋）」而非 context bleed；C 描述的是「multi-agent identity clash（Lesson 42 的延伸主題）。Context bleed 的根源是 runtime context 的語氣洩漏到核心 persona，B 的描述最精確：tool result 或對話歷史帶著口語化語氣進入 context window，壓縮時把這些語氣殘留下來，agent 在後續回覆中不自覺地使用了這些語氣，這就是 context bleed 的機制。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 小測驗（第二題） -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗（第二題）</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 根據 Deep Dive 中解釋的「Attention Decay」機制，以下哪一個做法最能直接對抗 persona 被壓縮掉的風險？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">把 system prompt 寫得越長越好（例如 2000 字），讓核心 persona 在壓縮後仍有足夠文字保留</li>
+          <li onclick="checkAnswer(this, true)">把核心 persona 拆成「前 few tokens 的錨點」並配合 periodic re-injection，在 context 拉長時主動重新載入</li>
+          <li onclick="checkAnswer(this, false)">把 persona 寫進 knowledge base，讓模型在每次 context 壓縮時自動從知識庫裡撈出 persona 定義</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A 是錯誤的——prompt 越長，在 context 壓縮時被截掉的絕對量越大，反而加速 drift；這是反直覺但重要的發現。C 描述的是從 knowledge base 動態載入，但這依賴 RAG pipeline 的穩定性，且 knowledge base 的檢索結果不受 attention 錨點保護。B 是正確做法：把核心 persona 保持在 context 開頭的錨點位置（高 attention 權重），並用 periodic re-injection 對沖 attention decay——這正是 production agent 的標準做法，也是本課 Deep Dive 中明確提出的機制。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🚀</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請依序完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">任務一：建立防 persona drift 的 starter prompt
+打開你的專案根目錄，建立或編輯 <code>.cursorrules</code>（Cursor 使用者）或 <code>CLAUDE.md</code>（Claude Code 使用者），把本課第 4 節的三層 persona 模型寫進去，特別是要加入那三條 Anti-Drift Clauses。不要用 copy-paste，改成符合你自己專案風格的版本。</li>
+        <li style="padding: 0.5rem 0;">任務二：實測 persona drift
+用 Cursor 或 Claude Code 開啟一個真實的 Next.js 專案，先讓 agent 幫你寫一個小功能（例如 Supabase 的 CRUD），然後在接下來的 10-15 輪對話裡持續跟它討論同一個主題。觀察 agent 的語氣有沒有開始變口語化、變情緒化，或是開始講與技術無關的內容。把觀察到的漂移現象記錄下來（文字即可，不用截圖）。</li>
+        <li style="padding: 0.5rem 0;">任務三：設計一個 lightweight persona evaluator
+用 Claude Code 或 Cursor 幫自己寫一個簡單的 evaluator script（可以用 Python 或 TypeScript），功能很簡單：讀取最近 N 則 agent 回覆，用一個輕量模型評分「語氣是否符合核心 persona」。評分結果輸出成 JSON，包含 <code>tone_score</code>、<code>depth_score</code>、<code>constraint_score</code> 三個欄位。這不是 production 級的 evaluator，只是練習目的，能用正則或關鍵字做基本比對就夠了。</li>
+        <li style="padding: 0.5rem 0;">任務四：加入 periodic re-injection hook
+在你的 agent 工作流程裡（可以是一個簡單的 Node.js/Bun 腳本，或用 Vercel AI SDK 的 <code>transformResponse</code> middleware），實作每 5 次 tool call 就把 core persona 的前 3 句重新 inject 進 context 的機制。觀察 re-injection 前後 agent 的回覆語氣有沒有穩定下來。這是一個可驗證的對照實驗，請記錄 before/after 的差異。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Followup Reminder -->
+  <div class="followup">
+    💡 有任何不清楚的地方嗎？隨時問我！這些都可以繼續深入探討。
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>Vibe Coding Masterclass · Lesson 45 · AI Agent 的 Identity Consistency 與 Persona Drift 控管</p>
+    <p style="margin-top: 0.3rem;">下一課預告：「第 46 課：Guardrail 與紅隊測試：讓 Agent 在壓力下不失軌」</p>
+  </div>
+
+</div>
+
+<script>
+
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+</script>
+</body>
+</html>
