@@ -740,6 +740,16 @@
     "generatedDate": "2026-09-09"
   },
   {
+    "id": "french-lesson-75",
+    "title": "French Lesson 75",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-75.html",
+    "path": "lessons/french/french-lesson-75.html",
+    "number": 75,
+    "generatedDate": "2026-09-10"
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
