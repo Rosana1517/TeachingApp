@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 32 — 衝動風暴，等十分鐘</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 32 課</span>
+    <h1 class="lesson-title">衝動風暴，等十分鐘</h1>
+    <p class="lesson-subtitle">當逃避的衝動湧現時，學習與它共處而不是立刻服從</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 什麼是衝動風暴？</div>
+    <p>當你感到焦慮、害怕衝突，或是想推掉某個任務時，身體會湧現一股強烈的衝動：<strong>「現在就逃避，立刻說好、立刻離開、立刻轉移話題。」</strong>這個衝動來得快、去得也快，像一陣風暴。<br><br>CBT 與 ACT 的觀點是：<strong>衝動不等於指令。</strong>你有權利感受那個衝動，但不必立刻照做。關鍵在於讓風暴自然減弱，然後再用你自己選擇的方式回應。<br><br>今天只學一件事：在衝動最強的時刻，給自己一個 <strong>十分鐘的緩衝期</strong>。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>理解「衝動風暴」的兩個關鍵，能幫助你在當下不被它牽著走。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">衝動有極性</div>
+        <div class="principle-desc">焦慮與逃避的衝動通常在湧現後五到十分鐘內達到高峰，然後自然減弱。就像海浪，最浪的那一刻過去後，就不需要再拼命抵抗。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">衝動不等於行動</div>
+        <div class="principle-desc">感受到「想要逃避」的衝動，不代表你必須逃避。你可以選擇等一下再決定怎麼做，這十分鐘的緩衝，就是打斷自動反應的關鍵空間。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的方法</div>
+    <p>當衝動風暴來襲時，不用立刻做決定。試試這幾個簡單的步驟：</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">對方突然提出要求，你第一反應是想立刻答應（討好衝動）</span>
+          <span class="line">'我先把這個記下來，等一下再跟你確認細節，好嗎？'</span>
+        </li>
+        <li>
+          <span class="situation">想到某件事就很焦慮，想直接閃避</span>
+          <span class="line">'這件事我現在還沒準備好回應，我想一下，晚一點再跟你說。'</span>
+        </li>
+        <li>
+          <span class="situation">內心很想退出某個情境，身體已經準備逃跑</span>
+          <span class="line">'我現在需要一點時間消化，十分鐘後我再過來。'</span>
+        </li>
+        <li>
+          <span class="situation">別人說話讓你不安，想立刻反擊或退讓</span>
+          <span class="line">'我需要想一想，等一下再回答你。'</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 這十分鐘不需要用來「想清楚」，只需要用來「等風暴過去」。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>在衝動風暴中，有些反應會讓情況更糟。避免這些做法：</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">立刻說「好」來結束焦慮</td><td>這短期緩解焦慮，但長期強化了「逃避就能舒服」的連結，下次衝動會更強烈。</td></tr>
+        <tr><td class="bad">在衝動最強時做重大決定</td><td>極端情緒下的判斷容易偏向極端，事後往往會後悔或發現有更好的選項。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 當焦慮衝動湧現時，最正確的回應方式是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">立刻逃離，徹底避免不適感</li>
+          <li onclick="checkAnswer(this, true)">等十分鐘，讓衝動自然減弱後再決定</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">正確答案是等十分鐘。立即逃離會強化逃避模式，而緩衝期能讓衝動的強度自然下降，為你創造選擇的空間。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「衝動不等於指令」的含意是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">感受衝動不代表一定要照著做</li>
+          <li onclick="checkAnswer(this, false)">衝動是虛假的，應該忽略它</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">正確答案是不代表一定要照著做。CBT 與 ACT 強調的是接納衝動的存在，但同時保有選擇的權利，而不是壓抑或忽略它。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>今天遇到任何想立刻逃避或立刻答應的情境，先說一句緩衝句：「我等一下再回覆你」或「我想一下」</li>
+        <li>設定手機倒數十分鐘，在這十分鐘內只做一件事：什麼都不做，單純等待</li>
+        <li>記錄一次你成功等到風暴減弱的經驗，寫下當時的衝動、等待的過程，以及之後的選擇</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 32 課 · 2026-09-13</p>
+    <p class="next">下一課：下一次課將帶你練習在真實情境中，用十分鐘的緩衝期打斷自動反應</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
