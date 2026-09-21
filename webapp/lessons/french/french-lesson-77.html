@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 77 — 第 77 課：法語被動語態（Voix Passive）的入門</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 77</span>
+    <h1 class="lesson-title">第 77 課：法語被動語態（Voix Passive）的入門</h1>
+    <p class="lesson-subtitle">掌握「被」字句的結構與主動→被動轉換技巧</p>
+  </div>
+
+  <!-- Section 1: 被動語態的基本結構 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 被動語態的基本結構</div>
+    <p>法語被動語態（<strong>La voix passive</strong>）用來強調動作的承受者，而非執行者。結構為：<strong>être（現在式）+ 過去分詞 + par / de + 動作執行者</strong>。主動句的主詞在被動句中變成執行者，由介系詞 <em>par</em>（表示動作）或 <em>de</em>（表示狀態或情感）引導。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>注意被動語態中，<strong>être</strong> 的發音與過去分詞的連讀變化。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">est prononcé</div>
+        <div class="pron-ipa">被動語態中 est 與過去分詞通常聯誦</div>
+        <div class="pron-example"><em>Le livre est prono-[n]oncé</em>（這本書被朗讀）<button class="speak-btn" onclick='speakFrench("Le livre est prono-[n]onc\u00e9")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">souri[ø]</div>
+        <div class="pron-ipa">être 的過去分詞 souri 與 est 聯誦，s 發 /z/ 音</div>
+        <div class="pron-example"><em>Il est souri[ø] par tout le monde</em>（他被所有人喜愛）<button class="speak-btn" onclick='speakFrench("Il est souri[\u00f8] par tout le monde")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">fini[e]</div>
+        <div class="pron-ipa">以 i 結尾的過去分詞，e muet 不發音</div>
+        <div class="pron-example"><em>Le travail est fini[e]</em>（工作已完成）<button class="speak-btn" onclick='speakFrench("Le travail est fini[e]")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>朗讀以下句子，注意 <strong>être</strong> 的變位與過去分詞的一致性，以及聯誦。</p>
+    <div class="follow-box">
+      <h4>朗讀以下句子，注意 <strong>être</strong> 的變位與過去分詞的一致性，以及聯誦。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Le chat est mangé par le chien.</span>
+          <span class="ipa">/lə ʃa ɛ mɑ̃.ʒe pa lə ʃjɛ̃/</span>
+          <span class="meaning">—— 貓被狗吃了。</span>
+          <button class="speak-btn" onclick='speakFrench("Le chat est mang\u00e9 par le chien.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">La lettre a été écrite hier.</span>
+          <span class="ipa">/la lɛtʁ a ʃe a.kʁit jɛʁ/</span>
+          <span class="meaning">—— 信昨天被寫了。</span>
+          <button class="speak-btn" onclick='speakFrench("La lettre a \u00e9t\u00e9 \u00e9crite hier.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Les fleurs sont offertes par mon frère.</span>
+          <span class="ipa">/le flœʁ sɔ̃ n.fɔʁ.te pa mɔ̃ fʁɛʁ/</span>
+          <span class="meaning">—— 花被我哥哥送來了。</span>
+          <button class="speak-btn" onclick='speakFrench("Les fleurs sont offertes par mon fr\u00e8re.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Ce projet est mené par une équipe.</span>
+          <span class="ipa">/sə pʁɔ.ʒɛ ɛ mə.ne pa y.nɛk.ip/</span>
+          <span class="meaning">—— 這個計畫由一個團隊執行。</span>
+          <button class="speak-btn" onclick='speakFrench("Ce projet est men\u00e9 par une \u00e9quipe.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：被動語態中，過去分詞必須與主詞在性別和數目上保持一致。</p>
+  </div>
+
+  <!-- Section ⚡: 主動語態與被動語態轉換 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 主動語態與被動語態轉換</div>
+    <p>將主動句轉換為被動句時，原句的<strong>直接受詞</strong>變成被動句的<strong>主詞</strong>，原句的<strong>主詞</strong>變成由 <em>par</em> 或 <em>de</em> 引導的執行者。注意時態同步：<strong>現在式 → être 現在式 + 過去分詞</strong>。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">主動</div>
+        <div class="pron-ipa">Le professeur explique la leçon.</div>
+        <div class="pron-example">/lə pʁɔ.fɛ.sœʁ ɛk.splɛk la lɛ.sɔ̃/<button class="speak-btn" onclick='speakFrench("")' aria-label="播放發音">🔊</button><br>現在式主動語態</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">被動</div>
+        <div class="pron-ipa">La leçon est expliquée par le professeur.</div>
+        <div class="pron-example">/la lɛ.sɔ̃ ɛ ɛk.spli.ke pa lə pʁɔ.fɛ.sœʁ/<button class="speak-btn" onclick='speakFrench("")' aria-label="播放發音">🔊</button><br>現在式被動語態，過去分詞加 -e 與 leçon 一致</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">主動</div>
+        <div class="pron-ipa">Marie a construit cette maison.</div>
+        <div class="pron-example">/ma.ʁi a kɔ̃s.tʁɥi sɛt mɛ.zɔ̃/<button class="speak-btn" onclick='speakFrench("")' aria-label="播放發音">🔊</button><br>複合過去時主動</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">被動</div>
+        <div class="pron-ipa">Cette maison a été construite par Marie.</div>
+        <div class="pron-example">/sɛt mɛ.zɔ̃ a ʃe kɔ̃s.tʁɥi.te pa ma.ʁi/<button class="speak-btn" onclick='speakFrench("")' aria-label="播放發音">🔊</button><br>複合過去時被動，être 用 passé composé</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 下列哪一句是正確的被動語態？（主動句：Le chef prépare le dîner.）</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Le dîner est préparer par le chef.</li>
+          <li onclick="checkAnswer(this, true)">B. Le dîner est préparé par le chef.</li>
+          <li onclick="checkAnswer(this, false)">C. Le dîner a préparé par le chef.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。過去分詞 préparé 必須與主詞 le dîner 保持性數一致，且être需用現在式第三人稱單數 est。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「La porte est ouverte par le gardien.」中， ouvert 為什麼加 -e？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 因為 gardien 是陰性</li>
+          <li onclick="checkAnswer(this, true)">B. 因為 porte 是陰性名詞，過去分詞需一致</li>
+          <li onclick="checkAnswer(this, false)">C. 因為開頭的 o 音需要</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。過去分詞 ouverture 必須與主詞 la porte（陰性）保持一致，因此加 -e。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">將以下 5 個主動句轉換為被動語態：(1) Je mange la pomme. (2) Paul lit le livre. (3) Nous avons terminé le travail. (4) Marie chante cette chanson. (5) Le chat attrape la souris.</li>
+        <li style="padding: 0.5rem 0;">朗讀並錄音：被動語態的 4 個例句，注意聯誦與過去分詞一致性。</li>
+        <li style="padding: 0.5rem 0;">用被動語態描述 3 個你日常看到的動作（例如：Le pain est vendu à la boulangerie.）。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 77 · 第 77 課：法語被動語態（Voix Passive）的入門 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 78 課：法語被動語態的時態應用與綜合練習</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
