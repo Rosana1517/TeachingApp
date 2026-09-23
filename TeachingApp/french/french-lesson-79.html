@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 79 — 第 79 課：法語口語時態的簡化與連讀實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 79</span>
+    <h1 class="lesson-title">第 79 課：法語口語時態的簡化與連讀實戰</h1>
+    <p class="lesson-subtitle">掌握日常會話中的時態縮略與流暢表達</p>
+  </div>
+
+  <!-- Section 1: 口語時態簡化概述 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 口語時態簡化概述</div>
+    <p>在口語中，法語的時態表達往往會簡化，以提升流暢度。<strong>複合過去時</strong>常省略「ne」，並與動詞形成連讀；<strong>未完成時</strong>的口語發音會弱化詞尾；<strong>條件式</strong>則常與虛擬式混用。本課將聚焦於口語中的實戰連讀與發音技巧。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下展示口語中常見的時態縮略與連讀現象，請對照法語單字與中文意思進行練習。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">j'ai mangé</div>
+        <div class="pron-ipa">複合過去時，口語中常省略「ne」，並與動詞連讀為「ʒe.mɑ̃.ɡe」</div>
+        <div class="pron-example"><em>J'ai mangé une pomme.</em>（我吃了一個蘋果。）<button class="speak-btn" onclick='speakFrench("J&#39;ai mang\u00e9 une pomme.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">il fallait</div>
+        <div class="pron-ipa">未完成時，詞尾「-ait」口語中常發為「ɛ」，並與後面的詞連讀</div>
+        <div class="pron-example"><em>Il fallait partir.</em>（必須離開。）<button class="speak-btn" onclick='speakFrench("Il fallait partir.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">je voudrais</div>
+        <div class="pron-ipa">條件式現在時，口語中「drais」常發為「dʁɛ」，與前面的詞連讀</div>
+        <div class="pron-example"><em>Je voudrais un café.</em>（我想要一杯咖啡。）<button class="speak-btn" onclick='speakFrench("Je voudrais un caf\u00e9.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">on a fini</div>
+        <div class="pron-ipa">口語常用「on」代替「nous」，複合過去時連讀為「ɔ̃.na.fi.ni」</div>
+        <div class="pron-example"><em>On a fini le travail.</em>（我們完成了工作。）<button class="speak-btn" onclick='speakFrench("On a fini le travail.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下口語時態句子，注意連讀與弱化現象，並模仿自然語速。</p>
+    <div class="follow-box">
+      <h4>請跟讀以下口語時態句子，注意連讀與弱化現象，並模仿自然語速。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">J'suis allé</span>
+          <span class="ipa">/ʒɥi.z‿a.le/</span>
+          <span class="meaning">—— 我去過（口語省略 suis 的聯誦）</span>
+          <button class="speak-btn" onclick='speakFrench("J&#39;suis all\u00e9")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">T'as vu ?</span>
+          <span class="ipa">/ta vy/</span>
+          <span class="meaning">—— 你看到了嗎？（口語省略 tu 的聯誦）</span>
+          <button class="speak-btn" onclick='speakFrench("T&#39;as vu ?")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il a parlé</span>
+          <span class="ipa">/i.la.pa.le/</span>
+          <span class="meaning">—— 他說過（口語中「a」與「parlé」連讀）</span>
+          <button class="speak-btn" onclick='speakFrench("Il a parl\u00e9")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Nous avons fini</span>
+          <span class="ipa">/nu.z‿a.vɔ̃ fi.ni/</span>
+          <span class="meaning">—— 我們完成了（口語中「avons」與「fini」連讀）</span>
+          <button class="speak-btn" onclick='speakFrench("Nous avons fini")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：口語中，省略「ne」和連讀是提升流暢度的關鍵，練習時請放鬆舌頭，讓音節自然連接。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>口語時態與書面語的主要差異在於省略、連讀與弱化，以下是具體對照。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">書面語</div>
+        <div class="pron-ipa">Porte‑toi bien.</div>
+        <div class="pron-example">Porte‑toi bien.<button class="speak-btn" onclick='speakFrench("Porte\u2011toi bien.")' aria-label="播放發音">🔊</button><br>口語中常省略「ne」，並連讀為「Porte‑toi bien」→ /pɔʁ.twa.bjɛ̃</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">口語簡化</div>
+        <div class="pron-ipa">J'ai pas compris.</div>
+        <div class="pron-example">J'ai pas compris.<button class="speak-btn" onclick='speakFrench("J&#39;ai pas compris.")' aria-label="播放發音">🔊</button><br>複合過去時否定口語中常省略「ne」，連讀為「J'ai pas」→ /ʒɛ.pɛ.kɔ̃.pʁi</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">連讀現象</div>
+        <div class="pron-ipa">Ils ont aimé.</div>
+        <div class="pron-example">Ils ont aimé.<button class="speak-btn" onclick='speakFrench("Ils ont aim\u00e9.")' aria-label="播放發音">🔊</button><br>口語中「ont」與「aimé」連讀，發音為 /il.z‿ɔ̃.t‿a.me/</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">弱化詞尾</div>
+        <div class="pron-ipa">Je parlais.</div>
+        <div class="pron-example">Je parlais.<button class="speak-btn" onclick='speakFrench("Je parlais.")' aria-label="播放發音">🔊</button><br>未完成時詞尾「-ais」口語中常發為 /ɛ/，並與後面的詞連讀</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 口語中，複合過去時常見的簡化現象是什麼？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 省略助動詞 avoir</li>
+          <li onclick="checkAnswer(this, true)">B. 省略 ne 並與過去分詞連讀</li>
+          <li onclick="checkAnswer(this, false)">C. 將過去分詞改為現在分詞</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 口語中複合過去時常省略否定詞 ne，並將助動詞與過去分詞連讀，例如「J'ai pas mangé」取代「Je n'ai pas mangé」。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪句是口語中常見的未完成時發音弱化？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. Je parlais → /ʒə paʁ.lɛ/</li>
+          <li onclick="checkAnswer(this, false)">B. Je parlais → /ʒə paʁ.lɛz/</li>
+          <li onclick="checkAnswer(this, false)">C. Je parlais → /ʒə paʁ.laj/</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 未完成時詞尾「-ais」在口語中常弱化為 /ɛ/，因此「Je parlais」發音為 /ʒə paʁ.lɛ/，而非 /ɛz/ 或 /aj/。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">口語發音練習：用連讀方式朗讀 5 個複合過去時句子，並錄音自我檢查。</li>
+        <li style="padding: 0.5rem 0;">寫作任務：將 3 個書面語句子轉寫為口語簡化形式，注意省略 ne 與連讀。</li>
+        <li style="padding: 0.5rem 0;">聽力跟讀：選擇一段法語口語對話，模仿其中的時態連讀與弱化現象。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 79 · 第 79 課：法語口語時態的簡化與連讀實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 80 課：法語聽力實戰——日常對話理解</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
