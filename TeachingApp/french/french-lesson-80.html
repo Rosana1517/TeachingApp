@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 80 — 第 80 課：法語間接引語的時態配合實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 80</span>
+    <h1 class="lesson-title">第 80 課：法語間接引語的時態配合實戰</h1>
+    <p class="lesson-subtitle">從直接引語到間接引語的動詞時態轉換規則</p>
+  </div>
+
+  <!-- Section 1: 間接引語時態配合概覽 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 間接引語時態配合概覽</div>
+    <p>當我們在法語中將某人的話轉述給第三人時，動詞的時態必須「向過去推一步」。這是法語語法中非常重要的規則，稱為「時態諧和」（concordance des temps）。<strong>主句動詞若為現在式或未來式，直接引語的時態轉換規則如下：</strong></p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下為時態配合常用的關鍵動詞與例句，請注意連誦與重音位置。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">dit que</div>
+        <div class="pron-ipa">/di kə/，連誦 d 與 que 形成 /k/</div>
+        <div class="pron-example"><em>Il dit que « je viendrai ». → Il dit qu'il viendrait.</em>（他說：「我會來。」→ 他說他會來。）<button class="speak-btn" onclick='speakFrench("Il dit que \u00ab je viendrai \u00bb. \u2192 Il dit qu&#39;il viendrait.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">a dit que</div>
+        <div class="pron-ipa">/a di kə/，dit 不發尾音 t，que 前發生連誦</div>
+        <div class="pron-example"><em>Elle a dit que « nous partons ». → Elle a dit qu'ils partaient.</em>（她說：「我們出發。」→ 她說他們出發。）<button class="speak-btn" onclick='speakFrench("Elle a dit que \u00ab nous partons \u00bb. \u2192 Elle a dit qu&#39;ils partaient.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">pense que</div>
+        <div class="pron-ipa">/pɑ̃s kə/，ps 發 /s/ 音</div>
+        <div class="pron-example"><em>Je pense que « tu as raison ». → Je pensais que tu avais raison.</em>（我認為：「你是對的。」→ 我認為他是對的。）<button class="speak-btn" onclick='speakFrench("Je pense que \u00ab tu as raison \u00bb. \u2192 Je pensais que tu avais raison.")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">savoir que</div>
+        <div class="pron-ipa">/sa.vwaʁ kə/，savoir 的 r 為喉音 R</div>
+        <div class="pron-example"><em>Je savais que « il a fini ». → Je savais qu'il avait fini.</em>（我知道：「他做完了。」→ 我知道他已經做完了。）<button class="speak-btn" onclick='speakFrench("Je savais que \u00ab il a fini \u00bb. \u2192 Je savais qu&#39;il avait fini.")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📋: 時態轉換規則對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📋</span> 時態轉換規則對照</div>
+    <p>當主句動詞為現在式或未來式時，直接引語的時態需按以下規則轉換為間接引語：</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">現在式 → 未完成式</div>
+        <div class="pron-ipa">直接引語的現在式，轉為間接引語的未完成式</div>
+        <div class="pron-example">« Je suis fatigué. » → Il a dit qu'il était fatigué.<button class="speak-btn" onclick='speakFrench("\u00ab Je suis fatigu\u00e9. \u00bb \u2192 Il a dit qu&#39;il \u00e9tait fatigu\u00e9.")' aria-label="播放發音">🔊</button><br>注意être的未完成式變位：étais, était, étions, étiez, étaient</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">簡單未來時 → 條件式現在時</div>
+        <div class="pron-ipa">直接引語的簡單未來時，轉為間接引語的條件式現在時</div>
+        <div class="pron-example">« Je partirai demain. » → Il a dit qu'il partirait demain.<button class="speak-btn" onclick='speakFrench("\u00ab Je partirai demain. \u00bb \u2192 Il a dit qu&#39;il partirait demain.")' aria-label="播放發音">🔊</button><br>條件式現在時由簡單未來詞幹 + 未完成詞尾構成</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">複合過去時 → 過去未完成時</div>
+        <div class="pron-ipa">直接引語的複合過去時，轉為間接引語的過去未完成時（imparfait）</div>
+        <div class="pron-example">« J'ai mangé. » → Elle a dit qu'elle avait mangé.<button class="speak-btn" onclick='speakFrench("\u00ab J&#39;ai mang\u00e9. \u00bb \u2192 Elle a dit qu&#39;elle avait mang\u00e9.")' aria-label="播放發音">🔊</button><br>複合過去時的助動詞也需變為未完成式</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">無限式 → 不變</div>
+        <div class="pron-ipa">直接引語中的無限式動詞，在間接引語中保持不變</div>
+        <div class="pron-example">« Je veux partir. » → Il a dit qu'il voulait partir.<button class="speak-btn" onclick='speakFrench("\u00ab Je veux partir. \u00bb \u2192 Il a dit qu&#39;il voulait partir.")' aria-label="播放發音">🔊</button><br>vouloir 變為未完成式，partir 保持無限式</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">虛擬式 → 虛擬式未完成時</div>
+        <div class="pron-ipa">直接引語的虛擬式，轉為間接引語的虛擬式未完成時（較正式用法）</div>
+        <div class="pron-example">« Il faut que tu viennes. » → Il a dit qu'il fallait que je vinssе.<button class="speak-btn" onclick='speakFrench("\u00ab Il faut que tu viennes. \u00bb \u2192 Il a dit qu&#39;il fallait que je vinss\u0435.")' aria-label="播放發音">🔊</button><br>現代口語中較少使用虛擬式未完成時，可用條件式代替</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下句子，注意動詞時態的轉換與連誦。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下句子，注意動詞時態的轉換與連誦。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Il dit qu'il vient.</span>
+          <span class="ipa">/il di k‿il bjɛ̃/</span>
+          <span class="meaning">—— 他說他來。</span>
+          <button class="speak-btn" onclick='speakFrench("Il dit qu&#39;il vient.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle a dit qu'elle viendrait.</span>
+          <span class="ipa">/ɛl a di k‿ɛl kjɛ̃dʁɛ/</span>
+          <span class="meaning">—— 她說她會來。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle a dit qu&#39;elle viendrait.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Je pense qu'il fait beau.</span>
+          <span class="ipa">/ʒə pɑ̃s k‿il fɛ bo/</span>
+          <span class="meaning">—— 我認為天氣很好。</span>
+          <button class="speak-btn" onclick='speakFrench("Je pense qu&#39;il fait beau.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Il a dit qu'il faisait beau.</span>
+          <span class="ipa">/il a di k‿il fɛzɛ bo/</span>
+          <span class="meaning">—— 他說天氣很好。</span>
+          <button class="speak-btn" onclick='speakFrench("Il a dit qu&#39;il faisait beau.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle pense qu'il a raison.</span>
+          <span class="ipa">/ɛl pɑ̃s k‿il a ʁɛzɔ̃/</span>
+          <span class="meaning">—— 她認為他是對的。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle pense qu&#39;il a raison.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Elle a dit qu'il avait raison.</span>
+          <span class="ipa">/ɛl a di k‿il avɛ ʁɛzɔ̃/</span>
+          <span class="meaning">—— 她說他是對的。</span>
+          <button class="speak-btn" onclick='speakFrench("Elle a dit qu&#39;il avait raison.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：朗讀時先讀出直接引語版本，再讀出間接引語版本，對比感受時態的變化。</p>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「Il a dit : « Je finirai demain. »」轉換為間接引語，正確答案為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Il a dit qu'il finira demain.</li>
+          <li onclick="checkAnswer(this, true)">B. Il a dit qu'il finirait demain.</li>
+          <li onclick="checkAnswer(this, false)">C. Il a dit qu'il a fini demain.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 簡單未來時（finirai）在間接引語中變為條件式現在時（finirait）。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「Elle dit : « Nous sommes contents. »」轉換為間接引語，正確答案為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Elle dit qu'ils sont contents.</li>
+          <li onclick="checkAnswer(this, true)">B. Elle a dit qu'ils étaient contents.</li>
+          <li onclick="checkAnswer(this, false)">C. Elle dit qu'ils ont été contents.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 現在式（sommes）在間接引語中變為未完成式（étaient），且主詞由 nous 改為 ils。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「Je pense que tu as terminé.」的過去式版本（主句變為過去）為何？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. J'ai pensé que tu as terminé.</li>
+          <li onclick="checkAnswer(this, true)">B. J'ai pensé que tu avais terminé.</li>
+          <li onclick="checkAnswer(this, false)">C. J'ai pensé que tu aurais terminé.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 主句動詞改為過去式（ai pensé）後，直接引語的複合過去時（as terminé）需變為過去未完成時（avais terminé）。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">4. 以下哪個句子正確反映了時態諧和規則？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Il dit qu'il viendra. (正確)</li>
+          <li onclick="checkAnswer(this, true)">B. Il a dit qu'il viendrait. (正確)</li>
+          <li onclick="checkAnswer(this, false)">C. Il a dit qu'il vient. (正確)</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 主句為過去式（a dit），直接引語的未來式（viendra）需變為條件式現在時（viendrait）。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">將以下 5 個直接引語句子轉換為間接引語：1. « Je parle français.」 2. « Nous voyagerons en été.」 3. « J'ai acheté un livre.」 4. « Tu es intelligent.」 5. « Je comprends la leçon.」</li>
+        <li style="padding: 0.5rem 0;">錄音朗讀第 80 課「跟練時間」中的所有句子，注意每個動詞時態的轉換與連誦，然後回聽檢查發音是否準確。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 80 · 第 80 課：法語間接引語的時態配合實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語被動態的過去時態配合</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
