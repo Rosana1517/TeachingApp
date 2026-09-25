@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心靈成長 34 — 觀察想法，不被想法牽著走</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fbfaf7;
+    color: #24211d;
+    line-height: 1.9;
+    padding: 3rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .lesson-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: #2f6f5e;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.1rem;
+  }
+  .lesson-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle { font-size: 1rem; color: #6f6a62; }
+
+  .section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #2f6f5e1f;
+    color: #2f6f5e;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section p { margin-bottom: 1rem; }
+  .tip { color: #7d776d; font-size: 0.9rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0;
+  }
+  .principle-card {
+    background: #fff;
+    border: 1px solid #e5e0d6;
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+  .principle-term {
+    font-weight: 700;
+    color: #2f6f5e;
+    margin-bottom: 0.35rem;
+  }
+  .principle-desc { font-size: 0.9rem; color: #5b564e; line-height: 1.7; }
+
+  .script-box {
+    background: #f2f7f4;
+    border: 1px solid #cfe2d8;
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+  .script-box h4 { font-size: 0.95rem; color: #2f6f5e; margin-bottom: 0.8rem; }
+  .script-list { list-style: none; }
+  .script-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #d8e5dd;
+  }
+  .script-list li:last-child { border-bottom: none; }
+  .script-list .situation {
+    display: block;
+    font-size: 0.8rem;
+    color: #7d8f86;
+    margin-bottom: 0.15rem;
+  }
+  .script-list .line { font-weight: 600; color: #1f4a3e; }
+
+  table.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.92rem;
+  }
+  table.compare th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8a857b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e0d6;
+  }
+  table.compare td {
+    padding: 0.7rem 0.8rem 0.7rem 0;
+    border-bottom: 1px solid #f0ece3;
+    vertical-align: top;
+  }
+  table.compare td.bad { color: #9d3e26; font-weight: 600; }
+
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #2f6f5e33;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .quiz-box h4 { font-size: 1rem; margin-bottom: 1rem; }
+  .quiz-item {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid #f2efe8;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question { font-weight: 600; margin-bottom: 0.6rem; }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.55rem 0.9rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid #e5e0d6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.93rem;
+    transition: background 0.15s;
+  }
+  .quiz-options li:hover { background: #f5f8f6; }
+  .quiz-options li.correct { background: #dff0e6; border-color: #7cb79b; font-weight: 600; }
+  .quiz-options li.wrong { background: #fbe6e0; border-color: #d9a08d; }
+
+  .reveal-btn {
+    margin-top: 0.8rem;
+    padding: 0.45rem 1.2rem;
+    background: #2f6f5e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer {
+    display: none;
+    margin-top: 0.7rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid #cfe2d8;
+    color: #4a5f56;
+    font-size: 0.9rem;
+  }
+
+  .task-box {
+    background: #fdf8ee;
+    border: 1px solid #ecdfc4;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .task-box h4 { font-size: 0.95rem; color: #8a6d2f; margin-bottom: 0.7rem; }
+  .task-box ol { padding-left: 1.3rem; }
+  .task-box li { padding: 0.4rem 0; }
+
+  .disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    background: #f4f2ee;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #6f6a62;
+  }
+
+  .lesson-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e0d6;
+    color: #9b958b;
+    font-size: 0.82rem;
+  }
+  .lesson-footer .next { margin-top: 0.3rem; }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="lesson-header">
+    <span class="lesson-number">第 34 課</span>
+    <h1 class="lesson-title">觀察想法，不被想法牽著走</h1>
+    <p class="lesson-subtitle">學會在焦慮與恐懼來襲時，停下來看清它們只是想法，不是命令</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼你總是「跟著想法跑」</div>
+    <p>你大約有這樣的經驗：腦中冒出一個念頭，比如「他一定是在暗示我不夠好」，然後身體瞬間緊繃、心跳加速，接下來腦子裡自動開始編織各種最壞的劇本，最後不是逃避就是慌張回應。這一切發生得快到來不及思考——你根本還沒意識到，那只是「一個想法」，卻已經被它帶走了。CBT 與 ACT 提醒我們：<strong>想法不等於事實</strong>，它只是大腦產出的一串文字與畫面。學會觀察想法，是打斷自動反應的第一步。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 概念拆解</div>
+    <p>觀察想法，不是要去消滅它、否定它，也不是告訴自己「不要想這個」——那反而會讓它更強。真正的做法是<strong>調整你與想法之間的關係</strong>：讓它出現，但不被它牽著走。</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <div class="principle-term">認知解離</div>
+        <div class="principle-desc">把「想法」和「現實」分開，看見它只是大腦的一場放映，不是必須服從的命令。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">想法只是想法</div>
+        <div class="principle-desc">腦中出現什麼念頭都沒關係，關鍵是你願不願意跟它走。</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-term">觀察者位置</div>
+        <div class="principle-desc">退後一步，把注意力放在「看見想法的這個自己」，而不是想法的內容。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 可以直接用的句型</div>
+    <p>當一個強烈的想法冒出來時，先用這句話為自己創造一個緩衝空間：「我注意到我現在有一個想法，覺得……」這句話的重點不在內容，而在<strong>把想法還原成一個觀察對象</strong>，而不是當成立刻要相信的事。</p>
+    <div class="script-box">
+      <h4>可以直接照唸</h4>
+      <ul class="script-list">
+        <li>
+          <span class="situation">你剛發出一個訊息，對方還沒回覆，腦中開始擔心「他一定生氣了」</span>
+          <span class="line">'我注意到我現在有一個想法，覺得他一定生氣了。那個想法正在放映，但不等於現實。'</span>
+        </li>
+        <li>
+          <span class="situation">老闆在群組裡提到某項問題，你瞬間覺得「他說的一定是我」</span>
+          <span class="line">'我注意到我現在有一個想法，覺得他指的就是我。那個想法來了，我可以選擇不跟著它跑。'</span>
+        </li>
+        <li>
+          <span class="situation">面對一個需要爭取權益的情境，腦中冒出「萬一他不同意怎麼辦」</span>
+          <span class="line">'我注意到我現在有一個想法，覺得萬一被拒絕就很糟糕。這個想法在提醒我小心，但我可以自己決定下一步。'</span>
+        </li>
+        <li>
+          <span class="situation">聽到他人評論你，心裡瞬間難受，開始反覆回想那句話</span>
+          <span class="line">'我注意到我現在有一個想法，覺得那個評價就是事實。那個評價是他嘴裡的話，不是我的全部。'</span>
+        </li>
+        <li>
+          <span class="situation">想拒絕別人時，心裡冒出「這樣我會變成討好失敗的人」</span>
+          <span class="line">'我注意到我現在有一個想法，覺得說不就會毀了關係。這個想法在防衛我，但我不一定得聽它的。'</span>
+        </li>
+      </ul>
+    </div>
+    <p class="tip">💡 每次用完這句話，停三秒再往下走，讓腦子喘一口氣。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> 要避開的說法</div>
+    <p>很多人以為「不跟著想法跑」就是要強迫自己不要想，但壓制往往適得其反，反而讓想法更執著。</p>
+    <table class="compare">
+      <thead><tr><th>不要說</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td class="bad">'不要想那個，別再想了'</td><td>越想壓制，想法越反彈。這是和想法對抗，不是和它保持距離。</td></tr>
+        <tr><td class="bad">'我想太多了，這根本沒意義'</td><td>否定想法雖然暫時輕鬆，但沒有學會觀察它，下次它還是會帶著同樣力道來。</td></tr>
+        <tr><td class="bad">'他這樣說一定是針對我'</td><td>把想法直接等同於事實，跳過了『我注意到這只是一個想法』的緩衝步驟。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先自己作答，再看解說</h4>
+      <div class="quiz-item">
+        <div class="quiz-question">1. 你正在準備一句重要的表達，腦中突然冒出『你這樣說一定會搞砸』，以下哪種反應最符合『觀察想法』的做法？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">把注意力放在那個想法上，努力讓自己相信它不是真的</li>
+          <li onclick="checkAnswer(this, true)">告訴自己那個想法出現了，然後繼續把注意力放回要說的話</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">選項 B 正確。觀察想法不是去跟它辯論或壓制它，而是承認它出現了，把注意力放回當下你在做的事。選項 A 仍然讓想法主導了注意力。</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-question">2. 對方遲遲沒有回覆訊息，你開始想像各種最壞的結果，以下哪種反應比較符合認知解離的原則？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">反覆看手機確認有沒有新訊息，並告訴自己『冷靜一點，別亂想』</li>
+          <li onclick="checkAnswer(this, true)">看見腦中出現很多推測，對自己說『這些只是腦中的劇本，不是事實』</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看解說</button>
+        <div class="answer">選項 B 正確。它練習把想像還原為想像，讓想法只是想法。選項 A 仍然是被想法牽走，只是用另一種自我命令試圖壓下去，效果不穩定。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="task-box">
+      <h4>完成後才算學會</h4>
+      <ol>
+        <li>今天在焦慮或擔心冒出來時，刻意對那個念頭說一句：'我注意到我現在有一個想法，覺得……'，只練習這一次，觀察它對你情緒的影響。</li>
+        <li>挑一個剛剛經歷過的強烈想法，在紙上寫下來，然後在旁邊寫一句：'這只是一個想法，不等於事實'，練習把兩者分開。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    本課程為心理教育與技能訓練，不是心理治療，也不提供診斷。
+    若焦慮已明顯影響睡眠、工作或身體健康，請優先尋求專業協助，本課程作為輔助。
+  </div>
+  <div class="lesson-footer">
+    <p>心靈成長 · 第 34 課 · 2026-09-25</p>
+    <p class="next">下一課：下次預告：在壓力來襲時，學會讓思緒慢下來</p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll("li");
+  siblings.forEach(s => { s.style.pointerEvents = "none"; });
+  if (isCorrect) {
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes("true")) {
+        s.classList.add("correct");
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const open = answer.style.display === "block";
+  answer.style.display = open ? "none" : "block";
+  btn.textContent = open ? "查看解說" : "隱藏解說";
+}
+</script>
+</body>
+</html>
