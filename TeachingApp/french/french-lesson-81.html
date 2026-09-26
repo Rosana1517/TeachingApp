@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 81 — 第 81 課：法語條件句的完整體系——三類 si 句型的時態配合與實戰應用</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 81</span>
+    <h1 class="lesson-title">第 81 課：法語條件句的完整體系——三類 si 句型的時態配合與實戰應用</h1>
+    <p class="lesson-subtitle">從入門到精通，掌握「如果……就……」的三種法語邏輯</p>
+  </div>
+
+  <!-- Section 1: 為什麼要學完整的條件句？ -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼要學完整的條件句？</div>
+    <p>第 76 課我們已經接觸了條件句的入門概念，現在要系統性地掌握法語三類條件句（Conditionnelle de Type 1/2/3）的時態搭配與使用情境。這三類句型是法語表達「假設—結果」關係的核心工具，在口語、書面語與文學中都非常常見。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>注意 si 句中各個動詞時態的口語發音差異，特別是不規則動詞的過去分詞與條件式現在時尾音。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">si + indicatif présent</div>
+        <div class="pron-ipa">si 後面接現在式，表示與現實相符或可能的條件</div>
+        <div class="pron-example"><em>s'il pleut</em>（如果下雨（現實可能））<button class="speak-btn" onclick='speakFrench("s&#39;il pleut")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">si + imparfait</div>
+        <div class="pron-ipa">si 後面接未完成過去時，表示與現實相反的假設</div>
+        <div class="pron-example"><em>s'il pleuvait</em>（如果下雨的話（實際上沒下））<button class="speak-btn" onclick='speakFrench("s&#39;il pleuvait")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">si + plus-que-parfait</div>
+        <div class="pron-ipa">si 後面接過去完成時，表示與過去事實相反的假設</div>
+        <div class="pron-example"><em>s'il avait plu</em>（如果當時下過雨的話（實際上沒下））<button class="speak-btn" onclick='speakFrench("s&#39;il avait plu")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">conditionnel présent</div>
+        <div class="pron-ipa">條件式現在時，用於主句的「結果」部分</div>
+        <div class="pron-example"><em>je resterais</em>（我就不出門了）<button class="speak-btn" onclick='speakFrench("je resterais")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">conditionnel passé</div>
+        <div class="pron-ipa">條件式過去時，用於主句的「結果」部分</div>
+        <div class="pron-example"><em>je serais resté</em>（我就不會出門了（過去的事））<button class="speak-btn" onclick='speakFrench("je serais rest\u00e9")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>跟讀以下句型，注意 si 引導的條件子句與主句之間的語調連貫性。</p>
+    <div class="follow-box">
+      <h4>跟讀以下句型，注意 si 引導的條件子句與主句之間的語調連貫性。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Si j'ai le temps, je viendrai.</span>
+          <span class="ipa">/si ʒ‿e lə tɑ̃ ʒə vjɛndʁi/</span>
+          <span class="meaning">—— 如果我有時間，我就會來。</span>
+          <button class="speak-btn" onclick='speakFrench("Si j&#39;ai le temps, je viendrai.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Si j'avais le temps, je viendrais.</span>
+          <span class="ipa">/si ʒ‿e vɛ lə tɑ̃ ʒə vjɛndʁɛ/</span>
+          <span class="meaning">—— 如果我有時間的話（實際上沒有），我就會來。</span>
+          <button class="speak-btn" onclick='speakFrench("Si j&#39;avais le temps, je viendrais.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Si j'avais eu le temps, je serais venu.</span>
+          <span class="ipa">/si ʒ‿a.vɛ y lə tɑ̃ ʒə sɛʁ‿ə vəny/</span>
+          <span class="meaning">—— 如果當時我有時間的話（實際上沒有），我就來了。</span>
+          <button class="speak-btn" onclick='speakFrench("Si j&#39;avais eu le temps, je serais venu.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">S'il faisait beau, nous irions à la plage.</span>
+          <span class="ipa">/sil fɛ.z‿a bo nu.z‿i.ʁjɔ̃ a la plaʒ/</span>
+          <span class="meaning">—— 如果天氣好的話，我們就會去海灘。</span>
+          <button class="speak-btn" onclick='speakFrench("S&#39;il faisait beau, nous irions \u00e0 la plage.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">S'il avait fait beau, nous serions allés à la plage.</span>
+          <span class="ipa">/sil a.vɛ fɛ bo nu sɛ.ʁjɔ̃ a.le a la plaʒ/</span>
+          <span class="meaning">—— 如果當時天氣好的話，我們就應該去海灘了。</span>
+          <button class="speak-btn" onclick='speakFrench("S&#39;il avait fait beau, nous serions all\u00e9s \u00e0 la plage.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：si 音節要輕快帶過，重音落在主句的動詞上，營造自然的假設語氣。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>三類條件句的時態搭配規則，是法語語法中最系統化的部分之一。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Type 1 : si + présent → futur simple</div>
+        <div class="pron-ipa">現實或可能发生的條件與結果</div>
+        <div class="pron-example">Si tu étudies, tu réussiras.<button class="speak-btn" onclick='speakFrench("Si tu \u00e9tudies, tu r\u00e9ussiras.")' aria-label="播放發音">🔊</button><br>你學習的話，你就會成功。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Type 2 : si + imparfait → conditionnel présent</div>
+        <div class="pron-ipa">與當前現實相反的假設</div>
+        <div class="pron-example">Si tu étudiais, tu réussiras.<button class="speak-btn" onclick='speakFrench("Si tu \u00e9tudiais, tu r\u00e9ussiras.")' aria-label="播放發音">🔊</button><br>如果你學習的話（但實際上你不學），你就會成功。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Type 3 : si + plus-que-parfait → conditionnel passé</div>
+        <div class="pron-ipa">與過去事實相反的假設</div>
+        <div class="pron-example">Si tu avais étudié, tu aurais réussi.<button class="speak-btn" onclick='speakFrench("Si tu avais \u00e9tudi\u00e9, tu aurais r\u00e9ussi.")' aria-label="播放發音">🔊</button><br>如果你當時學習的話（但你沒有），你就成功了。</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">⚠️ 重要禁忌</div>
+        <div class="pron-ipa">法語中 si 後面絕不能直接接 conditionnel</div>
+        <div class="pron-example">❌ Si je voudrais... ✅ Si je voulais...<button class="speak-btn" onclick='speakFrench("\u274c Si je voudrais... \u2705 Si je voulais...")' aria-label="播放發音">🔊</button><br>這是法語学习者最容易犯的錯誤之一！</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 選擇正確的句子：「如果當時我收到了那封信，我就會立即回覆。」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Si j'ai reçu cette lettre, j'ai répondu immédiatement.</li>
+          <li onclick="checkAnswer(this, true)">B. Si j'avais reçu cette lettre, j'aurais répondu immédiatement.</li>
+          <li onclick="checkAnswer(this, false)">C. Si je recevais cette lettre, je répondrais immédiatement.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。這是第三類條件句，si + plus-que-parfait → conditionnel passé，表達與過去事實相反的假設。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 以下哪一句的 si 用法是錯誤的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Si elle vient, nous partirons demain.</li>
+          <li onclick="checkAnswer(this, false)">B. Si j'avais su, je ne serais pas venu.</li>
+          <li onclick="checkAnswer(this, true)">C. Si je voudrais, je voyagerais partout.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ C 錯誤。si 後面不能接 conditionnel présent，應改為 Si je voulais, je voyagerais partout.</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「Si tu m'écoutais, tu comprendrais！」這句話表達的是什麼意思？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 你聽我說話，你才會理解。（現實可能性）</li>
+          <li onclick="checkAnswer(this, true)">B. 如果你聽我說話的話（但你現在沒聽），你就會理解了。（與現實相反的假設）</li>
+          <li onclick="checkAnswer(this, false)">C. 如果你當時聽我說話的話，你就會理解了。（過去的假設）</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B 正確。si + imparfait → conditionnel présent，是第二類條件句，表達與當前現實相反的假設。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用三類條件句各寫一句話，描述你生活中的一個願望、一個假設和一個對過去的遺憾。</li>
+        <li style="padding: 0.5rem 0;">朗讀跟練清單中的所有句子，錄下自己的發音並對照範例修正。</li>
+        <li style="padding: 0.5rem 0;">完成小測驗中的三道題目，確保理解每種條件句的時態搭配規則。</li>
+        <li style="padding: 0.5rem 0;">尋找一段法語影視或新聞，記錄至少一個 si 條件句的實際用法。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 81 · 第 81 課：法語條件句的完整體系——三類 si 句型的時態配合與實戰應用 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語假設語氣與委婉表達的進階應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
