@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 82 — 第 82 課：法語直接問句與間接問句的轉換實戰</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 82</span>
+    <h1 class="lesson-title">第 82 課：法語直接問句與間接問句的轉換實戰</h1>
+    <p class="lesson-subtitle">掌握「 Est-ce que / 倒裝 / 口語升調」三套問句形式，並學會將它們平滑轉化為間接問句</p>
+  </div>
+
+  <!-- Section 1: 課程導讀 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 課程導讀</div>
+    <p>在前幾課中，我們學會了如何發出疑問句（第 23 課）以及如何將直接引語轉換為間接引語（第 66 課）。本課將這兩項技能結合：學習如何將三種直接問句形式，精確轉換為符合語法規範的間接問句。重點在於<strong>語序不變</strong>——這是法語間接問句最容易被中文母語者搞錯的地方。</p>
+  </div>
+
+  <!-- Section 2: 三種直接問句對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 三種直接問句對照</div>
+    <p>法語口語與書面語中，同一個問題有三種常見說法，請熟記它們的結構差異，這對後續轉換至間接問句至關重要。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Est-ce que 句</div>
+        <div class="pron-ipa">語序與陳述句相同，僅在句首加 Est-ce que，最常用於書面與正式口語</div>
+        <div class="pron-example"><em>Tu parles français ?</em>（你說法語嗎？）<button class="speak-btn" onclick='speakFrench("Tu parles fran\u00e7ais ?")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">主謂倒裝句</div>
+        <div class="pron-ipa">動詞與主語代名詞互換位置並用連字號連接，最正式</div>
+        <div class="pron-example"><em>Parles-tu français ?</em>（你說法語嗎？）<button class="speak-btn" onclick='speakFrench("Parles-tu fran\u00e7ais ?")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">口語升調句</div>
+        <div class="pron-ipa">完全維持陳述句語序，僅靠句尾語調上升表達疑問</div>
+        <div class="pron-example"><em>Tu parles français ?</em>（你說法語嗎？（口語））<button class="speak-btn" onclick='speakFrench("Tu parles fran\u00e7ais ?")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: 間接問句結構規則 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">3</span> 間接問句結構規則</div>
+    <p>直接問句轉為間接問句時，關鍵變化有三：① 用 <strong>si</strong>（不是 que）作為連接詞；② 語序恢復為<strong>主詞＋動詞</strong>的陳述語序；③ 句尾語調降下。請牢記這個公式：<strong>主詞＋問句動詞（demander / vouloir savoir）＋ si＋主詞＋動詞</strong>。</p>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請大聲朗讀以下每一組「直接問句→間接問句」的轉換，注意間接問句中 si 之後語序不再倒裝。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下每一組「直接問句→間接問句」的轉換，注意間接問句中 si 之後語序不再倒裝。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">Tu viens ? → Je demande si tu viens.</span>
+          <span class="ipa">/ sy vjɛ̃ / → / ʒə dəmɑ̃d si ty vjɛ̃ /</span>
+          <span class="meaning">—— 你要來嗎？→ 我問你要不要來。</span>
+          <button class="speak-btn" onclick='speakFrench("Tu viens ? \u2192 Je demande si tu viens.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Parlez-vous français ? → Il demande si vous parlez français.</span>
+          <span class="ipa">/ paʁle vu fʁɑ̃sɛ / → / il dəmɑ̃d si vu paʁle fʁɑ̃sɛ /</span>
+          <span class="meaning">—— 您說法語嗎？→ 他問您是否說法語。</span>
+          <button class="speak-btn" onclick='speakFrench("Parlez-vous fran\u00e7ais ? \u2192 Il demande si vous parlez fran\u00e7ais.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">A-t-elle fini ? → Elle veut savoir si elle a fini.</span>
+          <span class="ipa">/ a t‿el fin i / → / ěl vø sa:vwaʁ si ěl a fin i /</span>
+          <span class="meaning">—— 她完成了嗎？→ 她想確認她是否完成了。</span>
+          <button class="speak-btn" onclick='speakFrench("A-t-elle fini ? \u2192 Elle veut savoir si elle a fini.")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">Est-ce que tu as compris ? → Je demande si tu as compris.</span>
+          <span class="ipa">/ ɛskə ty a kɔ̃pʁi / → / ʒə dəmɑ̃d si ty a kɔ̃pʁi /</span>
+          <span class="meaning">—— 你明白了嗎？→ 我問你是否明白了。</span>
+          <button class="speak-btn" onclick='speakFrench("Est-ce que tu as compris ? \u2192 Je demande si tu as compris.")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：發音小技巧：si 在快速口語中容易弱化，但絕不能省略或發成「雪」的音，保持清晰的 [si]。</p>
+  </div>
+
+  <!-- Section 4: wh- 問句（疑問詞句）的轉換 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">4</span> wh- 問句（疑問詞句）的轉換</div>
+    <p>帶有疑問詞（où、quand、comment、pourquoi、combien）的直接問句，轉為間接問句時<strong>不</strong>使用 si，而是<strong>保留疑問詞</strong>，語序同樣恢復為陳述語序。這是常見錯誤區。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>請仔細對比以下直間轉換對，觀察疑問詞句與 yes/no 問句在轉換時的差異。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">Oui/No 問句</div>
+        <div class="pron-ipa">用 si 連接，疑問詞消失，語序變回主＋動</div>
+        <div class="pron-example">Tu habites à Paris ? → Je demande si tu habites à Paris.<button class="speak-btn" onclick='speakFrench("Tu habites \u00e0 Paris ? \u2192 Je demande si tu habites \u00e0 Paris.")' aria-label="播放發音">🔊</button><br>si 代替了直接問句中的疑問語氣</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Où 問句</div>
+        <div class="pron-ipa">où 保留不變，語序變回主＋動</div>
+        <div class="pron-example">Où habites-tu ? → Je demande où tu habites.<button class="speak-btn" onclick='speakFrench("O\u00f9 habites-tu ? \u2192 Je demande o\u00f9 tu habites.")' aria-label="播放發音">🔊</button><br>où 是連接詞，不能替換成 si</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Quand 問句</div>
+        <div class="pron-ipa">quand 保留，語序不再倒裝</div>
+        <div class="pron-example">Quand arrivez-vous ? → Elle demande quand vous arrivez.<button class="speak-btn" onclick='speakFrench("Quand arrivez-vous ? \u2192 Elle demande quand vous arrivez.")' aria-label="播放發音">🔊</button><br>注意 arrivez-vous → vous arrivez</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">Comment 問句</div>
+        <div class="pron-ipa">comment 保留，動詞不再倒裝</div>
+        <div class="pron-example">Comment ayez-vous fait ? → Il demande comment vous avez fait.<button class="speak-btn" onclick='speakFrench("Comment ayez-vous fait ? \u2192 Il demande comment vous avez fait.")' aria-label="播放發音">🔊</button><br>口語中常見的錯誤：保留倒裝語序</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: 時態配合原則 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">5</span> 時態配合原則</div>
+    <p>當主句動詞為過時（demandait、a demandé），間接問句中的時態需依照「間接引語時態配合」規則調整，這在之前第 80 課已學過。本課重點：直接問句若為現在時，主句過時時，間接問句通常改為<strong>未完成時（imparfait）</strong>。</p>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「Tu as terminé ton travail ?」轉為間接問句，由「Elle demande」引導，正確答案是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Elle demande si tu as terminé ton travail.</li>
+          <li onclick="checkAnswer(this, true)">B. Elle demande si tu as terminé ton travail.</li>
+          <li onclick="checkAnswer(this, false)">C. Elle demande si tu as terminé ton travail ?</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ B：間接問句語序為主詞＋動詞（tu as terminé），句尾無問號，si 取代原疑問語氣。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「Où est-ce que tu vas ?」的間接問句正確形式是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Il demande où est-ce que tu vas.</li>
+          <li onclick="checkAnswer(this, false)">B. Il demande si tu vas où.</li>
+          <li onclick="checkAnswer(this, true)">C. Il demande où tu vas.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ C：où 問句保留 où，去掉 est-ce que，語序恢復為主詞 tu＋動詞 vas。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「Parles-tu espagnol ?」的間接問句中，動詞語序應如何排列？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, true)">A. Si tu parles espagnol.</li>
+          <li onclick="checkAnswer(this, false)">B. Si parles-tu espagnol.</li>
+          <li onclick="checkAnswer(this, false)">C. Si tu parles-tu espagnol.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ A：倒裝問句轉為間接問句時，倒裝結構消除，恢復為標準主詞＋動詞語序。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">聽一段法語對話，標記出其中的直接問句與間接問句，並寫下它們的轉換過程</li>
+        <li style="padding: 0.5rem 0;">完成 5 個練習：將以下直接問句轉為以「Je demande」引導的間接問句：① Tu compris ? ② Quand partez-vous ? ③ Pourquoi a-t-il refusé ? ④ Est-ce que tu viens demain ? ⑤ Comment as-tu fait ça ?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 82 · 第 82 課：法語直接問句與間接問句的轉換實戰 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：第 83 課：法語間接問句中的虛擬式與時態配合</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
