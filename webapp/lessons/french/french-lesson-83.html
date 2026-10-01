@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 83 — 第 83 課：法語方位介詞與空間表達入門</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 83</span>
+    <h1 class="lesson-title">第 83 課：法語方位介詞與空間表達入門</h1>
+    <p class="lesson-subtitle">學會描述位置、方向與距離，讓法語表達更有畫面感</p>
+  </div>
+
+  <!-- Section 🗺: 方位介詞入門 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🗺</span> 方位介詞入門</div>
+    <p>法語的方位介詞（prépositions de lieu）用來描述事物所在的位置或移動的方向。這課我們將認識最基礎的方位介詞，並學習如何在句子中自然運用。學完本課，你就能用流利的法語描述「東西放在哪裡」「人在哪裡」以及「往哪裡走」。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表</div>
+    <p>以下是本課重點方位介詞的發音對照，注意聯誦（liaison）與連音（enchaînement）的應用。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">à</div>
+        <div class="pron-ipa">讀作 /a/，短促有力，類似中文「啊」但更緊繃</div>
+        <div class="pron-example"><em>à Paris</em>（在巴黎）<button class="speak-btn" onclick='speakFrench("\u00e0 Paris")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">dans</div>
+        <div class="pron-ipa">讀作 /dɑ̃/，鼻化元音，注意鼻音不要帶出輔音 /s/</div>
+        <div class="pron-example"><em>dans la maison</em>（在房子裡面）<button class="speak-btn" onclick='speakFrench("dans la maison")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sur</div>
+        <div class="pron-ipa">讀作 /sy/，唇形圓潤緊繃，類似中文「絲」但嘴唇更圓</div>
+        <div class="pron-example"><em>sur la table</em>（在桌子上）<button class="speak-btn" onclick='speakFrench("sur la table")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sous</div>
+        <div class="pron-ipa">讀作 /su/，與 sur 的元音相同，但開頭是濁音 /s/ 轉清音 /s/，尾音 /s/ 不發</div>
+        <div class="pron-example"><em>sous le lit</em>（在床底下）<button class="speak-btn" onclick='speakFrench("sous le lit")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">devant</div>
+        <div class="pron-ipa">讀作 /də.vɑ̃/，前半部弱讀，後半部鼻化</div>
+        <div class="pron-example"><em>devant l'école</em>（在學校前面）<button class="speak-btn" onclick='speakFrench("devant l&#39;\u00e9cole")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">derrière</div>
+        <div class="pron-ipa">讀作 /də.ʁi.jɛʁ/，注意喉音 R 的輕柔發音</div>
+        <div class="pron-example"><em>derrière le jardin</em>（在花園後面）<button class="speak-btn" onclick='speakFrench("derri\u00e8re le jardin")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">entre</div>
+        <div class="pron-ipa">讀作 /ɑ̃tʁə/，鼻化元音 + 喉音 R + 隱形 e</div>
+        <div class="pron-example"><em>entre les deux</em>（在兩者之間）<button class="speak-btn" onclick='speakFrench("entre les deux")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">près de</div>
+        <div class="pron-ipa">讀作 /pʁɛ d(ə)/，聯誦時 /d/ 連到下一詞首音</div>
+        <div class="pron-example"><em>près de chez moi</em>（在我家附近）<button class="speak-btn" onclick='speakFrench("pr\u00e8s de chez moi")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">loin de</div>
+        <div class="pron-ipa">讀作 /lwɑ̃ d(ə)/，鼻化元音 /ɔ̃/ 要飽滿</div>
+        <div class="pron-example"><em>loin de la ville</em>（遠離城市）<button class="speak-btn" onclick='speakFrench("loin de la ville")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間</div>
+    <p>請跟讀以下詞組，注意每組的聯誦與節奏群（groupe rythmique）劃分。</p>
+    <div class="follow-box">
+      <h4>請跟讀以下詞組，注意每組的聯誦與節奏群（groupe rythmique）劃分。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">à l'école</span>
+          <span class="ipa">/a lɛ.kɔl/</span>
+          <span class="meaning">—— 在學校</span>
+          <button class="speak-btn" onclick='speakFrench("\u00e0 l&#39;\u00e9cole")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dans le sac</span>
+          <span class="ipa">/dɑ̃ lə sak/</span>
+          <span class="meaning">—— 在袋子裡</span>
+          <button class="speak-btn" onclick='speakFrench("dans le sac")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">sur le canapé</span>
+          <span class="ipa">/sy lə ka.na.pe/</span>
+          <span class="meaning">—— 在沙發上</span>
+          <button class="speak-btn" onclick='speakFrench("sur le canap\u00e9")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">sous la table</span>
+          <span class="ipa">/su la tabl/</span>
+          <span class="meaning">—— 在桌子下面</span>
+          <button class="speak-btn" onclick='speakFrench("sous la table")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">devant la porte</span>
+          <span class="ipa">/də.vɑ̃ lɑ pɔʁt/</span>
+          <span class="meaning">—— 在門前面</span>
+          <button class="speak-btn" onclick='speakFrench("devant la porte")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">derrière moi</span>
+          <span class="ipa">/də.ʁi.jɛʁ mwa/</span>
+          <span class="meaning">—— 在我後面</span>
+          <button class="speak-btn" onclick='speakFrench("derri\u00e8re moi")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">entre nous</span>
+          <span class="ipa">/ɑ̃tʁə nu/</span>
+          <span class="meaning">—— 在我們之間</span>
+          <button class="speak-btn" onclick='speakFrench("entre nous")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">près de Paris</span>
+          <span class="ipa">/pʁɛ də pa.ʁi/</span>
+          <span class="meaning">—— 在巴黎附近</span>
+          <button class="speak-btn" onclick='speakFrench("pr\u00e8s de Paris")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">loin de ici</span>
+          <span class="ipa">/lwɑ̃ d(ə) si/</span>
+          <span class="meaning">—— 遠離這裡</span>
+          <button class="speak-btn" onclick='speakFrench("loin de ici")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：記得法語的節奏群是以一個重音收尾，讀到介詞時語氣要自然流動，不要每個字都平均用力。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照</div>
+    <p>以下對照表幫助你區分容易混淆的方位介詞，特別注意静止位置與移動方向的差異。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">à vs dans</div>
+        <div class="pron-ipa">「à」表示泛指位置（在某地），「dans」表示在某个空間「裡面」</div>
+        <div class="pron-example">Je suis à Paris. / Je suis dans la voiture.<button class="speak-btn" onclick='speakFrench("Je suis \u00e0 Paris.")' aria-label="播放發音">🔊</button><br>à 更抽象，dans 更具體在容器內</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sur vs sous</div>
+        <div class="pron-ipa">「sur」是「在……上面」（接觸表面），「sous」是「在……下面」</div>
+        <div class="pron-example">Le livre est sur la table. / Le chat est sous la table.<button class="speak-btn" onclick='speakFrench("Le livre est sur la table.")' aria-label="播放發音">🔊</button><br>兩者的元音相同 /y/，只差在開頭輔音 /s/ 與 /s/ 的聽感</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">devant vs derrière</div>
+        <div class="pron-ipa">「devant」是「在……前面」，「derrière」是「在……後面」</div>
+        <div class="pron-example">Il est devant la maison. / Elle est derrière le mur.<button class="speak-btn" onclick='speakFrench("Il est devant la maison.")' aria-label="播放發音">🔊</button><br>兩者都以 /ə/ 開頭弱讀，重點在後半部的 /vɑ̃/ 與 /ʁi.jɛʁ/</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">près de vs loin de</div>
+        <div class="pron-ipa">「près de」表示「接近」，「loin de」表示「遠離」</div>
+        <div class="pron-example">C'est près de chez moi. / C'est loin de l'école.<button class="speak-btn" onclick='speakFrench("C&#39;est pr\u00e8s de chez moi.")' aria-label="播放發音">🔊</button><br>「loin」的 /wɑ̃/ 鼻化元音要飽滿，不要讀成 /lɔ̃/</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">en vs dans</div>
+        <div class="pron-ipa">「en」用於陰性國家/地區名（如 en France），「dans」用於具體空間（如 dans la chambre）</div>
+        <div class="pron-example">Je vais en Italie. / Je suis dans la cuisine.<button class="speak-btn" onclick='speakFrench("Je vais en Italie.")' aria-label="播放發音">🔊</button><br>en 後接陰性名詞或抽象概念，dans 後接冠詞 + 名詞</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「書在桌子上」用哪種說法？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Le livre est dans la table.</li>
+          <li onclick="checkAnswer(this, true)">B. Le livre est sur la table.</li>
+          <li onclick="checkAnswer(this, false)">C. Le livre est sous la table.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「sur」表示接觸表面（在……上面），書是放在桌面的，不是 inside 或 under。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 下列哪個句子使用了正確的方位介詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Je habite à la France.</li>
+          <li onclick="checkAnswer(this, true)">B. Je habite en France.</li>
+          <li onclick="checkAnswer(this, false)">C. Je habite dans France.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 陰性國家名稱前使用「en」，不用 à 或 dans。正確說法是「J'habite en France.」</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 「在我家附近」怎麼說法語？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Loin de chez moi</li>
+          <li onclick="checkAnswer(this, true)">B. Près de chez moi</li>
+          <li onclick="checkAnswer(this, false)">C. Derrière chez moi</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「près de」表示「接近」，「loin de」表示「遠離」。「chez moi」是固定搭配表示「我家」。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">4. 「貓在床底下」的法語是？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. Le chat est sur le lit.</li>
+          <li onclick="checkAnswer(this, false)">B. Le chat est devant le lit.</li>
+          <li onclick="checkAnswer(this, true)">C. Le chat est sous le lit.</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ 「sous」表示「在……下面」，「sur」是「在上面」，「devant」是「在前面」。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用今天學的方位介詞描述你房間裡的物品位置，寫下至少 5 個句子。</li>
+        <li style="padding: 0.5rem 0;">錄音朗讀『跟練時間』的 9 個詞組，重複到每組都能自然流暢為止。</li>
+        <li style="padding: 0.5rem 0;">用方位介詞造句：描述你現在所在位置（如：我坐在沙發上、手機在桌子上）並錄製下來。</li>
+        <li style="padding: 0.5rem 0;">複習第 30、32、33 課的代名詞，嘗試在句子中使用「le/la/les」「lui/leur」與方位介詞結合。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 83 · 第 83 課：法語方位介詞與空間表達入門 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語程度副詞與頻率副詞的應用</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
