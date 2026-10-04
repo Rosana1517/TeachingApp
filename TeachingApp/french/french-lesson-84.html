@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 84 — 第 84 課：方位動詞與空間搭配進階</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 84</span>
+    <h1 class="lesson-title">第 84 課：方位動詞與空間搭配進階</h1>
+    <p class="lesson-subtitle">掌握 monter / descendre / entrer / sortir 等動詞搭配方位介詞的精準用法</p>
+  </div>
+
+  <!-- Section 1: 課程導論：動詞搭配空間表達 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 課程導論：動詞搭配空間表達</div>
+    <p>在第 83 課學過方位介詞（dans, sur, sous, devant, derrière, à côté de, entre 等）之後，本課將這些介詞與<strong>具方向性的動詞</strong>結合，讓你能夠用更豐富的語言描述「往哪裡去、從哪裡來、在什麼位置」。法語中有些動詞必須搭配特定介詞才能正確表達空間意義，這部分是本課的學習重點。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表：方位動詞搭配 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表：方位動詞搭配</div>
+    <p>以下列出本課核心動詞與其搭配的方位介詞，請特別注意動詞與介詞之間的<strong>聯誦（liaison）</strong>現象。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">monter dans</div>
+        <div class="pron-ipa">/mɔ̃.te dɑ̃/，聯誦 d 與 dɑ̃ 連接</div>
+        <div class="pron-example"><em>monter dans le train</em>（登上火車）<button class="speak-btn" onclick='speakFrench("monter dans le train")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">descendre de</div>
+        <div class="pron-ipa">/de.sɑ̃dʁ də/，de 後接元音或 h 開頭字需聯誦</div>
+        <div class="pron-example"><em>descendre de l'autobus</em>（下車）<button class="speak-btn" onclick='speakFrench("descendre de l&#39;autobus")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">entrer dans</div>
+        <div class="pron-ipa">/ɑ̃.tʁe dɑ̃/，entrer 的 r 發法語喉音 R</div>
+        <div class="pron-example"><em>entrer dans la salle</em>（進入房間）<button class="speak-btn" onclick='speakFrench("entrer dans la salle")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sortir de</div>
+        <div class="pron-ipa">/sɔʁ.tiʁ də/，注意 r 的發音位置</div>
+        <div class="pron-example"><em>sortir de la maison</em>（離開房子）<button class="speak-btn" onclick='speakFrench("sortir de la maison")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">mettre sur</div>
+        <div class="pron-ipa">/mɛt syʁ/，sur 的元音 /y/ 要圓唇</div>
+        <div class="pron-example"><em>mettre le livre sur la table</em>（把書放在桌上）<button class="speak-btn" onclick='speakFrench("mettre le livre sur la table")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">plier sous</div>
+        <div class="pron-ipa">/pli.e su/，sous 的 s 發 /s/ 音</div>
+        <div class="pron-example"><em>plier sous le poids</em>（被重量壓彎）<button class="speak-btn" onclick='speakFrench("plier sous le poids")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間：動詞 + 方位介詞口說練習 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間：動詞 + 方位介詞口說練習</div>
+    <p>請大聲朗讀以下句子，注意每個動詞與介詞之間的聯誦是否流暢。每一個句子都記錄下來的時候，想像自己正在說法語。</p>
+    <div class="follow-box">
+      <h4>請大聲朗讀以下句子，注意每個動詞與介詞之間的聯誦是否流暢。每一個句子都記錄下來的時候，想像自己正在說法語。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">monter dans la voiture</span>
+          <span class="ipa">/mɔ̃.te dɑ̃ lwa.tuʁ/</span>
+          <span class="meaning">—— 上車</span>
+          <button class="speak-btn" onclick='speakFrench("monter dans la voiture")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">descendre du métro</span>
+          <span class="ipa">/de.sɑ̃dʁ dy me.tʁo/</span>
+          <span class="meaning">—— 下地鐵</span>
+          <button class="speak-btn" onclick='speakFrench("descendre du m\u00e9tro")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">entrer dans la bibliothèque</span>
+          <span class="ipa">/ɑ̃.tʁe dɑ̃ la bi.bli.ɔ.tɛk/</span>
+          <span class="meaning">—— 進入圖書館</span>
+          <button class="speak-btn" onclick='speakFrench("entrer dans la biblioth\u00e8que")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">sortir de l'école</span>
+          <span class="ipa">/sɔʁ.tiʁ de lɛ.kɔl/</span>
+          <span class="meaning">—— 離開學校</span>
+          <button class="speak-btn" onclick='speakFrench("sortir de l&#39;\u00e9cole")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">poser le sac sur la chaise</span>
+          <span class="ipa">/po.ze l sak syʁ l ʃɛz/</span>
+          <span class="meaning">—— 把袋子放在椅子上</span>
+          <button class="speak-btn" onclick='speakFrench("poser le sac sur la chaise")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">passer sous le pont</span>
+          <span class="ipa">/pa.se su l pɔ̃/</span>
+          <span class="meaning">—— 從橋下穿過</span>
+          <button class="speak-btn" onclick='speakFrench("passer sous le pont")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：動詞與介詞之間不要斷開，尤其是 monter dans、descendre de 這類常見搭配，聯誦會讓你的法語聽起來更自然流暢。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照：動詞搭配介詞的規律 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照：動詞搭配介詞的規律</div>
+    <p>法語中不同動詞搭配不同介詞，這是需要記憶的固定搭配，但背後有一些<strong>邏輯</strong>可以幫助你理解。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">dans + 名詞</div>
+        <div class="pron-ipa">表示「進入某空間內部」，強調進入的動作</div>
+        <div class="pron-example">Je entre dans la classe.<button class="speak-btn" onclick='speakFrench("Je entre dans la classe.")' aria-label="播放發音">🔊</button><br>dans 強調進入一個有邊界的空間</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">de + 名詞</div>
+        <div class="pron-ipa">表示「從某處出來」，來源方向</div>
+        <div class="pron-example">Je sors de la pièce.<button class="speak-btn" onclick='speakFrench("Je sors de la pi\u00e8ce.")' aria-label="播放發音">🔊</button><br>de 表示離開或來源</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sur + 名詞</div>
+        <div class="pron-ipa">表示「在……表面上」</div>
+        <div class="pron-example">Le livre est sur la table.<button class="speak-btn" onclick='speakFrench("Le livre est sur la table.")' aria-label="播放發音">🔊</button><br>sur 接觸表面但不進入內部</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">sous + 名詞</div>
+        <div class="pron-ipa">表示「在……下方」</div>
+        <div class="pron-example">Le chat est sous la table.<button class="speak-btn" onclick='speakFrench("Le chat est sous la table.")' aria-label="播放發音">🔊</button><br>sous 表示位置在另一物體下方</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">devant + 名詞</div>
+        <div class="pron-ipa">表示「在……前面」</div>
+        <div class="pron-example">Il se tient devant la porte.<button class="speak-btn" onclick='speakFrench("Il se tient devant la porte.")' aria-label="播放發音">🔊</button><br>devant 強調正面的位置關係</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">derrière + 名詞</div>
+        <div class="pron-ipa">表示「在……後面」</div>
+        <div class="pron-example">La voiture est derrière la maison.<button class="speak-btn" onclick='speakFrench("La voiture est derri\u00e8re la maison.")' aria-label="播放發音">🔊</button><br>derrière 強調背面的位置關係</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗：動詞與介詞搭配 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗：動詞與介詞搭配</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 「Je ____ de la voiture.（我從車上下來）」應填入哪個動詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. monter</li>
+          <li onclick="checkAnswer(this, true)">B. descendre</li>
+          <li onclick="checkAnswer(this, false)">C. entrer</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ descendre 表示「從高处或交通工具下來」，搭配介詞 de 表示來源。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 「Il met le vase ____ la table.（他把花瓶放在桌上）」空格應填哪個介詞？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. dans</li>
+          <li onclick="checkAnswer(this, true)">B. sur</li>
+          <li onclick="checkAnswer(this, false)">C. sous</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ sur 表示「在表面上」，花瓶是放在桌子表面而非桌子內部。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 下列哪一句的聯誦是正確的？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. monter dan le train</li>
+          <li onclick="checkAnswer(this, true)">B. monter dans le train（d 聯誦）</li>
+          <li onclick="checkAnswer(this, false)">C. monter dans le train（不聯誦）</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ dans 的 s 不發音，但當後面接元音開頭的字時，dans 的 s 需要聯誦發 /z/ 音，所以「dans le」讀作 /dɑ̃ l/。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">4. 「 sortir de 」這個搭配中的 de 何時需要聯誦？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. 永遠聯誦</li>
+          <li onclick="checkAnswer(this, true)">B. 後接元音或 h  mute 時聯誦</li>
+          <li onclick="checkAnswer(this, false)">C. 從不聯誦</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅ de 後接子音開頭的字不聯誦（如 de la），後接元音或 h mute 時聯誦發 /d/ 音（如 de l'école）。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務：實用練習與口說輸出 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務：實用練習與口說輸出</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">用「monter dans / descendre de」各造 3 個句子，描述你每天的生活動線（例如：monter dans le bus, descendre du métro）。</li>
+        <li style="padding: 0.5rem 0;">用「entrer dans / sortir de / passer sous / se trouver sur」各造 1 個句子，描述你家的空間佈置。</li>
+        <li style="padding: 0.5rem 0;">聽一段法語廣播或播客，找出其中出現的方位動詞搭配，記錄下來並朗讀模仿。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 84 · 第 84 課：方位動詞與空間搭配進階 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語時間介詞的進階應用與時間段表達</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
