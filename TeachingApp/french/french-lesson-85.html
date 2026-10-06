@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法語課 85 — 第 85 課：法語動詞 + 介系詞的系統性搭配——de 與 à 的精準選擇</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: #fafbfc;
+    color: #1a1a2e;
+    line-height: 1.9;
+    padding: 3rem 2rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  /* Header */
+  .lesson-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e8ecf1;
+  }
+  .lesson-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .lesson-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #667eea22;
+    color: #667eea;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  /* Pronunciation cards */
+  .pron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pron-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .pron-card:hover { box-shadow: 0 4px 16px #667eea22; }
+  .pron-letter {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.3rem;
+  }
+  .pron-ipa {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    font-family: "Lucida Sans Unicode", sans-serif;
+  }
+  .pron-example {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .pron-example em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Follow-along box */
+  .follow-box {
+    background: linear-gradient(135deg, #f0f4ff, #faf5ff);
+    border: 1px solid #d4d9f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .follow-box h4 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #4338ca;
+  }
+  .follow-list {
+    list-style: none;
+    padding: 0;
+  }
+  .follow-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #e0e4ef;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+  .follow-list li:last-child { border-bottom: none; }
+  .follow-list .word {
+    font-weight: 700;
+    color: #4338ca;
+    min-width: 80px;
+  }
+  .follow-list .ipa {
+    color: #888;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+  .follow-list .meaning { color: #555; }
+
+  /* Speak button (Web Speech API) */
+  .speak-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 999px;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    flex-shrink: 0;
+  }
+  .speak-btn:active { background: #c7d2fe; }
+
+  /* Quiz */
+  .quiz-box {
+    background: #fff;
+    border: 2px solid #667eea33;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .quiz-box h4 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+  .quiz-item {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  .quiz-options { list-style: none; padding: 0; }
+  .quiz-options li {
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+  .quiz-options li:hover { background: #f5f3ff; }
+  .quiz-options li.correct {
+    background: #d1fae5;
+    font-weight: 600;
+  }
+  .quiz-options li.wrong {
+    background: #fee2e2;
+  }
+
+  /* Reveal button */
+  .reveal-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.4rem;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reveal-btn:hover { background: #5568d3; }
+  .answer { display: none; margin-top: 0.5rem; color: #059669; font-weight: 600; }
+
+  /* Footer */
+  .lesson-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e8ecf1;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lesson-header">
+    <span class="lesson-number">LEÇON 85</span>
+    <h1 class="lesson-title">第 85 課：法語動詞 + 介系詞的系統性搭配——de 與 à 的精準選擇</h1>
+    <p class="lesson-subtitle">不再死記，理解動詞為何選 de 或 à 的邏輯</p>
+  </div>
+
+  <!-- Section 1: 為什麼動詞後面要用 de 或 à -->
+  <div class="section">
+    <div class="section-title"><span class="icon">1</span> 為什麼動詞後面要用 de 或 à</div>
+    <p>法語中許多動詞本身不帶直接受詞，必須透過介系詞 <strong>de</strong> 或 <strong>à</strong> 來連接補語。這不是隨機規則，而是基於「來源／離開」指向 <strong>de</strong>、「方向／對象」指向 <strong>à</strong> 的邏輯。第 83～84 課我們已學過空間中的「來自」與「前往」，這課把同樣邏輯延伸到動詞搭配上。</p>
+  </div>
+
+  <!-- Section 2: 發音對照表——de 與 à 的音值 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">2</span> 發音對照表——de 與 à 的音值</div>
+    <p><strong>de</strong> 發音為 /də/，在元音或 h 前縮合為 <strong>d'</strong> 發音 /də/；<strong>à</strong> 發音為 /a/，與介母音 /a/ 相同但更短促。注意 <strong>à</strong> 帶閉口 /a/，<strong>de</strong> 帶開口 /ə/，兩者在語流中音色差異明顯。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">de /də/</div>
+        <div class="pron-ipa">發音為輕快的 /də/，語速快時母音弱化接近 /dɘ/</div>
+        <div class="pron-example"><em>parler <strong>de</strong> quelque chose</em>（談論某事）<button class="speak-btn" onclick='speakFrench("parler <strong>de<")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">à /a/</div>
+        <div class="pron-ipa">發音為清晰開口的 /a/，口腔張開比 de 更大</div>
+        <div class="pron-example"><em>penser <strong>à</strong> quelqu'un</em>（想到某人）<button class="speak-btn" onclick='speakFrench("penser <strong>\u00e0<")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">d' /d/</div>
+        <div class="pron-ipa">de 在母音或 silent h 前省略 e，只留 /d/ 直接接後字</div>
+        <div class="pron-example"><em>d'habitude, d'honneur</em>（習慣上／名譽上）<button class="speak-btn" onclick='speakFrench("d&#39;habitude, d&#39;honneur")' aria-label="播放發音">🔊</button></div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">aux /o/</div>
+        <div class="pron-ipa">à + les 的縮合形式，發音 /o/，是常考連誦點</div>
+        <div class="pron-example"><em>Je vais <strong>aux</strong> États-Unis.</em>（我去美國。）<button class="speak-btn" onclick='speakFrench("Je vais <strong>aux<")' aria-label="播放發音">🔊</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 🎙: 跟練時間——de 動詞 vs à 動詞輪讀 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🎙</span> 跟練時間——de 動詞 vs à 動詞輪讀</div>
+    <p>以下兩組動詞搭配需反覆朗讀，感受 de 與 à 在語流中的音色差異：de 組母音較弱、語氣收斂；à 組母音較強、語氣開闊。</p>
+    <div class="follow-box">
+      <h4>以下兩組動詞搭配需反覆朗讀，感受 de 與 à 在語流中的音色差異：de 組母音較弱、語氣收斂；à 組母音較強、語氣開闊。</h4>
+      <ul class="follow-list">
+        <li>
+          <span class="word">parler de</span>
+          <span class="ipa">/paʁ.le də/</span>
+          <span class="meaning">—— 談論（關於）</span>
+          <button class="speak-btn" onclick='speakFrench("parler de")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">penser à</span>
+          <span class="ipa">/pɑ̃.se a/</span>
+          <span class="meaning">—— 想到（對於）</span>
+          <button class="speak-btn" onclick='speakFrench("penser \u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">dépendre de</span>
+          <span class="ipa">/de.pɑ̃dʁ də/</span>
+          <span class="meaning">—— 取決於</span>
+          <button class="speak-btn" onclick='speakFrench("d\u00e9pendre de")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">rêver de</span>
+          <span class="ipa">/ʁɛ.veʁ də/</span>
+          <span class="meaning">—— 夢見／渴望</span>
+          <button class="speak-btn" onclick='speakFrench("r\u00eaver de")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">jouer à</span>
+          <span class="ipa">/ʒu.e a/</span>
+          <span class="meaning">—— 玩（遊戲／運動）</span>
+          <button class="speak-btn" onclick='speakFrench("jouer \u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">obéir à</span>
+          <span class="ipa">/ɔ.be.iʁ a/</span>
+          <span class="meaning">—— 服從</span>
+          <button class="speak-btn" onclick='speakFrench("ob\u00e9ir \u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">avoir besoin de</span>
+          <span class="ipa">/a.vwaʁ bə.zɛ̃ də/</span>
+          <span class="meaning">—— 需要</span>
+          <button class="speak-btn" onclick='speakFrench("avoir besoin de")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">avoir peur de</span>
+          <span class="ipa">/a.vwaʁ pœʁ də/</span>
+          <span class="meaning">—— 害怕</span>
+          <button class="speak-btn" onclick='speakFrench("avoir peur de")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">commencer à</span>
+          <span class="ipa">/kɔ.mɑ̃.se a/</span>
+          <span class="meaning">—— 開始</span>
+          <button class="speak-btn" onclick='speakFrench("commencer \u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+        <li>
+          <span class="word">apprendre à</span>
+          <span class="ipa">/a.pʁɑ̃dʁ a/</span>
+          <span class="meaning">—— 學習（某技能）</span>
+          <button class="speak-btn" onclick='speakFrench("apprendre \u00e0")' aria-label="播放發音">🔊</button>
+        </li>
+      </ul>
+    </div>
+    <p style="color: #888; font-size: 0.9rem; margin-bottom: 1rem;">💡 小技巧：練習時在 de 前輕微停頓，在 à 前略微加重，幫助大腦建立「de＝離開」和「à＝朝向」的語感。</p>
+  </div>
+
+  <!-- Section ⚡: 重點對照——動詞 + de vs 動詞 + à -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚡</span> 重點對照——動詞 + de vs 動詞 + à</div>
+    <p>以下對比幫助你區分兩類動詞的核心差異：<strong>de 動詞</strong>通常帶有「關於」「從…而來」「因為」的語義，<strong>à 動詞</strong>則帶有「朝向」「對象」「目標」的語義。</p>
+    <div class="pron-grid">
+      <div class="pron-card">
+        <div class="pron-letter">de</div>
+        <div class="pron-ipa">表示「關於、來源、原因」</div>
+        <div class="pron-example">Je parle <strong>de</strong> ce livre.<button class="speak-btn" onclick='speakFrench("Je parle <strong>de<")' aria-label="播放發音">🔊</button><br>談論的是『這本書』的內容</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">à</div>
+        <div class="pron-ipa">表示「朝向、給定對象」</div>
+        <div class="pron-example">Je pense <strong>à</strong> ce livre.<button class="speak-btn" onclick='speakFrench("Je pense <strong>\u00e0<")' aria-label="播放發音">🔊</button><br>想到的是『這本書』作為對象</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">de</div>
+        <div class="pron-ipa">「害怕」源於內心驅動力</div>
+        <div class="pron-example">Il a peur <strong>de</strong> chien.<button class="speak-btn" onclick='speakFrench("Il a peur <strong>de<")' aria-label="播放發音">🔊</button><br>害怕的來源是狗</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">à</div>
+        <div class="pron-ipa">「服從」是朝向某權威方向</div>
+        <div class="pron-example">Elle obéit <strong>à</strong> son prof.<button class="speak-btn" onclick='speakFrench("Elle ob\u00e9it <strong>\u00e0<")' aria-label="播放發音">🔊</button><br>服從的方向指向老師</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">à</div>
+        <div class="pron-ipa">「開始」是朝向某動作方向</div>
+        <div class="pron-example">Elle commence <strong>à</strong> parler.<button class="speak-btn" onclick='speakFrench("Elle commence <strong>\u00e0<")' aria-label="播放發音">🔊</button><br>開始朝向說話這個動作</div>
+      </div>
+      <div class="pron-card">
+        <div class="pron-letter">de</div>
+        <div class="pron-ipa">「需要」源於缺乏的狀態</div>
+        <div class="pron-example">J'ai besoin <strong>de</strong> aide.<button class="speak-btn" onclick='speakFrench("J&#39;ai besoin <strong>de<")' aria-label="播放發音">🔊</button><br>需要從某種缺乏中產生</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section ✏️: 小測驗 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✏️</span> 小測驗</div>
+    <div class="quiz-box">
+      <h4>請先回答，再點擊「查看答案」</h4>
+
+      <div class="quiz-item">
+        <div class="quiz-question">1. 填入適當介系詞：「Elle rêve _____ voyager au Japon.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. à</li>
+          <li onclick="checkAnswer(this, true)">B. de</li>
+          <li onclick="checkAnswer(this, false)">C. pour</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅  rêver de 是固定搭配，表示『渴望／夢見做某事』，de 在此帶來源／關於之意。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">2. 填入適當介系詞：「Il apprend _____ jouer du piano.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. de</li>
+          <li onclick="checkAnswer(this, true)">B. à</li>
+          <li onclick="checkAnswer(this, false)">C. avec</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅  apprendre à 是固定搭配，表示『學習做某事』，à 在此帶方向／目標之意。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">3. 填入適當介系詞：「Je parle _____ film hier.」</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. à</li>
+          <li onclick="checkAnswer(this, true)">B. de</li>
+          <li onclick="checkAnswer(this, false)">C. sur</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅  parler de 是固定搭配，表示『談論某事』，de 在此帶關於／內容之意。</div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-question">4. 下列哪個動詞搭配使用 de？</div>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A. jou er à</li>
+          <li onclick="checkAnswer(this, false)">B. compter sur</li>
+          <li onclick="checkAnswer(this, true)">C. dépendre de</li>
+        </ul>
+        <button class="reveal-btn" onclick="revealAnswer(this)">查看答案</button>
+        <div class="answer">✅  dépendre de 是固定搭配，表示『取決於』，de 在此帶來源／依據之意。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 📝: 今日任務 -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> 今日任務</div>
+    <div class="follow-box">
+      <h4>請完成以下練習</h4>
+      <ol style="padding-left: 1.5rem;">
+        <li style="padding: 0.5rem 0;">朗讀跟練清單中的所有 de 動詞與 à 動詞各五遍，感受 de 的收斂感與 à 的開闊感。</li>
+        <li style="padding: 0.5rem 0;">用 de 和 à 各造句三句，描述你今天的計劃與感受，例如：Je rêve de _____、Je commence à _____。</li>
+        <li style="padding: 0.5rem 0;">聽一段法語播客或對話，標出所有出現 de 和 à 的動詞搭配，記錄下來複習。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lesson-footer">
+    <p>法語課 85 · 第 85 課：法語動詞 + 介系詞的系統性搭配——de 與 à 的精準選擇 · 2026</p>
+    <p style="margin-top: 0.3rem;">下一課預告：法語時態的書面語與口語差異——imparfait vs passé composé 的語境選擇</p>
+  </div>
+
+</div>
+
+<script>
+function checkAnswer(el, isCorrect) {
+  const siblings = el.parentElement.querySelectorAll('li');
+  siblings.forEach(s => {
+    s.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    siblings.forEach(s => {
+      if (s.onclick && s.onclick.toString().includes('true')) {
+        s.classList.add('correct');
+      }
+    });
+  }
+}
+
+function revealAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  if (answer.style.display === 'block') {
+    answer.style.display = 'none';
+    btn.textContent = '查看答案';
+  } else {
+    answer.style.display = 'block';
+    btn.textContent = '隱藏答案';
+  }
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
