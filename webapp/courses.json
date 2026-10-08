@@ -850,6 +850,16 @@
     "generatedDate": "2026-10-06"
   },
   {
+    "id": "french-lesson-86",
+    "title": "French Lesson 86",
+    "category": "French",
+    "categorySlug": "french",
+    "fileName": "french-lesson-86.html",
+    "path": "lessons/french/french-lesson-86.html",
+    "number": 86,
+    "generatedDate": "2026-10-08"
+  },
+  {
     "id": "mind-lesson-01",
     "title": "Mind Lesson 01",
     "category": "Mind",
